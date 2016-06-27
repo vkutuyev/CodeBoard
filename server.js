@@ -21,8 +21,8 @@ var port = 8000;
 var server = app.listen(port, function() {
     console.log("Hey, Listen! (ROOOOM "+port+")");
 })
-var io = require('socket.io').listen(server);
-
-io.sockets.on('connection', function(socket) {
-    console.log('Sockets:', socket.id);
-})
+////////////////////////////////////////////////////////////
+//                         Socket                         //
+////////////////////////////////////////////////////////////
+var io  =   require('socket.io').listen(server);
+            require('./server/config/socket.js')(io);

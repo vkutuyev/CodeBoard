@@ -1,0 +1,25 @@
+<div class="container lobby" ng-controller="LobbyController">
+    <div class="row title">
+        <div class="columns eight offset-by-two">
+            <h1>Pseudoku.de</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="columns eight offset-by-two">
+            <input type="text" placeholder="Display name" class="displayName lobbyInput" ng-model="displayName">
+        </div>
+    </div>
+    <div class="row option">
+        <div class="columns six offset-by-two">
+            <input type="text" placeholder="Lobby Name" class="lobbyName lobbyInput" ng-model="lobbyName">
+        </div>
+        <div class="columns two">
+            <input type="submit" value="Join" ng-click="joinLobby()">
+        </div>
+    </div>
+    <div class="row">
+        <div class="columns eight offset-by-two">
+            <input type="submit" value="Create" ng-click="createLobby()">
+        </div>
+    </div>
+</div>
