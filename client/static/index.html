@@ -2,28 +2,30 @@
     <head>
         <meta charset="utf-8">
         <title></title>
-        <link rel="stylesheet" href="./css/font-awesome.min.css">
         <link rel="stylesheet" href="./css/skeleton.css">
+        <link rel="stylesheet" href="./css/font-awesome.min.css">
+        <link rel="stylesheet" href="./css/ng-animate.css">
         <link rel="stylesheet" href="./css/all.css">
         <link rel="stylesheet" href="./css/lobby.css">
     </head>
     <body ng-app='app'>
-        <div class="container">
-            Something
-        </div>
-
-        <!-- Angular src -->
-        <script src="./js/angular.min.js"></script>
-        <script src="./js/angular-route.min.js"></script>
-        <!-- Angular Config, Controllers, Factories -->
-        <script src="./config/config.js"></script>
-        <script src="./controllers/lobby.js"></script>
+        <div ng-view=""></div>
 
         <!-- jQuery -->
         <script src="./js/jquery.min.js"></script>
+        <!-- Angular src -->
+        <script src="./js/angular.min.js"></script>
+        <script src="./js/angular-route.min.js"></script>
+        <script src="./js/angular-animate.min.js" charset="utf-8"></script>
+
         <!-- Sockets -->
         <script src="./js/socket.io.min.js"></script>
         <!-- Our socket code -->
         <script src="./js/sockets.js"></script>
+        
+        <!-- Angular Config, Controllers, Factories -->
+        <script src="./config/config.js"></script>
+        <script src="./controllers/lobby.js"></script>
+
     </body>
 </html>
