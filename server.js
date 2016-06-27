@@ -34,7 +34,6 @@ io.sockets.on('connection', function(socket) {
     }
 
     socket.on('draw_line', function (data) {
-        console.log('drawing a line');
         line_history.push(data.line);
         io.emit('draw_line', { line: data.line });
     });

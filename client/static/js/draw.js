@@ -1,3 +1,27 @@
+var colCount = 0;
+var color = ['blue', 'red', 'green', 'yellow'];
+
+$('button').on('click', function(){
+    switch(this.id){
+        case 'color1':
+            console.log('color1');
+            colCount=0
+            break;
+        case 'color2':
+            console.log('color2');
+            colCount=1
+            break;
+        case 'color3':
+            console.log('color3');
+            colCount=2
+            break;
+        case 'color4':
+            console.log('color4');
+            colCount=3
+            break;
+    }
+});
+
 document.addEventListener("DOMContentLoaded", function() {
     var mouse = {
         click: false,
@@ -9,8 +33,8 @@ document.addEventListener("DOMContentLoaded", function() {
     // get canvas element and create context
     var canvas  = document.getElementById('drawing');
     var context = canvas.getContext('2d');
-    var width   = window.innerWidth;
-    var height  = window.innerHeight;
+    var width   = window.innerWidth - 100;
+    var height  = window.innerHeight - 100;
     var socket  = io.connect();
 
     // set canvas to full browser width/height
@@ -34,6 +58,7 @@ document.addEventListener("DOMContentLoaded", function() {
         context.beginPath();
         context.moveTo(line[0].x * width, line[0].y * height);
         context.lineTo(line[1].x * width, line[1].y * height);
+        context.strokeStyle = color[colCount];
         context.stroke();
     });
 
@@ -49,5 +74,12 @@ document.addEventListener("DOMContentLoaded", function() {
         setTimeout(mainLoop, 50);
     }
     mainLoop();
+
+    // reset button to clear canvas
+    $('#resetbtn').on('click', function(){
+        console.log("reset canvas");
+        canvas.width = width;
+    });
+
 
 });
