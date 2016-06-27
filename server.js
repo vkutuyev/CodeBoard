@@ -30,12 +30,12 @@ io.sockets.on('connection', function(socket) {
     console.log('Sockets:', socket.id);
 
     for (var i in line_history) {
-        socket.emit('draw_line', { line: line_history[i] } );
+        socket.emit('draw_line', line_history[i] );
     }
 
-    socket.on('draw_line', function (data) {
-        line_history.push(data.line);
-        io.emit('draw_line', { line: data.line });
+    socket.on('draw_line', function (line) {
+        line_history.push(line);
+        io.emit('draw_line', line);
     });
     socket.on('clear_board', function(){
         line_history = [];

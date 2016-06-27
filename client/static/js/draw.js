@@ -1,27 +1,3 @@
-var colCount = 0;
-var color = ['blue', 'red', 'green', 'yellow'];
-
-$('button').on('click', function(){
-    switch(this.id){
-        case 'color1':
-            console.log('color1');
-            colCount=0
-            break;
-        case 'color2':
-            console.log('color2');
-            colCount=1
-            break;
-        case 'color3':
-            console.log('color3');
-            colCount=2
-            break;
-        case 'color4':
-            console.log('color4');
-            colCount=3
-            break;
-    }
-});
-
 document.addEventListener("DOMContentLoaded", function() {
     var mouse = {
         click: false,
@@ -58,7 +34,8 @@ document.addEventListener("DOMContentLoaded", function() {
         context.beginPath();
         context.moveTo(line[0].x * width, line[0].y * height);
         context.lineTo(line[1].x * width, line[1].y * height);
-        context.strokeStyle = color[colCount];
+        context.strokeStyle = data.lineColor;
+        context.lineWidth = data.penWidth;
         context.stroke();
     });
 
@@ -67,11 +44,11 @@ document.addEventListener("DOMContentLoaded", function() {
         // check if the user is drawing
         if (mouse.click && mouse.move && mouse.pos_prev) {
             // send line to to the server
-            socket.emit('draw_line', { line: [ mouse.pos, mouse.pos_prev ] });
+            socket.emit('draw_line', { line: [ mouse.pos, mouse.pos_prev ], lineColor: context.strokeStyle, penWidth: context.lineWidth });
             mouse.move = false;
         }
         mouse.pos_prev = {x: mouse.pos.x, y: mouse.pos.y};
-        setTimeout(mainLoop, 50);
+        setTimeout(mainLoop, 25);
     }
     mainLoop();
 
@@ -80,6 +57,35 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log("reset canvas");
         canvas.width = width;
         socket.emit('clear_board');
+    });
+
+    $('button').on('click', function(){
+        switch(this.id){
+            case 'color1':
+                context.strokeStyle = 'blue'
+                break;
+            case 'color2':
+                context.strokeStyle = 'red'
+                break;
+            case 'color3':
+                context.strokeStyle = 'green'
+                break;
+            case 'color4':
+                context.strokeStyle = 'yellow'
+                break;
+            case 'color5':
+                context.strokeStyle = 'black'
+                break;
+            case 'width1':
+                context.lineWidth = 0.5
+                break;
+            case 'width2':
+                context.lineWidth = 2
+                break;
+            case 'width3':
+                context.lineWidth = 5
+                break;
+        }
     });
 
 
