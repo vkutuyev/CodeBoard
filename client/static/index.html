@@ -6,11 +6,13 @@
         <link rel="stylesheet" href="./css/skeleton.css">
         <link rel="stylesheet" href="./css/all.css">
         <link rel="stylesheet" href="./css/lobby.css">
+        <link rel="stylesheet" href="./css/board.css">
     </head>
     <body ng-app='app'>
-        <div class="container">
-            Something
-        </div>
+
+
+        <canvas id="drawing"></canvas>
+
 
         <!-- Angular src -->
         <script src="./js/angular.min.js"></script>
@@ -25,5 +27,9 @@
         <script src="./js/socket.io.min.js"></script>
         <!-- Our socket code -->
         <script src="./js/sockets.js"></script>
+
+        <!-- Drawing scripts -->
+        <script src="./js/draw.js"></script>
+
     </body>
 </html>

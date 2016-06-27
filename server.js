@@ -23,6 +23,20 @@ var server = app.listen(port, function() {
 })
 var io = require('socket.io').listen(server);
 
+
+var line_history = [];
+
 io.sockets.on('connection', function(socket) {
     console.log('Sockets:', socket.id);
+
+    for (var i in line_history) {
+        socket.emit('draw_line', { line: line_history[i] } );
+    }
+
+    socket.on('draw_line', function (data) {
+        console.log('drawing a line');
+        line_history.push(data.line);
+        io.emit('draw_line', { line: data.line });
+    });
+
 })
