@@ -37,5 +37,8 @@ io.sockets.on('connection', function(socket) {
         line_history.push(data.line);
         io.emit('draw_line', { line: data.line });
     });
+    socket.on('clear_board', function(){
+        line_history = [];
+    })
 
 })

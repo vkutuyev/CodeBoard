@@ -79,6 +79,7 @@ document.addEventListener("DOMContentLoaded", function() {
     $('#resetbtn').on('click', function(){
         console.log("reset canvas");
         canvas.width = width;
+        socket.emit('clear_board');
     });
 
 
