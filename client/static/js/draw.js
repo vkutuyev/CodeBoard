@@ -1,3 +1,7 @@
+document.addEventListener("contextmenu", function(e){
+    e.preventDefault();
+}, false);
+
 document.addEventListener("DOMContentLoaded", function() {
     var mouse = {
         click: false,
@@ -18,8 +22,12 @@ document.addEventListener("DOMContentLoaded", function() {
     canvas.height = height;
 
     // register mouse event handlers
-    canvas.onmousedown = function(e){ mouse.click = true; };
-    canvas.onmouseup = function(e){ mouse.click = false; };
+    canvas.onmousedown = function(e){
+        if(e.which==1) {mouse.click = true; }
+    };
+    canvas.onmouseup = function(e){
+        if(e.which==1){ mouse.click = false; }
+    };
 
     canvas.onmousemove = function(e) {
         // normalize mouse position to range 0.0 - 1.0
