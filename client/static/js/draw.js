@@ -56,9 +56,10 @@ document.addEventListener("DOMContentLoaded", function() {
     $('#resetbtn').on('click', function(){      // reset function to clear canvas
         console.log("reset canvas");
         socket.emit('clear_board');
-        socket.on('cleared', function(){
-            canvas.width = canvas.width;
-        });
+    });
+
+    socket.on('cleared', function(){
+        canvas.width = canvas.width;
     });
 
     $('button').on('click', function(){             // Pen colors/sizes, reset buttons
