@@ -27,8 +27,9 @@ function User ( id ) {
 }
 
 module.exports = function(io) {
-    var allUsers    = [],
-        allLobbies  = [];
+    var allUsers        = [],
+        allLobbies      = [],
+        line_history    = [];
 
     io.sockets.on('connection', function(socket) {
         console.log('Users:', allUsers);
@@ -60,7 +61,7 @@ module.exports = function(io) {
             }
             if (lobby) {
                 lobby.users.push(user);
-                
+
                 socket.join(lobby.id);
 
                 io.to(lobby.id).emit('lobbyStatus', {lobby});
@@ -69,5 +70,27 @@ module.exports = function(io) {
 
         socket.on('disconnect', function() {
         })
+
+
+
+
+
+
+
+
+
+
+        for (var i in line_history) {
+            socket.emit('draw_line', line_history[i] );
+        }
+
+        socket.on('draw_line', function (line) {
+            line_history.push(line);
+            io.emit('draw_line', line);
+        });
+        socket.on('clear_board', function(){
+            line_history = [];
+            io.emit('cleared');
+        });
     })
 }

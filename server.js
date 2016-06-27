@@ -21,6 +21,7 @@ var port = 8000;
 var server = app.listen(port, function() {
     console.log("Hey, Listen! (ROOOOM "+port+")");
 })
+<<<<<<< HEAD
 ////////////////////////////////////////////////////////////
 //                         Socket                         //
 ////////////////////////////////////////////////////////////
