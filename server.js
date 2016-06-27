@@ -39,6 +39,7 @@ io.sockets.on('connection', function(socket) {
     });
     socket.on('clear_board', function(){
         line_history = [];
+        io.emit('cleared');
     })
 
 })

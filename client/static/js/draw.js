@@ -52,14 +52,16 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     mainLoop();
 
-    // reset button to clear canvas
-    $('#resetbtn').on('click', function(){
+
+    $('#resetbtn').on('click', function(){      // reset function to clear canvas
         console.log("reset canvas");
-        canvas.width = width;
         socket.emit('clear_board');
+        socket.on('cleared', function(){
+            canvas.width = canvas.width;
+        });
     });
 
-    $('button').on('click', function(){
+    $('button').on('click', function(){             // Pen colors/sizes, reset buttons
         switch(this.id){
             case 'color1':
                 context.strokeStyle = 'blue'
