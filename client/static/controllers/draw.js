@@ -17,8 +17,8 @@ app.controller('DrawController', function($scope, $location) {
         // get canvas element and create context
         var canvas  = document.getElementById('drawing');
         var context = canvas.getContext('2d');
-        var width   = window.innerWidth - 100;
-        var height  = window.innerHeight - 100;
+        var width   = window.innerWidth;
+        var height  = window.innerHeight;
         var socket  = io.connect();
 
         // set canvas to full browser width/height
