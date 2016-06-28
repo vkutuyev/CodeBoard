@@ -81,32 +81,26 @@ app.controller('DrawController', function($scope, $location) {
         });
 
         $('button').on('click', function(){             // Pen colors/sizes, reset buttons
-            switch(this.id){
-                case 'color1':
-                    context.strokeStyle = 'blue'
-                    break;
-                case 'color2':
-                    context.strokeStyle = 'red'
-                    break;
-                case 'color3':
-                    context.strokeStyle = 'green'
-                    break;
-                case 'color4':
-                    context.strokeStyle = 'yellow'
-                    break;
-                case 'color5':
-                    context.strokeStyle = 'black'
-                    break;
-                case 'width1':
-                    context.lineWidth = 0.5
-                    break;
-                case 'width2':
-                    context.lineWidth = 2
-                    break;
-                case 'width3':
-                    context.lineWidth = 5
-                    break;
+
+            if(this.id == 'color1'){ context.strokeStyle = 'blue'; }
+            else if(this.id == 'color2'){ context.strokeStyle = 'red'; }
+            else if(this.id == 'color3'){ context.strokeStyle = 'green'; }
+            else if(this.id == 'color4'){ context.strokeStyle = 'yellow'; }
+            else if(this.id == 'color5'){ context.strokeStyle = 'black'; }
+            else if(this.id == 'eraser'){ context.strokeStyle = 'white'; }
+            else if(this.id == 'width1'){
+                context.lineWidth = 0.5;
+                if(context.strokeStyle == '#ffffff'){ context.lineWidth = 5; }
             }
+            else if(this.id == 'width2'){
+                context.lineWidth = 2;
+                if(context.strokeStyle == '#ffffff'){ context.lineWidth = 10; }
+            }
+            else if(this.id == 'width3'){
+                context.lineWidth = 5;
+                if(context.strokeStyle == '#ffffff'){ context.lineWidth = 25; }
+            }
+
         });
     })
 })
