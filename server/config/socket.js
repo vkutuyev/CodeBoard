@@ -100,7 +100,7 @@ module.exports = function(io) {
 
 
 
-
+        
 
         for (var i in line_history) {
             socket.emit('draw_line', line_history[i] );

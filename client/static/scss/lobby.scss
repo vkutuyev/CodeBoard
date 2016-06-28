@@ -6,7 +6,10 @@ input, button, textarea {
     background: white;
 }
 div.container.lobby {
-    padding-top: 5em;
+    background: rgba(255, 255, 255, 0.80);
+    margin-top: 5em;
+    padding: 2em 0;
+    border-radius: 10px;
     div.row.title {
         h1 {
             text-align: center;
@@ -19,5 +22,19 @@ div.container.lobby {
     }
     div.row.option {
         margin-top: 2em;
+    }
+
+    input, button, textarea {
+        background: white;
+    }
+
+    canvas.bgAnim{
+        width: 100%;
+        height: 300%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: -3000;
+        /*background-color: steelblue;*/
     }
 }
