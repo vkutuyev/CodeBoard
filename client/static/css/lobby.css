@@ -2,8 +2,7 @@
   display: none; }
 
 input, button, textarea {
-  width: 100%;
-  background: white; }
+  width: 100%; }
 
 div.container.lobby {
   background: rgba(255, 255, 255, 0.8);

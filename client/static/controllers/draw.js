@@ -41,6 +41,27 @@ app.controller('DrawController', function($scope, $location, socket) {
             mouse.pos.y = e.clientY / height;
             mouse.move = true;
         };
+        var dragScreen = false;
+        $('#rightmenu').mousedown(function(e) {
+            var curr = $(this)
+            dragScreen = true;
+            var left = parseInt(curr.css('left')),
+                top  = parseInt(curr.css('top'));
+
+            var lDiff = e.pageX-left,
+                tDiff = e.pageY-top;
+
+            $(document).mousemove(function(e) {
+                curr.css('left', e.pageX-lDiff);
+                curr.css('top', e.pageY-tDiff);
+            })
+        })
+        $(document).mouseup(function(e) {
+            if (dragScreen) {
+                $(document).off('mousemove')
+                dragScreen = false;
+            }
+        })
         // draw line received from server
         socket.on('test', function() {console.log('test')})
         socket.on('draw_line', function (data) {
