@@ -1,6 +1,9 @@
 ::-webkit-scrollbar {
   display: none; }
 
+input, button, textarea {
+  width: 100%; }
+
 div.container.lobby {
   padding-top: 5em; }
   div.container.lobby div.row.title h1 {

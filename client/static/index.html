@@ -12,23 +12,6 @@
     <body ng-app='app'>
         <div ng-view=""></div>
 
-        <canvas id=drawing></canvas>
-
-        <div class="row">
-            <button id=color1>Blue</button>
-            <button id=color2>Red</button>
-            <button id=color3>Green</button>
-            <button id=color4>Yellow</button>
-            <button id=color5>Black</button>
-
-            <button id=resetbtn>Clear</button>
-        </div>
-        <div class="row">
-            <button id=width1>|</button>
-            <button id=width2>||</button>
-            <button id=width3>|||</button>
-        </div>
-
         <!-- jQuery -->
         <script src="./js/jquery.min.js"></script>
         <!-- Angular src -->
@@ -40,16 +23,12 @@
         <script src="./js/socket.io.min.js"></script>
         <!-- Our socket code -->
         <script src="./js/sockets.js"></script>
-<<<<<<< HEAD
 
         <!-- Angular Config, Controllers, Factories -->
         <script src="./config/config.js"></script>
         <script src="./controllers/lobby.js"></script>
-=======
-
         <!-- Drawing scripts -->
-        <script src="./js/draw.js"></script>
->>>>>>> 2c61b6efb5dbf4fef24b716836e3afb69c1ad964
+        <script src="./controllers/draw.js"></script>
 
     </body>
 </html>

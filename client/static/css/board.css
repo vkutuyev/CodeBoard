@@ -1,11 +1,18 @@
-* {
+.draw * {
    margin: 0;
    padding: 0;
 }
-body, html{
+.draw button, .draw input, .draw textarea {
+    width: 15%;
+}
+div.draw {
    width: 100%;
    height: 100%;
 }
 #canvas {
    display: block;
+}
+#drawing {
+    width: 100%;
+    height: 100%;
 }

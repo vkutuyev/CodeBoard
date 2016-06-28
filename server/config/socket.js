@@ -4,8 +4,9 @@ var allLobbies  = [],
 function Lobby () {
     var valid = 'abcdefghijklmnopqrstuvqxyz1234567890'.split('');
 
-    this.users  = [];
-    this.id     = Generate();
+    this.users          = [];
+    this.line_history   = [];
+    this.id             = Generate();
 
     for (var i = 0; i < allLobbies.length; i++) {
         if (allLobbies[i].id == this.id) {
