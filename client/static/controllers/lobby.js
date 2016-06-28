@@ -1,4 +1,4 @@
-app.controller('LobbyController', function($scope, $location) {
+app.controller('LobbyController', function($scope, $location, socket) {
     $scope.displayName  = '';
     $scope.lobbyName    = '';
     $(document).ready(function() {

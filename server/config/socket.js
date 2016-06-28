@@ -1,19 +1,30 @@
+////////////////////////////////////////////////////////////
+//                        VARIABLE                        //
+////////////////////////////////////////////////////////////
 var allLobbies  = [],
     allUsers    = [];
 
-function Lobby () {
+////////////////////////////////////////////////////////////
+//                   CLASS DECLARATIONS                   //
+////////////////////////////////////////////////////////////
+function Lobby ( id ) {
     var valid = 'abcdefghijklmnopqrstuvqxyz1234567890'.split('');
 
     this.users          = [];
     this.line_history   = [];
-    this.id             = Generate();
+    this.id             =  id;
+    // console.log('NEW ROOM ID:',id);
 
-    for (var i = 0; i < allLobbies.length; i++) {
-        if (allLobbies[i].id == this.id) {
-            this.id = Generate();
-            i = 0;
+    if (!id) {
+        this.id = Generate();
+        for (var i = 0; i < allLobbies.length; i++) {
+            if (allLobbies[i].id == this.id) {
+                this.id = '' + Generate();
+                i = 0;
+            }
         }
     }
+
     function Generate(i) {
         i = i?i+1:1;
         if (i >= 6) {
@@ -35,48 +46,27 @@ function User ( id ) {
     this.id     = id;
     this.name;
 }
-
+////////////////////////////////////////////////////////////
+//                    HELPER FUNCTIONS                    //
+////////////////////////////////////////////////////////////
+function grabRoom( id, lobbyList, i ) {
+    i = i==undefined?0:i;
+    if (i >= lobbyList.length) {
+        return false;
+    }
+    return lobbyList[i].id==id?lobbyList[i]:grabRoom( id, lobbyList, i+1 );
+}
+////////////////////////////////////////////////////////////
+//                     MODULE EXPORTS                     //
+////////////////////////////////////////////////////////////
 module.exports = function(io) {
     var allUsers        = [],
         allLobbies      = [],
         line_history    = [];
 
     io.sockets.on('connection', function(socket) {
-        console.log('Users:', allUsers);
-        console.log('Lobbies:', allLobbies);
-
         var user = new User( socket.id );
         allUsers.push(user);
-
-        socket.on('createLobby', function(data) {
-            user.name = data.user;
-
-            var lobby = new Lobby();
-            console.log(lobby.id);
-            allLobbies.push(lobby);
-            lobby.users.push(user);
-
-            socket.join(lobby.id);
-
-            io.to(lobby.id).emit('lobbyStatus', {lobby});
-        })
-        socket.on('joinLobby', function(data) {
-            user.name = data.user;
-
-            var lobby;
-            for (var room of allLobbies) {
-                if (room.id == data.lobby) {
-                    lobby = room;
-                }
-            }
-            if (lobby) {
-                lobby.users.push(user);
-
-                socket.join(lobby.id);
-
-                io.to(lobby.id).emit('lobbyStatus', {lobby});
-            }
-        })
 
         socket.on('disconnect', function(socket) {
             allUsers.splice(allUsers.indexOf(user),1);
@@ -93,26 +83,67 @@ module.exports = function(io) {
             }
         })
 
+        ////////////////////////////////////////////////////////////
+        //                    LOBBY CONTROLLER                    //
+        ////////////////////////////////////////////////////////////
+        socket.on('createLobby', function(data) {
+            user.name = data.user;
 
+            var lobby = new Lobby();
+            allLobbies.push(lobby);
+            lobby.users.push(user);
 
+            socket.join(lobby.id);
 
+            io.to(lobby.id).emit('lobbyStatus', {lobby});
+        })
 
+        socket.on('joinLobby', function(data) {
+            user.name = data.user;
 
+            var lobby;
+            for (var room of allLobbies) {
+                if (room.id == data.lobby) {
+                    lobby = room;
+                }
+            }
+            if (lobby) {
+                lobby.users.push(user);
 
+                socket.join(lobby.id);
+                console.log(io.sockets.adapter.rooms);
 
-        
+                io.to(lobby.id).emit('lobbyStatus', {lobby});
+            }
+        })
 
-        for (var i in line_history) {
-            socket.emit('draw_line', line_history[i] );
-        }
+        ///////////////////////////////////////////////////////////
+        //                    DRAW CONTROLLER                    //
+        ///////////////////////////////////////////////////////////
+        socket.on('DrawController', function(data) {
+            var room = grabRoom(data.lobby, allLobbies);
+            if (!room) {
+                room = new Lobby(data.lobby);
+                allLobbies.push(room);
+                socket.join(room.id);
+            } else {
+                socket.join(room.id);
+                for (var i in room.line_history) {
+                    socket.emit('draw_line', room.line_history[i] );
+                }
+            }
+        })
+        socket.on('draw_line', function (data) {
+            var room = grabRoom(data.lobby, allLobbies);
+            room.line_history.push(data.path);
 
-        socket.on('draw_line', function (line) {
-            line_history.push(line);
-            io.emit('draw_line', line);
+            io.to(data.lobby).emit('draw_line', data.path);
         });
-        socket.on('clear_board', function(){
-            line_history = [];
-            io.emit('cleared');
+        socket.on('clear_board', function(data){
+            var room = grabRoom(data.lobby, allLobbies);
+
+            room.line_history = [];
+            io.to(room.id).emit('cleared');
         });
     })
 }
