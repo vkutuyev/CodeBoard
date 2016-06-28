@@ -28,6 +28,12 @@ app.controller('DrawController', function($scope, $location) {
         // register mouse event handlers
         canvas.onmousedown = function(e){
             if(e.which==1) {mouse.click = true; }
+            if(e.which==3) {
+                var menu = document.getElementById('rightmenu');
+                menu.hidden = !menu.hidden;
+                menu.style.top = e.clientY + 'px';
+                menu.style.left = e.clientX + 'px';
+            }
         };
         canvas.onmouseup = function(e){
             if(e.which==1){ mouse.click = false; }
@@ -77,29 +83,29 @@ app.controller('DrawController', function($scope, $location) {
         $('button').on('click', function(){             // Pen colors/sizes, reset buttons
             switch(this.id){
                 case 'color1':
-                context.strokeStyle = 'blue'
-                break;
+                    context.strokeStyle = 'blue'
+                    break;
                 case 'color2':
-                context.strokeStyle = 'red'
-                break;
+                    context.strokeStyle = 'red'
+                    break;
                 case 'color3':
-                context.strokeStyle = 'green'
-                break;
+                    context.strokeStyle = 'green'
+                    break;
                 case 'color4':
-                context.strokeStyle = 'yellow'
-                break;
+                    context.strokeStyle = 'yellow'
+                    break;
                 case 'color5':
-                context.strokeStyle = 'black'
-                break;
+                    context.strokeStyle = 'black'
+                    break;
                 case 'width1':
-                context.lineWidth = 0.5
-                break;
+                    context.lineWidth = 0.5
+                    break;
                 case 'width2':
-                context.lineWidth = 2
-                break;
+                    context.lineWidth = 2
+                    break;
                 case 'width3':
-                context.lineWidth = 5
-                break;
+                    context.lineWidth = 5
+                    break;
             }
         });
     })
