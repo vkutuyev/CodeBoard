@@ -10,7 +10,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
         console.log(data);
         console.log($location);
         $location.url('/'+data.lobby.id);
-        $scope.$apply();
     })
 
     $scope.createLobby = function() {
