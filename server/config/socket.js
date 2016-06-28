@@ -21,6 +21,15 @@ function Lobby () {
         }
         return Generate(i) + valid[Math.floor(Math.random()*valid.length)];
     }
+
+    this.roomContains = function(user) {
+        for (i in this.users) {
+            if (this.users[i].id == user.id) {
+                return i;
+            }
+        }
+        return false;
+    }
 }
 function User ( id ) {
     this.id     = id;
@@ -69,7 +78,19 @@ module.exports = function(io) {
             }
         })
 
-        socket.on('disconnect', function() {
+        socket.on('disconnect', function(socket) {
+            allUsers.splice(allUsers.indexOf(user),1);
+            var room;
+            for (lobby of allLobbies) {
+                if (lobby.roomContains(user)) {
+                    var index = lobby.roomContains(user);
+                    room = lobby;
+                    lobby.users.splice(lobby.users[index], 1);
+                }
+            }
+            if (room) {
+                io.to(room.id).emit('User Disconnected', room.users);
+            }
         })
 
 
