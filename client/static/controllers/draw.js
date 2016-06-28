@@ -22,6 +22,9 @@ app.controller('DrawController', function($scope, $location, socket) {
         // set canvas to full browser width/height
         canvas.width = width;
         canvas.height = height;
+        // misc context/canvas settings
+        context.lineCap = 'round';
+        context.lineJoin = 'round';
         // register mouse event handlers
         canvas.onmousedown = function(e){
             if(e.which==1) {mouse.click = true; }
