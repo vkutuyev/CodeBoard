@@ -16,4 +16,14 @@ div.container.lobby {
   div.container.lobby div.row.option {
     margin-top: 2em; }
 
+canvas.bgAnim{
+    width: 100%;
+    height: 300%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -3000;
+    /*background-color: steelblue;*/
+}
+
 /*# sourceMappingURL=lobby.css.map */

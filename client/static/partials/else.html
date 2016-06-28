@@ -1,36 +1,61 @@
 <div class="draw" ng-controller="DrawController">
     <canvas id=drawing></canvas>
 
-    <div class="row">
-        <div class="columns two">
-            <button id=color1>Blue</button>
-        </div>
-        <div class="columns two">
-            <button id=color2>Red</button>
-        </div>
-        <div class="columns two">
-            <button id=color3>Green</button>
-        </div>
-        <div class="columns two">
-            <button id=color4>Yellow</button>
-        </div>
-        <div class="columns two">
-            <button id=color5>Black</button>
+
+    <div id="rightmenu" hidden=true>
+
+        <div class="columns four">
+            <div class="columns twelve">
+                <img id=painticon src="./img/paintcolor.png" alt="Color">
+            </div>
+            <div class="columns twelve">
+                <button id=color1><span class=coloricon>●</span></button>
+            </div>
+            <div class="columns twelve">
+                <button id=color2><span class=coloricon>●</span></button>
+            </div>
+            <div class="columns twelve">
+                <button id=color3><span class=coloricon>●</span></button>
+            </div>
+            <div class="columns twelve">
+                <button id=color4><span class=coloricon>●</span></button>
+            </div>
+            <div class="columns twelve">
+                <button id=color5><span class=coloricon>●</span></button>
+            </div>
+
         </div>
 
-        <div class="columns two">
-            <button id=resetbtn>Clear</button>
+        <div class="columns four">
+
+            <div class="columns twelve">
+                <i id=brushicon class="fa fa-paint-brush" aria-hidden="true"></i>
+            </div>
+
+            <div class="columns twelve">
+                <button id=width1>|</button>
+            </div>
+            <div class="columns twelve">
+                <button id=width2>|</button>
+            </div>
+            <div class="columns twelve">
+                <button id=width3>|</button>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="columns two">
-            <button id=width1>|</button>
+
+        <div class="columns four">
+            <div class="columns twelve">
+                <i id=erasericon class="fa fa-eraser" aria-hidden="true"></i>
+            </div>
+            <div class="columns twelve">
+                <button id=eraser><i class="fa fa-pencil" aria-hidden="true"></i></button>
+            </div>
+            <div class="columns twelve">
+                <button id=resetbtn>Clear</button>
+            </div>
         </div>
-        <div class="columns two">
-            <button id=width2>||</button>
-        </div>
-        <div class="columns two">
-            <button id=width3>|||</button>
-        </div>
-    </div>
+
+    </div>   <!-- End of right menu div -->
+
+
 </div>
