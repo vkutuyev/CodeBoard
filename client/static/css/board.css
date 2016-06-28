@@ -3,7 +3,7 @@
    padding: 0;
 }
 .draw button, .draw input, .draw textarea {
-    width: 15%;
+    /*width: 15%;*/
 }
 div.draw {
    width: 100%;

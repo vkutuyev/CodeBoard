@@ -1,10 +1,12 @@
 app.controller('DrawController', function($scope, $location) {
+    var roomId = $location.$$path.substr(1);
+
     document.addEventListener("contextmenu", function(e){
         e.preventDefault();
     }, false);
 
     $('div.draw').ready(function() {
-        console.log('wtf')
+        console.log('Canvas Ready');
         var mouse = {
             click: false,
             move: false,
@@ -101,9 +103,4 @@ app.controller('DrawController', function($scope, $location) {
             }
         });
     })
-    document.addEventListener("DOMContentLoaded", function() {
-        console.log('wtf');
-
-
-    });
 })
