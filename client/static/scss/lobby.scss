@@ -3,10 +3,9 @@
 }
 input, button, textarea {
     width: 100%;
-    background: white;
 }
 div.container.lobby {
-    background: rgba(255, 255, 255, 0.80);
+    background: rgba(255, 255, 255, 0.0);
     margin-top: 5em;
     padding: 2em 0;
     border-radius: 10px;
@@ -25,7 +24,9 @@ div.container.lobby {
     }
 
     input, button, textarea {
+        width: 100%;
         background: white;
+        text-align:center;
     }
 
     canvas.bgAnim{
@@ -36,5 +37,15 @@ div.container.lobby {
         left: 0;
         z-index: -3000;
         /*background-color: steelblue;*/
+    }
+    div.createCol {
+        input.createButton {
+            height: 7em;
+        }
+    }
+    div.joinCol {
+        div.row input{
+            margin: 0;
+        }
     }
 }
