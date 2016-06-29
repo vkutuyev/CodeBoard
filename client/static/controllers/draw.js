@@ -27,7 +27,10 @@ app.controller('DrawController', function($scope, $location, socket) {
         // misc context/canvas settings
         context.lineCap = 'round';
         context.lineJoin = 'round';
+        context.strokeStyle = 'white';
+        context.fillStyle = 'white';
         var dataURL;
+        // var zoomScale = 1;
 
         // variables for text inputs
         var typing = false,
@@ -59,6 +62,7 @@ app.controller('DrawController', function($scope, $location, socket) {
                     inptext = cText;
                     var pos = $("#largetext").position();
                     var splitstr = inptext.split('\n');
+                    context.fillStyle = 'white';
                     for(var line of splitstr){
                         context.font = "15px Verdana";
                         context.fillText(line, pos.left, pos.top);
@@ -193,23 +197,26 @@ app.controller('DrawController', function($scope, $location, socket) {
         });
         // Pen colors/sizes, reset buttons
         $('button').on('click', function(){
+            console.log('=========strokeStyle=========');
+            console.log(context.strokeStyle);
+            console.log('==================');
             if(this.id == 'color1'){ context.strokeStyle = 'blue'; }
             else if(this.id == 'color2'){ context.strokeStyle = 'red'; }
             else if(this.id == 'color3'){ context.strokeStyle = 'green'; }
             else if(this.id == 'color4'){ context.strokeStyle = 'yellow'; }
-            else if(this.id == 'color5'){ context.strokeStyle = 'black'; }
-            else if(this.id == 'eraser'){ context.strokeStyle = 'white'; }
+            else if(this.id == 'color5'){ context.strokeStyle = 'white'; }
+            else if(this.id == 'eraser'){ context.strokeStyle = 'black'; }
             else if(this.id == 'width1'){
                 context.lineWidth = 0.5;
-                if(context.strokeStyle == '#ffffff'){ context.lineWidth = 6; }
+                if(context.strokeStyle == '#000000'){ context.lineWidth = 10; }
             }
             else if(this.id == 'width2'){
                 context.lineWidth = 2;
-                if(context.strokeStyle == '#ffffff'){ context.lineWidth = 10; }
+                if(context.strokeStyle == '#000000'){ context.lineWidth = 20; }
             }
             else if(this.id == 'width3'){
                 context.lineWidth = 5;
-                if(context.strokeStyle == '#ffffff'){ context.lineWidth = 25; }
+                if(context.strokeStyle == '#000000'){ context.lineWidth = 50; }
             }
             else if(this.id == 'simpText'){
                 typing = true;
@@ -222,11 +229,31 @@ app.controller('DrawController', function($scope, $location, socket) {
                 bigTyping = true;
             }
             // Eraser size reset
-            if(context.strokeStyle != '#ffffff'){
+            if(context.strokeStyle != '#000000'){
                 if(context.lineWidth > 5){
                     context.lineWidth = 5;
                 }
             }
+
+            // Zoom testing
+            // if(this.id == 'zoomout' || this.id == 'zoomin'){
+            //     var dataURL = canvas.toDataURL();
+            //     var board = new Image;
+            //     if(this.id == 'zoomout'){
+            //         if(zoomScale > 1){ zoomScale = 1; }
+            //         zoomScale *= .95;
+            //     }
+            //     else{
+            //         if(zoomScale < 1){ zoomScale = 1; }
+            //         zoomScale *= 1.05;
+            //     }
+            //     board.src = dataURL;
+            //     canvas.width = canvas.width;
+            //     board.onload = function() {
+            //         context.drawImage(board,0,0, window.innerWidth*zoomScale, window.innerHeight*zoomScale);
+            //     };
+            // }
+
         }); // End of $button.on click
 
 

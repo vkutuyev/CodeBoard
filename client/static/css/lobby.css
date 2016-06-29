@@ -5,6 +5,8 @@ input, button, textarea {
   width: 100%; }
 
 div.container.lobby {
+    color: black;
+    text-shadow: 0px 0px 10px white;
   background: rgba(255, 255, 255, 0);
   margin-top: 5em;
   padding: 2em 0;
@@ -28,7 +30,7 @@ div.container.lobby {
     top: 0;
     left: 0;
     z-index: -3000;
-    /*background-color: steelblue;*/ }
+  }
   div.container.lobby div.createCol input.createButton {
     height: 7em; }
   div.container.lobby div.joinCol div.row input {
