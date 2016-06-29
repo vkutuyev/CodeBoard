@@ -18,14 +18,11 @@ div.draw {
 #drawing {
     width: 100%;
     height: 100%;
-    /*cursor: url('../img/cursor/marker_blue_sm.png'), auto;*/
-    /*cursor: crosshair;*/
 }
 
 /* --- Right-click menu --- */
 #rightmenu{
-    width: 180px;
-    height: auto;
+    /*height: auto;*/
     background-color: lightgrey;
     border: 2px solid white;
     border-radius: 25px;
@@ -48,8 +45,7 @@ div.draw {
 #brushicon{
     width: 30px;
     height: 30px;
-    margin-left: calc(50% - 8px);
-    margin-bottom: 5px;
+    margin-left: calc(50% - 6px);
     margin-top: 4px;
 }
 #erasericon{
@@ -62,14 +58,16 @@ div.draw {
     text-align: center;
     margin-left: 5px;
     margin-top: 4px;
-}
-#codeicon{
-    width: 50px;
-    height: 50px;
+    margin-bottom: 15px !important;
 }
 #simpText{
     text-align: center;
-    margin-left: 5px;
+    color: black;
+    font-weight: bold;
+}
+#codeicon{
+    color: black;
+    font-weight: bold;
 }
 #eraser img{
     width: 25px;
@@ -78,6 +76,7 @@ div.draw {
 #resetbtn img{
     width: 25px;
     height: 25px;
+    margin-bottom: 10px !important;
 }
 .coloricon{
     text-align: center;
@@ -94,6 +93,53 @@ div.draw {
 #width3{font-size: 25px;font-weight: 900;color: black;}
 
 /* ------------------------ */
+
+/* --- Dropdown menu --- */
+/* JS disabled styles */
+.no-js nav li:hover ul {
+    display:block;
+}
+/* base nav styles */
+nav {
+    display:block;
+    margin-top: 5% !important;
+    /*margin:0 auto 20px;*/
+    /*position:relative;*/
+    font:16px Tahoma, Sans-serif;
+}
+nav ul {
+    margin:0;
+}
+.dropitem{
+    display:none;
+    width:100%;
+    position:absolute;
+    left:0;
+    background:#6a6a6a;
+    border: 2px solid white;
+    border-radius: 15px;
+    padding: 5px !important;
+    margin-left: -5px !important;
+}
+.mainitem{
+    margin-right: 15px !important;
+}
+nav li {
+    position:relative;
+    float:left;
+    list-style-type:none;
+}
+nav ul:after {
+    content:".";
+    display:block;
+    height:0;
+    clear:both;
+    visibility:hidden;
+}
+nav ul ul li {
+    float:none;
+}
+/* --------------------- */
 
 /* --- Text input/area --- */
 #smalltext{

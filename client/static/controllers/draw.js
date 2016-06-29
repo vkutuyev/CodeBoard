@@ -8,7 +8,27 @@ app.controller('DrawController', function($scope, $location, socket) {
         e.preventDefault();
     }, false);
 
+    // Dropdown menu sorcery
+    (function($){
+		//cache nav
+		var nav = $("#topNav");
+		//add indicators and hovers to submenu parents
+		nav.find("li").each(function() {
+			if ($(this).find("ul").length > 0) {
+				//show subnav on hover
+				$(this).mouseenter(function() {
+					$(this).find("ul").stop(true, true).slideDown();
+				});
+				//hide submenus on exit
+				$(this).mouseleave(function() {
+					$(this).find("ul").stop(true, true).slideUp();
+				});
+			}
+		});
+	})(jQuery);
+
     $('div.draw').ready(function() {
+
         $('#drawing').css({'cursor':"url('../img/cursor/marker_white_sm.png'), auto"});
         // Create mouse object to track mouse clicks/position
         var mouse = {
@@ -200,6 +220,8 @@ app.controller('DrawController', function($scope, $location, socket) {
             context.lineTo(line[1].x * width, line[1].y * height);
             context.strokeStyle = data.lineColor;
             context.lineWidth = data.penWidth;
+            context.lineCap = 'round';
+            context.lineJoin = 'round';
             context.stroke();
         });
         // main loop, running every 25ms
