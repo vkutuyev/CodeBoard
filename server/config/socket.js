@@ -15,7 +15,6 @@ function Lobby ( id ) {
     this.chat_history   = [];
 
     this.id             =  id;
-    // console.log('NEW ROOM ID:',id);
 
     if (!id) {
         this.id = Generate();
@@ -117,8 +116,14 @@ module.exports = function(io) {
                 lobby.users.push(user);
 
                 socket.join(lobby.id);
-                console.log(io.sockets.adapter.rooms);
 
+                io.to(lobby.id).emit('lobbyStatus', {lobby});
+            } else {
+                var lobby = new Lobby( data.lobby );
+                allLobbies.push(lobby);
+
+                socket.join(lobby.id);
+                lobby.users.push(user);
                 io.to(lobby.id).emit('lobbyStatus', {lobby});
             }
         })
@@ -162,6 +167,13 @@ module.exports = function(io) {
         socket.on('messageSend', function(data) {
             var message = new Chat( data.message.name, data.message.message );
             var room = grabRoom(data.lobby, allLobbies);
+            room.chat_history.push(message);
+
+            io.to(data.lobby).emit('messageReceive', room.chat_history);
+        })
+        socket.on('joinChat', function(data) {
+            var message = new Chat( '',data.name+' has joined the lobby.');
+            var room = grabRoom( data.lobby, allLobbies );
             room.chat_history.push(message);
 
             io.to(data.lobby).emit('messageReceive', room.chat_history);

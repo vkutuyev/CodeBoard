@@ -9,7 +9,6 @@ app.controller('DrawController', function($scope, $location, socket) {
     }, false);
 
     $('div.draw').ready(function() {
-        console.log('Canvas Ready');
         // Create mouse object to track mouse clicks/position
         var mouse = {
             click: false,
@@ -72,7 +71,8 @@ app.controller('DrawController', function($scope, $location, socket) {
                 $('#ctextinput').val('');
             }
         })
-
+        var smallText = false;
+        var largeText = false;
         // register mouse event handlers
         canvas.onmousedown = function(e){
             if(!typing){
@@ -80,22 +80,22 @@ app.controller('DrawController', function($scope, $location, socket) {
             }
             else{
                 if(smallTyping && e.which != 3){    // Place small text input
-                    console.log('small typing');
                     var tf2 = document.getElementById('largetext');
                     tf2.hidden = true;
                     var tf = document.getElementById('smalltext');
                     tf.hidden = false;
                     tf.style.top = e.clientY - 20 + 'px';
                     tf.style.left = e.clientX - 10 + 'px';
+                    smallText = true;
                 }
                 else if(bigTyping && e.which != 3){     // Place big text area
-                    console.log('big typing');
                     var tf2 = document.getElementById('smalltext');
                     tf2.hidden = true;
                     var tf = document.getElementById('largetext');
                     tf.hidden = false;
                     tf.style.top = e.clientY + 'px';
                     tf.style.left = e.clientX + 'px';
+                    largeText = true;
                 }
             }
             if(e.which==3) {
@@ -108,6 +108,18 @@ app.controller('DrawController', function($scope, $location, socket) {
         canvas.onmouseup = function(e){
             if(e.which==1){ mouse.click = false; }
         };
+        $(document).mouseup(function(e) {
+            if (smallText) {
+                $('#ptextinput').focus();
+                smallText = false;
+                largeText = false;
+            }
+            if (largeText) {
+                $('#ctextinput').focus();
+                smallText = false;
+                largeText = false;
+            }
+        })
         canvas.onmousemove = function(e) {
             // normalize mouse position to range 0.0 - 1.0
             mouse.pos.x = e.clientX / width;
@@ -137,7 +149,6 @@ app.controller('DrawController', function($scope, $location, socket) {
         })
         // draw line received from server
         socket.on('draw_line', function (data) {
-            // console.log('data');
             var line = data.line;
             context.beginPath();
             context.moveTo(line[0].x * width, line[0].y * height);
@@ -160,7 +171,6 @@ app.controller('DrawController', function($scope, $location, socket) {
         mainLoop();
         // reset function to clear canvas
         $('#resetbtn').on('click', function(){
-            console.log("reset canvas");
             socket.emit('clear_board', {lobby: roomId});
         });
         socket.on('cleared', function(){
@@ -190,17 +200,11 @@ app.controller('DrawController', function($scope, $location, socket) {
                 typing = true;
                 smallTyping = true;
                 bigTyping = false;
-                console.log('typing is ', typing);
-                console.log('smallTyping is ', smallTyping);
-                console.log('bigTyping is ', bigTyping);
             }
             else if(this.id == 'bigText'){
                 typing = true;
                 smallTyping = false;
                 bigTyping = true;
-                console.log('typing is ', typing);
-                console.log('smallTyping is ', smallTyping);
-                console.log('bigTyping is ', bigTyping);
             }
             // Eraser size reset
             if(context.strokeStyle != '#ffffff'){

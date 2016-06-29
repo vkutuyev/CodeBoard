@@ -5,6 +5,9 @@
 .draw button, .draw input, .draw textarea {
     /*width: 15%;*/
 }
+.draw #ptextinput, .draw #ctextinput {
+    background: transparent;
+}
 div.draw {
    width: 100%;
    height: 100%;

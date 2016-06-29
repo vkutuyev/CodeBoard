@@ -60,10 +60,13 @@ app.controller('ChatController', function($scope, socket, $location) {
         }
     }
     $scope.setName = function() {
-        $scope.currentName = $scope.displayName;
-        //Send User
-        $('.cover').hide();
-        $('.chatTextArea').focus();
+        if ($scope.displayName && $scope.displayName.trim().length > 1) {
+            $scope.currentName = $scope.displayName;
+            //Send User
+            socket.emit('joinChat', {name: $scope.currentName, lobby: $scope.lobby});
+            $('.cover').hide();
+            $('.chatTextArea').focus();
+        }
     }
 
 })
