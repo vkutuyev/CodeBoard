@@ -1,23 +1,82 @@
 app.controller('CodeController', function($scope, $location, socket) {
     var option = {
-            resize: false
+            resize: false,
+            hidden: false
         },
         code   = '',
         lobby  = $location.$$path.substr(1);
 
     socket.emit('CodeController', {lobby: lobby});
+    socket.on('toggleTextEditor', function() {toggleTextEditor();})
 
+    $('.codeEdit').height( parseInt($(window).height())- 32 );
+    $('.codeEditor').height( $('.codeEdit').height()-32 );
+
+    function toggleTextEditor() {
+        if (option.hidden) {
+            console.log('currently hidden');
+            console.log(option.hidden);
+            //unhide
+            $('.codeEdit').animate({ right: 0 }, 500);
+
+            option.hidden = false;
+        } else {
+            console.log('currently shown');
+            console.log(option.hidden);
+            //hide
+            var offscreen = parseInt($('.CEResize').width())-parseInt($('.codeEdit').width());
+            $('.codeEdit').animate({ right: offscreen }, 500);
+
+            option.hidden = true;
+        }
+    }
+    function cArrToHtml(arr, i) {
+        if (i == undefined) {i = 0}
+        if (i >= arr.length) {
+            return '';
+        }
+        var purpleKeywords = [
+            'if',
+            'var',
+            'else',
+            'function'
+        ];
+        if ( arr[i] && purpleKeywords.includes(arr[i]) ){
+            // console.log(arr);
+            return '<span class="purple">' + arr[i] + '</span> ' + cArrToHtml( arr, i+1 );
+        }
+        return arr[i] + ' ' + cArrToHtml( arr, i+1 );
+    }
+
+
+    $(window).resize(function() {
+        $('.codeEdit').height( $(window).height() );
+
+    })
     $('.CEResize').mousedown(function(e) {
-        option.resize = true;
-        $(document).mousemove(function(e) {
-            if (option.resize) {
-                $('.codeEdit').width( parseInt($(window).width())-e.pageX );
-            }
-        })
+        if (!option.hidden) {
+            option.resize = true;
+            $(document).mousemove(function(e) {
+                if (option.resize) {
+                    $('.codeEdit').width( parseInt($(window).width())-e.pageX );
+                }
+            })
+        }
     })
     $('.CEResize').mouseup(function(e) {
         if (option.resize) {
             option.resize = false;
+        }
+        if (option.hidden) {
+            toggleTextEditor();
+            option.hidden = false;
+        }
+    })
+    $('.hide').click(function(e) {
+        console.log('HIDE');
+        if (!option.hidden) {
+            toggleTextEditor();
+            option.hidden = true;
         }
     })
     $('.CETA').keydown(function(e) {
@@ -48,26 +107,9 @@ app.controller('CodeController', function($scope, $location, socket) {
     })
 
 
-    function cArrToHtml(arr, i) {
-        if (i == undefined) {i = 0}
-        if (i >= arr.length) {
-            return '';
-        }
-        var purpleKeywords = [
-            'if',
-            'var',
-            'else',
-            'function'
-        ];
-        if ( arr[i] && purpleKeywords.includes(arr[i]) ){
-            // console.log(arr);
-            return '<span class="purple">' + arr[i] + '</span> ' + cArrToHtml( arr, i+1 );
-        }
-        return arr[i] + ' ' + cArrToHtml( arr, i+1 );
-    }
     socket.on('codeReceive', function(data) {
-        var codeArr = data.code.split(' '),
-            html    = codeArr.length>0?cArrToHtml(codeArr):'';
+        // var codeArr = data.code.split(' '),
+        //     html    = codeArr.length>0?cArrToHtml(codeArr):'';
 
         // console.log(html);
         $('.CETA').val(data.code);

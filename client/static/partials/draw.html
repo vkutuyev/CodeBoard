@@ -82,8 +82,11 @@
 <div class="codeEdit" ng-controller="CodeController">
     <div class="codeEditor">
         <div class="row">
-            <div class="columns twelve">
-                <h1>
+            <div class="columns one hide">
+                <i class="fa fa-minus" aria-hidden="true"></i>
+            </div>
+            <div class="columns eleven">
+                <h1 id="codeTitle">
                     <i class="fa fa-code" aria-hidden="true"></i>
                 </h1>
             </div>
@@ -112,7 +115,7 @@
                 <div class="columns twelve">
                     <ul class="menuButtons">
                         <li><a href="/">Home</a></li>
-                        <li></li>
+                        <li><a ng-click="toggleCoding()" href="">Toggle Coding</a></li>
                         <li></li>
                         <li></li>
                     </ul>
@@ -120,14 +123,6 @@
             </div>
         </div>
         <div class="columns ten">
-            <!-- <div class="row title" ng-click="toggleChat()">
-                <div class="columns two">
-                    <b>Chatbox</b>
-                </div>
-                <div class="columns one"><b>Lobby:</b> </div>
-                <div class="columns six"><span ng-bind="lobby"></span></div>
-                <div class="columns three toggleButton"><div><i class="fa fa-caret-square-o-down" aria-hidden="true"></i></div></div>
-            </div> -->
             <div class="row chatRow">
                 <div class="columns twelve chatCol top"></div>
             </div>
@@ -145,6 +140,8 @@
 
     <div class="cover">
         Please enter a name
+        <br>
+        <br>
         <form>
             <input type="text" ng-model="displayName" class="chatDisplayName">
             <input type="submit" ng-click="setName()">

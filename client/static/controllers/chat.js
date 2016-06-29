@@ -1,12 +1,15 @@
 app.controller('ChatController', function($scope, socket, $location) {
-    $('.chatDisplayName').focus();
-    $scope.lobby = $location.$$path.substr(1);
-    var log = [];
+    var log         = [];
+
+    $scope.lobby    = $location.$$path.substr(1);
+    $scope.chatbox  = '';
     $scope.currentName;
-    $scope.chatbox = '';
+
+    $('.chatDisplayName').focus();
+
     socket.emit('ChatController', {lobby: $scope.lobby});
 
-    var height = parseInt($('div.chat').height())-7;
+    var height = parseInt($('div.chat').height())-32;
     $('div.chat').css('bottom', '-'+height);
 
     $('.chat').width( $('.chat').width( parseInt($(window).width())-24  ))
@@ -38,9 +41,9 @@ app.controller('ChatController', function($scope, socket, $location) {
             $('.chatDisplayName').focus();
         } else {
             console.log('DOWN');
-            var height = parseInt($('div.cover').height())-8;
+            var height = parseInt($('div.cover').height())-32;
             $('div.cover').animate({bottom: '-'+height}, 500);
-            var height = parseInt($('div.chat').height())-8;
+            var height = parseInt($('div.chat').height())-32;
             $('div.chat').animate({bottom: '-'+height}, 500);
         }
     })
@@ -85,7 +88,7 @@ app.controller('ChatController', function($scope, socket, $location) {
             $('div.chat').animate({bottom: 0}, 500);
             $('.chatTextArea').focus();
         } else {
-            var height = parseInt($('div.chat').height())-8;
+            var height = parseInt($('div.chat').height())-24;
             $('div.chat').animate({bottom: '-'+height}, 500);
             if ($('.chatTextArea').focus()) {
                 $('.chatTextArea').blur();
@@ -100,6 +103,9 @@ app.controller('ChatController', function($scope, socket, $location) {
             $('.cover').hide();
             $('.chatTextArea').focus();
         }
+    }
+    $scope.toggleCoding = function() {
+        socket.emit('toggleCoding');
     }
 
 })

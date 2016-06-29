@@ -205,5 +205,9 @@ module.exports = function(io) {
             // console.log(room.codestate);
             io.to(data.lobby).emit('codeReceive', {code: room.codestate});
         })
+
+        socket.on('toggleCoding', function() {
+            socket.emit('toggleTextEditor');
+        })
     })
 }

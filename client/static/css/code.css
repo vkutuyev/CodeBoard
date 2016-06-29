@@ -3,8 +3,12 @@ div.codeEdit div.CEResize {
     left: 0;
     top: 0;
     height: 100%;
-    width: 5px;
+    width: 10px;
     position:absolute;
+}
+div.codeEdit div.hide:hover {
+    color: rgb(124, 124, 124);
+    cursor: pointer;
 }
 div.codeEdit div.CEResize:hover {
     cursor: col-resize;
@@ -13,10 +17,9 @@ div.codeEdit {
     top: 0px;
     right: 0px;
     width: 450px;
-    height: 540px;
     background: white;
     position: fixed;
-    opacity: 0.9;
+    opacity: 0.90;
 }
 div.codeEdit div.codeEditor {
     top: 0px;
@@ -24,8 +27,8 @@ div.codeEdit div.codeEditor {
     background: white;
     opacity: 0.9;
     border: 1px solid rgba(152,152,152,0.9);
-    padding-top: 1em;
-    padding-left: 1em;
+    padding: 1em;
+    overflow: hidden;
 }
 
 div.codeEdit div.codeEditor h1{
@@ -36,7 +39,7 @@ div.codeEdit textarea.CETA {
     resize: none;
     background: black;
     color: white;
-    height: 100%;
+    height: 90%;
     font-family: monospace;
     font-size: 1.1em;
 }
