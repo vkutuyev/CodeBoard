@@ -4,6 +4,7 @@
 var allLobbies  = [],
     allUsers    = [];
 
+//console.log( io.sockets.adapter.rooms );
 ////////////////////////////////////////////////////////////
 //                   CLASS DECLARATIONS                   //
 ////////////////////////////////////////////////////////////
@@ -15,6 +16,7 @@ function Lobby ( id ) {
     this.chat_history   = [];
     this.screenshot     = '';
     this.savestate;
+    this.codestate;
 
     this.id             =  id;
 
@@ -187,6 +189,21 @@ module.exports = function(io) {
             room.chat_history.push(message);
 
             io.to(data.lobby).emit('messageReceive', room.chat_history);
+        })
+
+        ////////////////////////////////////////////////////////////
+        //                    CODES CONTROLLER                    //
+        ////////////////////////////////////////////////////////////
+        socket.on('CodeController', function(data) {
+            var room = grabRoom(data.lobby, allLobbies);
+            io.to(data.lobby).emit('codeReceive', {code: room.codestate});
+        })
+        socket.on('codeSend', function(data) {
+            var room = grabRoom(data.lobby, allLobbies);
+                room.codestate = data.code;
+
+            // console.log(room.codestate);
+            io.to(data.lobby).emit('codeReceive', {code: room.codestate});
         })
     })
 }
