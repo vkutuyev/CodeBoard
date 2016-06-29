@@ -1,10 +1,13 @@
 app.controller('DrawController', function($scope, $location, socket) {
+
     var roomId = $location.$$path.substr(1);
     socket.emit('DrawController', {lobby: roomId});
+
     // Block default right-click menu
     document.addEventListener("contextmenu", function(e){
         e.preventDefault();
     }, false);
+
     $('div.draw').ready(function() {
         console.log('Canvas Ready');
         // Create mouse object to track mouse clicks/position
@@ -25,9 +28,76 @@ app.controller('DrawController', function($scope, $location, socket) {
         // misc context/canvas settings
         context.lineCap = 'round';
         context.lineJoin = 'round';
+
+        // variables for text inputs
+        var typing = false,
+            bigTyping = false,
+            smallTyping = false;
+        context.textBaseline = 'top';
+        context.font = "15px Verdana";
+
+        $(document).on('keydown', function(e){
+            if(e.keyCode == 27 && typing){          // Pressed escape
+                var tf = document.getElementById('smalltext');
+                var tf2 = document.getElementById('largetext');
+                tf.hidden = true;
+                tf2.hidden = true;
+                typing = false;
+                $('#ptextinput').val('');
+                $('#ctextinput').val('');
+            }
+            if(e.keyCode == 13 && typing && !e.shiftKey){      // Pressed enter
+                var inptext, posX, posY;
+                var pText = $('#ptextinput').val();
+                var cText = $('#ctextinput').val();
+                if(pText){
+                    inptext = pText;
+                    var pos = $("#smalltext").position();
+                    context.fillText(inptext,pos.left+10,pos.top+10);
+                }
+                else if(cText){
+                    inptext = cText;
+                    var pos = $("#largetext").position();
+                    var splitstr = inptext.split('\n');
+                    for(var line of splitstr){
+                        context.fillText(line, pos.left, pos.top);
+                        pos.top += 20;
+                    }
+                }
+                var tf = document.getElementById('largetext');
+                var tf2 = document.getElementById('smalltext');
+                tf.hidden = true;
+                tf2.hidden = true;
+                $('#ptextinput').val('');
+                $('#ctextinput').val('');
+            }
+        })
+
         // register mouse event handlers
         canvas.onmousedown = function(e){
-            if(e.which==1) {mouse.click = true; }
+            if(!typing){
+                if(e.which==1) {mouse.click = true; }
+            }
+            else{
+                if(smallTyping && e.which != 3){    // Place small text input
+                    console.log('small typing');
+                    var tf2 = document.getElementById('largetext');
+                    tf2.hidden = true;
+                    var tf = document.getElementById('smalltext');
+                    tf.hidden = false;
+                    tf.style.top = e.clientY - 20 + 'px';
+                    tf.style.left = e.clientX - 10 + 'px';
+                }
+                else if(bigTyping && e.which != 3){     // Place big text area
+                    console.log('big typing');
+                    var tf2 = document.getElementById('smalltext');
+                    tf2.hidden = true;
+                    var tf = document.getElementById('largetext');
+                    tf.hidden = false;
+                    tf.style.top = e.clientY + 'px';
+                    tf.style.left = e.clientX + 'px';
+                }
+            }
             if(e.which==3) {
                 var menu = document.getElementById('rightmenu');
                 menu.hidden = !menu.hidden;
@@ -66,7 +136,6 @@ app.controller('DrawController', function($scope, $location, socket) {
             }
         })
         // draw line received from server
-        socket.on('test', function() {console.log('test')})
         socket.on('draw_line', function (data) {
             // console.log('data');
             var line = data.line;
@@ -116,6 +185,22 @@ app.controller('DrawController', function($scope, $location, socket) {
             else if(this.id == 'width3'){
                 context.lineWidth = 5;
                 if(context.strokeStyle == '#ffffff'){ context.lineWidth = 25; }
+            }
+            else if(this.id == 'simpText'){
+                typing = true;
+                smallTyping = true;
+                bigTyping = false;
+                console.log('typing is ', typing);
+                console.log('smallTyping is ', smallTyping);
+                console.log('bigTyping is ', bigTyping);
+            }
+            else if(this.id == 'bigText'){
+                typing = true;
+                smallTyping = false;
+                bigTyping = true;
+                console.log('typing is ', typing);
+                console.log('smallTyping is ', smallTyping);
+                console.log('bigTyping is ', bigTyping);
             }
             // Eraser size reset
             if(context.strokeStyle != '#ffffff'){

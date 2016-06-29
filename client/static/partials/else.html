@@ -1,10 +1,17 @@
 <div class="draw" ng-controller="DrawController">
-    <canvas id=drawing></canvas>
 
+        <canvas id=drawing></canvas>
+
+    <div id="smalltext" hidden=true>
+        <input id='ptextinput' type="text" placeholder='Simple text...'>
+    </div>
+    <div id="largetext" hidden=true>
+        <textarea id='ctextinput' placeholder='Enter code...'></textarea>
+    </div>
 
     <div id="rightmenu" hidden=true>
 
-        <div class="columns four">
+        <div class="columns three">
             <div class="columns twelve">
                 <img id=painticon src="./img/paintcolor.png" alt="Color">
             </div>
@@ -26,7 +33,7 @@
 
         </div>
 
-        <div class="columns four">
+        <div class="columns three">
 
             <div class="columns twelve">
                 <i id=brushicon class="fa fa-paint-brush" aria-hidden="true"></i>
@@ -43,7 +50,7 @@
             </div>
         </div>
 
-        <div class="columns four">
+        <div class="columns three">
             <div class="columns twelve">
                 <i id=erasericon class="fa fa-eraser" aria-hidden="true"></i>
             </div>
@@ -52,6 +59,16 @@
             </div>
             <div class="columns twelve">
                 <button id=resetbtn>Clear</button>
+            </div>
+        </div>
+
+        <div class="columns three">
+            <div class="columns twelve">Text</div>
+            <div class="columns twelve">
+                <button id="simpText">ABC</button>
+            </div>
+            <div class="columns twelve">
+                <button id="bigText">(){};</button>
             </div>
         </div>
 

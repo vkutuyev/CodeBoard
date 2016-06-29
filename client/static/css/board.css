@@ -67,3 +67,25 @@ div.draw {
 #width3{font-size: 25px;font-weight: 900;color: black;}
 
 /* ------------------------ */
+
+/* --- Text input/area --- */
+#smalltext{
+    position: fixed;
+}
+    #smalltext input{
+        border: 0px solid transparent;
+        width: auto;
+        font-size: 15px;
+        /*border-bottom: 2px solid steelblue;*/
+    }
+#largetext{
+    position: fixed;
+}
+    #largetext textarea{
+        border: 0px solid transparent;
+        min-width: 500px;
+        min-height: 400px;
+        font-size: 15px;
+        /*border-bottom: 2px solid steelblue;*/
+    }
+/* ----------------------- */
