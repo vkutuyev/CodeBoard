@@ -1,6 +1,6 @@
 
     // The amount of symbol we want to place;
-    var count = 150;
+    var count = 200;
     // Create a symbol, which we will use to place instances of later:
     var path = new Path.Circle({
         center: [0, 0],
@@ -22,12 +22,11 @@
     }
     var vector = new Point({
         angle: Math.random()*45,
-        length: 0   //0.2 old
+        length: 0
     });
     // The onFrame function is called up to 60 times a second:
     function onFrame(event) {
-        // vector.angle += .5;
-        path.fillColor.hue += 1;
+        path.fillColor.hue += 0.5;
         // Run through the active layer's children list and change
         // the position of the placed symbols:
         for (var i = 0; i < count; i++) {
