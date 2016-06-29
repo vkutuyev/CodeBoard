@@ -1,5 +1,73 @@
 <div id=drawview class="draw" ng-controller="DrawController">
 
+    <div id="rightmenu" hidden=true>
+        <nav id="topNav">
+            <ul>
+
+                <li class=mainitem> <!--- toolbar item 1 --->
+                    <img id=painticon src="./img/paintcolor.png" alt="Color">
+                    <ul class=dropitem>
+                        <li>
+                            <button id=color1><span class=coloricon>●</span></button>
+                        </li>
+                        <li>
+                            <button id=color2><span class=coloricon>●</span></button>
+                        </li>
+                        <li>
+                            <button id=color3><span class=coloricon>●</span></button>
+                        </li>
+                        <li>
+                            <button id=color4><span class=coloricon>●</span></button>
+                        </li>
+                        <li>
+                            <button id=color5><span class=coloricon>●</span></button>
+                        </li>
+                    </ul>
+                </li> <!--- end of item 1 --->
+
+                <li class=mainitem>
+                    <i id=brushicon class="fa fa-paint-brush" aria-hidden="true"></i>
+                    <ul class=dropitem>
+                        <li>
+                            <button id=width1>|</button>
+                        </li>
+                        <li>
+                            <button id=width2>|</button>
+                        </li>
+                        <li>
+                            <button id=width3>|</button>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class=mainitem>
+                    <img id=erasericon src="./img/eraser.png" alt="Eraser" />
+                    <ul class=dropitem>
+                        <li>
+                            <button id=eraser><img src="./img/eraser2.png" alt="Eraser2" /></button>
+                        </li>
+                        <li>
+                            <button id=resetbtn><img src="./img/whiteboard.png" alt="Whiteboard" /></button>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class=mainitem>
+                    <i id=texticon class="fa fa-lg fa-keyboard-o" aria-hidden="true"></i>
+                    <ul class=dropitem>
+                        <li>
+                            <button id="simpText">ABC</button>
+                        </li>
+                        <li>
+                            <button id="bigText"><i id=codeicon class="fa fa-lg fa-code" aria-hidden="true"></i></button>
+                        </li>
+                    </ul>
+                </li>
+
+            </ul>
+        </nav>
+    </div>
+
         <canvas id=drawing></canvas>
 
     <!-- <div id="zoombtns">
@@ -14,7 +82,7 @@
         <textarea id='ctextinput' placeholder='Enter code...' autocomplete='off' spellcheck='false' autocorrect='off'></textarea>
     </div>
 
-    <div id="rightmenu" hidden=true>
+    <div hidden=true>
 
         <div class="columns three">
             <div class="columns twelve">
