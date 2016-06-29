@@ -18,6 +18,8 @@ div.draw {
 #drawing {
     width: 100%;
     height: 100%;
+    /*cursor: url('../img/cursor/marker_blue_sm.png'), auto;*/
+    /*cursor: crosshair;*/
 }
 
 /* --- Right-click menu --- */
@@ -44,16 +46,38 @@ div.draw {
     margin-bottom: 5px;
 }
 #brushicon{
-    width: 25px;
-    height: 25px;
+    width: 30px;
+    height: 30px;
     margin-left: calc(50% - 8px);
     margin-bottom: 5px;
+    margin-top: 4px;
 }
 #erasericon{
     width: 25px;
     height: 25px;
     margin-left: calc(50% - 8px);
     margin-bottom: 5px;
+}
+#texticon{
+    text-align: center;
+    margin-left: 5px;
+    margin-top: 4px;
+}
+#codeicon{
+    width: 50px;
+    height: 50px;
+}
+#simpText{
+    text-align: center;
+    margin-left: 5px;
+}
+#eraser img{
+    width: 25px;
+    height: 25px;
+}
+#resetbtn img{
+    width: 25px;
+    height: 25px;
 }
 .coloricon{
     text-align: center;

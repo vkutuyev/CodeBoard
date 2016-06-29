@@ -9,6 +9,7 @@ app.controller('DrawController', function($scope, $location, socket) {
     }, false);
 
     $('div.draw').ready(function() {
+        $('#drawing').css({'cursor':"url('../img/cursor/marker_white_sm.png'), auto"});
         // Create mouse object to track mouse clicks/position
         var mouse = {
             click: false,
@@ -39,19 +40,20 @@ app.controller('DrawController', function($scope, $location, socket) {
             erasing = false;
         context.textBaseline = 'top';
 
-        console.log('=========strokeStyle=========');
-        console.log(context.strokeStyle);
-        console.log('==================');
-
         $(document).on('keydown', function(e){
-            if(e.keyCode == 27 && typing){          // Pressed escape
-                var tf = document.getElementById('smalltext');
-                var tf2 = document.getElementById('largetext');
-                tf.hidden = true;
-                tf2.hidden = true;
-                typing = false;
-                $('#ptextinput').val('');
-                $('#ctextinput').val('');
+            if(e.keyCode == 27){          // Pressed escape
+                if(typing){
+                    var tf = document.getElementById('smalltext');
+                    var tf2 = document.getElementById('largetext');
+                    tf.hidden = true;
+                    tf2.hidden = true;
+                    typing = false;
+                    $('#ptextinput').val('');
+                    $('#ctextinput').val('');
+                }
+                $('#drawing').css({'cursor':"url('../img/cursor/marker_white_sm.png'), auto"});
+                erasing = false;
+                context.lineWidth = 2;
             }
             if(e.keyCode == 13 && typing && !e.shiftKey){      // Pressed enter
                 var inptext, posX, posY;
@@ -221,12 +223,37 @@ app.controller('DrawController', function($scope, $location, socket) {
         });
         // Pen colors/sizes, reset buttons
         $('button').on('click', function(){
-            if(this.id == 'color1'){ context.strokeStyle = 'blue'; erasing = false; }
-            else if(this.id == 'color2'){ context.strokeStyle = 'red'; erasing = false; }
-            else if(this.id == 'color3'){ context.strokeStyle = 'green'; erasing = false; }
-            else if(this.id == 'color4'){ context.strokeStyle = 'yellow'; erasing = false; }
-            else if(this.id == 'color5'){ context.strokeStyle = 'white'; erasing = false; }
-            else if(this.id == 'eraser'){ context.strokeStyle = 'black'; erasing = true; }
+
+            if(this.id == 'color1'){
+                context.strokeStyle = 'blue';
+                erasing = false;
+                $('#drawing').css({'cursor':"url('../img/cursor/marker_blue_sm.png'), auto"});
+            }
+            else if(this.id == 'color2'){
+                context.strokeStyle = 'red';
+                erasing = false;
+                $('#drawing').css({'cursor':"url('../img/cursor/marker_red_sm.png'), auto"});
+            }
+            else if(this.id == 'color3'){
+                context.strokeStyle = 'green';
+                erasing = false;
+                $('#drawing').css({'cursor':"url('../img/cursor/marker_green_sm.png'), auto"});
+            }
+            else if(this.id == 'color4'){
+                context.strokeStyle = 'yellow';
+                erasing = false;
+                $('#drawing').css({'cursor':"url('../img/cursor/marker_yellow_sm.png'), auto"});
+            }
+            else if(this.id == 'color5'){
+                context.strokeStyle = 'white';
+                erasing = false;
+                $('#drawing').css({'cursor':"url('../img/cursor/marker_white_sm.png'), auto"});
+            }
+            else if(this.id == 'eraser'){
+                context.strokeStyle = 'black';
+                erasing = true;
+                $('#drawing').css({'cursor':"url('../img/cursor/eraser_sm.png'), auto"});
+            }
             else if(this.id == 'width1'){
                 context.lineWidth = 0.5;
                 if(context.strokeStyle == '#000000'){ context.lineWidth = 10; }
@@ -243,11 +270,13 @@ app.controller('DrawController', function($scope, $location, socket) {
                 typing = true;
                 smallTyping = true;
                 bigTyping = false;
+                $('#drawing').css({'cursor':'text'});
             }
             else if(this.id == 'bigText'){
                 typing = true;
                 smallTyping = false;
                 bigTyping = true;
+                $('#drawing').css({'cursor':'text'});
             }
             // Eraser size reset
             if(context.strokeStyle != '#000000'){
@@ -255,9 +284,6 @@ app.controller('DrawController', function($scope, $location, socket) {
                     context.lineWidth = 5;
                 }
             }
-            console.log('=========strokeStyle=========');
-            console.log(context.strokeStyle);
-            console.log('==================');
 
             // Zoom testing
             // if(this.id == 'zoomout' || this.id == 'zoomin'){

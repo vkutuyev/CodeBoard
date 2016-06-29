@@ -1,4 +1,4 @@
-<div class="draw" ng-controller="DrawController">
+<div id=drawview class="draw" ng-controller="DrawController">
 
         <canvas id=drawing></canvas>
 
@@ -57,23 +57,23 @@
 
         <div class="columns three">
             <div class="columns twelve">
-                <i id=erasericon class="fa fa-eraser" aria-hidden="true"></i>
+                <img id=erasericon src="./img/eraser.png" alt="Eraser" />
             </div>
             <div class="columns twelve">
-                <button id=eraser><i class="fa fa-pencil" aria-hidden="true"></i></button>
+                <button id=eraser><img src="./img/eraser2.png" alt="Eraser2" /></button>
             </div>
             <div class="columns twelve">
-                <button id=resetbtn>Clear</button>
+                <button id=resetbtn><img src="./img/whiteboard.png" alt="Whiteboard" /></button>
             </div>
         </div>
 
         <div class="columns three">
-            <div class="columns twelve">Text</div>
+            <div id=texticon class="columns twelve"><i class="fa fa-lg fa-keyboard-o" aria-hidden="true"></i></div>
             <div class="columns twelve">
                 <button id="simpText">ABC</button>
             </div>
             <div class="columns twelve">
-                <button id="bigText">(){};</button>
+                <button id="bigText"><i id=codeicon class="fa fa-lg fa-code" aria-hidden="true"></i></button>
             </div>
         </div>
 
