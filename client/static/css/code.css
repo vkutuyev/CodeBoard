@@ -1,0 +1,40 @@
+div.codeEdit div.CEResize {
+    background: transparent;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 5px;
+    position:absolute;
+}
+div.codeEdit div.CEResize:hover {
+    cursor: col-resize;
+}
+div.codeEdit {
+    top: 0px;
+    right: 0px;
+    width: 450px;
+    height: 540px;
+    background: white;
+    position: fixed;
+    opacity: 0.9;
+}
+div.codeEdit div.codeEditor {
+    top: 0px;
+    right: 0px;
+    background: white;
+    opacity: 0.9;
+    border: 1px solid rgba(152,152,152,0.9);
+    padding-top: 1em;
+    padding-left: 1em;
+}
+
+div.codeEdit div.codeEditor h1{
+    text-align:center;
+}
+div.codeEdit textarea.CETA {
+    border: none;
+    resize: none;
+    background: black;
+    color: white;
+    height: 100%;
+}

@@ -79,7 +79,26 @@
 
     </div>   <!-- End of right menu div -->
 </div>
+<div class="codeEdit" ng-controller="CodeController">
+    <div class="codeEditor">
+        <div class="row">
+            <div class="columns twelve">
+                <h1>
+                    <i class="fa fa-code" aria-hidden="true"></i>
+                </h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns twelve">
+                <textarea name="CETA" class="CETA"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="CEResize"></div>
+</div>
 <div class="chat" ng-controller="ChatController">
+
     <div class="row title" ng-click="toggleChat()">
         <div class="columns three"><b>Menu</b></div>
         <div class="columns two"><b>Chatbox</b></div>
@@ -131,4 +150,9 @@
             <input type="submit" ng-click="setName()">
         </form>
     </div>
+
+
+
+
+
 </div>
