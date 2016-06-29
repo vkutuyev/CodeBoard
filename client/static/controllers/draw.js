@@ -35,8 +35,13 @@ app.controller('DrawController', function($scope, $location, socket) {
         // variables for text inputs
         var typing = false,
             bigTyping = false,
-            smallTyping = false;
+            smallTyping = false,
+            erasing = false;
         context.textBaseline = 'top';
+
+        console.log('=========strokeStyle=========');
+        console.log(context.strokeStyle);
+        console.log('==================');
 
         $(document).on('keydown', function(e){
             if(e.keyCode == 27 && typing){          // Pressed escape
@@ -55,6 +60,12 @@ app.controller('DrawController', function($scope, $location, socket) {
                 if(pText){
                     inptext = pText;
                     var pos = $("#smalltext").position();
+                    if(context.strokeStyle == '#000000'){
+                        context.fillStyle = 'white';
+                    }
+                    else{
+                        context.fillStyle = context.strokeStyle;
+                    }
                     context.font = "15px Verdana";
                     context.fillText(inptext,pos.left+10,pos.top+10);
                 }
@@ -62,7 +73,12 @@ app.controller('DrawController', function($scope, $location, socket) {
                     inptext = cText;
                     var pos = $("#largetext").position();
                     var splitstr = inptext.split('\n');
-                    context.fillStyle = 'white';
+                    if(context.strokeStyle == '#000000'){
+                        context.fillStyle = 'white';
+                    }
+                    else{
+                        context.fillStyle = context.strokeStyle;
+                    }
                     for(var line of splitstr){
                         context.font = "15px Verdana";
                         context.fillText(line, pos.left, pos.top);
@@ -89,6 +105,12 @@ app.controller('DrawController', function($scope, $location, socket) {
         var largeText = false;
         // register mouse event handlers
         canvas.onmousedown = function(e){
+
+            if(!erasing && context.strokeStyle == '#000000'){
+                console.log('in !erasing');
+                context.strokeStyle = 'white';
+            }
+
             if(!typing){
                 if(e.which==1) {mouse.click = true; }
             }
@@ -101,6 +123,7 @@ app.controller('DrawController', function($scope, $location, socket) {
                     tf.style.top = e.clientY - 20 + 'px';
                     tf.style.left = e.clientX - 10 + 'px';
                     smallText = true;
+                    erasing = false;
                 }
                 else if(bigTyping && e.which != 3){     // Place big text area
                     var tf2 = document.getElementById('smalltext');
@@ -110,6 +133,7 @@ app.controller('DrawController', function($scope, $location, socket) {
                     tf.style.top = e.clientY + 'px';
                     tf.style.left = e.clientX + 'px';
                     largeText = true;
+                    erasing = false;
                 }
             }
             if(e.which==3) {
@@ -197,15 +221,12 @@ app.controller('DrawController', function($scope, $location, socket) {
         });
         // Pen colors/sizes, reset buttons
         $('button').on('click', function(){
-            console.log('=========strokeStyle=========');
-            console.log(context.strokeStyle);
-            console.log('==================');
-            if(this.id == 'color1'){ context.strokeStyle = 'blue'; }
-            else if(this.id == 'color2'){ context.strokeStyle = 'red'; }
-            else if(this.id == 'color3'){ context.strokeStyle = 'green'; }
-            else if(this.id == 'color4'){ context.strokeStyle = 'yellow'; }
-            else if(this.id == 'color5'){ context.strokeStyle = 'white'; }
-            else if(this.id == 'eraser'){ context.strokeStyle = 'black'; }
+            if(this.id == 'color1'){ context.strokeStyle = 'blue'; erasing = false; }
+            else if(this.id == 'color2'){ context.strokeStyle = 'red'; erasing = false; }
+            else if(this.id == 'color3'){ context.strokeStyle = 'green'; erasing = false; }
+            else if(this.id == 'color4'){ context.strokeStyle = 'yellow'; erasing = false; }
+            else if(this.id == 'color5'){ context.strokeStyle = 'white'; erasing = false; }
+            else if(this.id == 'eraser'){ context.strokeStyle = 'black'; erasing = true; }
             else if(this.id == 'width1'){
                 context.lineWidth = 0.5;
                 if(context.strokeStyle == '#000000'){ context.lineWidth = 10; }
@@ -234,6 +255,9 @@ app.controller('DrawController', function($scope, $location, socket) {
                     context.lineWidth = 5;
                 }
             }
+            console.log('=========strokeStyle=========');
+            console.log(context.strokeStyle);
+            console.log('==================');
 
             // Zoom testing
             // if(this.id == 'zoomout' || this.id == 'zoomin'){
