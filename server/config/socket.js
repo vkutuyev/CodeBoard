@@ -29,7 +29,7 @@ function Lobby ( id ) {
 
     function Generate(i) {
         i = i?i+1:1;
-        if (i >= 6) {
+        if (i >= 10) {
             return valid[Math.floor(Math.random()*valid.length)];
         }
         return Generate(i) + valid[Math.floor(Math.random()*valid.length)];

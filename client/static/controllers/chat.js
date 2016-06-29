@@ -18,21 +18,25 @@ app.controller('ChatController', function($scope, socket, $location) {
             '</div>'+'</div>';
         };
         $('div.chatCol').html(html);
+        $('div.chatCol').scrollTop($('div.chatCol')[0].scrollHeight)
     })
     $('.chatForm').keypress(function(e) {
         if (e.keyCode == 13 && !e.shiftKey) {
             e.preventDefault();
-            console.log('send', $scope.chatbox)
             if ($scope.chatbox != '' && $scope.currentName) {
                 sendMessage();
             }
         }
     })
     var sendMessage = function() {
-        var message = {name: $scope.currentName, message: $('.chatTextArea').val()};
+        var chatValid = $('.chatTextArea').val()?true:false;
+        var nameValid = $scope.currentName?true:false;
+        if ($scope.currentName && $scope.currentName != '' && chatValid && nameValid) {
+            var message = {name: $scope.currentName, message: $('.chatTextArea').val()};
 
-        socket.emit('messageSend', {lobby: $scope.lobby, message: message});
-        $('.chatTextArea').val('');
+            socket.emit('messageSend', {lobby: $scope.lobby, message: message});
+            $('.chatTextArea').val('');
+        }
     }
     if (!$scope.currentName) {
         $('.cover').height($('.chat').height());
