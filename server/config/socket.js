@@ -13,6 +13,7 @@ function Lobby ( id ) {
     this.users          = [];
     this.line_history   = [];
     this.chat_history   = [];
+    this.screenshot     = '';
 
     this.id             =  id;
     // console.log('NEW ROOM ID:',id);
@@ -150,6 +151,11 @@ module.exports = function(io) {
 
             room.line_history = [];
             io.to(room.id).emit('cleared');
+        });
+        socket.on('save_canv', function(data){
+            var room = grabRoom(data.lobby, allLobbies);
+            room.screenshot = data.canvas;
+            io.to(room.id).emit('load_canv', data.canvas);
         });
 
         ////////////////////////////////////////////////////////////

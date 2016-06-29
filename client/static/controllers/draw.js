@@ -28,6 +28,7 @@ app.controller('DrawController', function($scope, $location, socket) {
         // misc context/canvas settings
         context.lineCap = 'round';
         context.lineJoin = 'round';
+        var dataURL;
 
         // variables for text inputs
         var typing = false,
@@ -70,7 +71,14 @@ app.controller('DrawController', function($scope, $location, socket) {
                 tf2.hidden = true;
                 $('#ptextinput').val('');
                 $('#ctextinput').val('');
-            }
+                typing = false;
+
+                // Save screen to png file and send to server
+                if(pText || cText){
+                    dataURL = canvas.toDataURL();
+                    socket.emit('save_canv', { canvas: dataURL, lobby: roomId});
+                }
+            }   // End of enter key if check
         })
 
         // register mouse event handlers
@@ -190,17 +198,11 @@ app.controller('DrawController', function($scope, $location, socket) {
                 typing = true;
                 smallTyping = true;
                 bigTyping = false;
-                console.log('typing is ', typing);
-                console.log('smallTyping is ', smallTyping);
-                console.log('bigTyping is ', bigTyping);
             }
             else if(this.id == 'bigText'){
                 typing = true;
                 smallTyping = false;
                 bigTyping = true;
-                console.log('typing is ', typing);
-                console.log('smallTyping is ', smallTyping);
-                console.log('bigTyping is ', bigTyping);
             }
             // Eraser size reset
             if(context.strokeStyle != '#ffffff'){
@@ -209,5 +211,18 @@ app.controller('DrawController', function($scope, $location, socket) {
                 }
             }
         }); // End of $button.on click
+
+
+        // Loading canvas from screenshot
+        socket.on('load_canv', function(data){
+            var board = new Image;
+            board.src = data;
+            canvas.width = canvas.width;
+            board.onload = function() {
+                context.drawImage(board,0,0, window.innerWidth, window.innerHeight);
+            };
+        })
+
+
     })  // End of div.draw ready
 })
