@@ -6,7 +6,7 @@ app.config(function($routeProvider) {
         templateUrl: 'partials/lobby.html'
     })
     .when('/:id', {
-        templateUrl: 'partials/else.html'
+        templateUrl: 'partials/draw.html'
     })
     .otherwise({
         redirectTo: '/'
