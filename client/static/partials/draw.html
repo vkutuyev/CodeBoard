@@ -79,25 +79,51 @@
 
     </div>   <!-- End of right menu div -->
 </div>
-<div class=" chat" ng-controller="ChatController">
+<div class="chat" ng-controller="ChatController">
     <div class="row title" ng-click="toggleChat()">
-        <div class="columns four">
-            Chatbox
+        <div class="columns three"><b>Menu</b></div>
+        <div class="columns two"><b>Chatbox</b></div>
+        <div class="columns one"><b>Lobby:</b></div>
+        <div class="columns five" ng-bind="lobby"></div>
+        <div class="columns one toggleButton"><div><i class="fa fa-caret-square-o-down" aria-hidden="true"></i></div></div>
+    </div>
+    <div class="row">
+        <div class="columns two menu">
+            <div class="row">
+                <div class="columns twelve">
+                    <ul class="menuButtons">
+                        <li><a href="/">Home</a></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                    </ul>
+                </div>
+            </div>
         </div>
-        <div class="columns one">Lobby: </div>
-        <div class="columns four"><span ng-bind="lobby"></span></div>
-        <div class="columns three toggleButton"><div><i class="fa fa-caret-square-o-down" aria-hidden="true"></i></div></div>
-    </div>
-    <div class="row chatRow">
-        <div class="columns twelve chatCol top"></div>
-    </div>
-    <div class="row chatInputRow">
-        <div class="columns twelve chatInputCol">
-            <form class="chatForm">
-                <textarea ng-model="chatbox" class="chatTextArea"></textarea>
-            </form>
+        <div class="columns ten">
+            <!-- <div class="row title" ng-click="toggleChat()">
+                <div class="columns two">
+                    <b>Chatbox</b>
+                </div>
+                <div class="columns one"><b>Lobby:</b> </div>
+                <div class="columns six"><span ng-bind="lobby"></span></div>
+                <div class="columns three toggleButton"><div><i class="fa fa-caret-square-o-down" aria-hidden="true"></i></div></div>
+            </div> -->
+            <div class="row chatRow">
+                <div class="columns twelve chatCol top"></div>
+            </div>
+            <div class="row chatInputRow">
+                <div class="columns twelve chatInputCol">
+                    <form class="chatForm">
+                        <textarea ng-model="chatbox" class="chatTextArea"></textarea>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
+
+
+
     <div class="cover">
         Please enter a name
         <form>

@@ -135,6 +135,7 @@ module.exports = function(io) {
         ///////////////////////////////////////////////////////////
         socket.on('DrawController', function(data) {
             var room = grabRoom(data.lobby, allLobbies);
+            console.log('test room id in socket.on draw: ', room.id);
             if (!room) {
                 room = new Lobby(data.lobby);
                 allLobbies.push(room);
