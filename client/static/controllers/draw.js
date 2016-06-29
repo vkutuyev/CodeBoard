@@ -8,24 +8,7 @@ app.controller('DrawController', function($scope, $location, socket) {
         e.preventDefault();
     }, false);
 
-    // Dropdown menu sorcery
-    (function($){
-		//cache nav
-		var nav = $("#topNav");
-		//add indicators and hovers to submenu parents
-		nav.find("li").each(function() {
-			if ($(this).find("ul").length > 0) {
-				//show subnav on hover
-				$(this).mouseenter(function() {
-					$(this).find("ul").stop(true, true).slideDown();
-				});
-				//hide submenus on exit
-				$(this).mouseleave(function() {
-					$(this).find("ul").stop(true, true).slideUp();
-				});
-			}
-		});
-	})(jQuery);
+
 
     $('div.draw').ready(function() {
 
@@ -42,6 +25,7 @@ app.controller('DrawController', function($scope, $location, socket) {
         var context = canvas.getContext('2d');
         var width   = window.innerWidth;
         var height  = window.innerHeight;
+        var dragScreen = false;
         // set canvas to full browser width/height
         canvas.width = width;
         canvas.height = height;
@@ -60,6 +44,25 @@ app.controller('DrawController', function($scope, $location, socket) {
             erasing = false;
         context.textBaseline = 'top';
 
+            // Dropdown menu sorcery
+
+        		//cache nav
+        		var nav = $("#topNav");
+        		//add indicators and hovers to submenu parents
+        		nav.find("li").each(function() {
+        			if ($(this).find("ul").length > 0) {
+        				//show subnav on hover
+        				$(this).mouseenter(function() {
+                            if (!dragScreen) {
+                                $(this).find("ul").stop(true, true).slideDown();
+                            }
+        				});
+        				//hide submenus on exit
+        				$(this).mouseleave(function() {
+        					$(this).find("ul").stop(true, true).slideUp();
+        				});
+        			}
+        		});
         $(document).on('keydown', function(e){
             if(e.keyCode == 27){          // Pressed escape
                 if(typing){
@@ -114,6 +117,7 @@ app.controller('DrawController', function($scope, $location, socket) {
                 $('#ptextinput').val('');
                 $('#ctextinput').val('');
                 typing = false;
+                $('#drawing').css({'cursor':"url('../img/cursor/marker_white_sm.png'), auto"});
 
                 // Save screen to png file and send to server   HOWARD123
                 if(pText || cText){
@@ -191,7 +195,6 @@ app.controller('DrawController', function($scope, $location, socket) {
             mouse.pos.y = e.clientY / height;
             mouse.move = true;
         };
-        var dragScreen = false;
         $('#rightmenu').mousedown(function(e) {
             var curr = $(this)
             dragScreen = true;

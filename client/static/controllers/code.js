@@ -83,7 +83,7 @@ app.controller('CodeController', function($scope, $location, socket) {
         if (e.keyCode == 9) {
             //tab
             e.preventDefault();
-            $('.CETA').val( $('.CETA').val()+'      ' );
+            $('.CETA').val( $('.CETA').val()+'    ' );
             // console.log('tab')
         } else if (e.keyCode == 32) {
             //space
