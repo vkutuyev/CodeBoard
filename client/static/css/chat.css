@@ -34,6 +34,26 @@ div.chat div.row.title:hover {
 div.chat div.row.chatRow div.columns.chatCol {
     overflow: scroll;
 }
+div.chat div.row i {
+    float: right;
+}
+div.chat div.menu {
+    padding-top: 1em;
+    padding-left: 1em;
+    background: white;
+    /*box-shadow: 3px 3px 3px rgba(255, 255, 255, 0.9);*/
+    border-radius: 10px;
+    border: 1px solid rgb(231, 231, 231);
+    height: 150px;
+}
+div.chat ul.menuButtons *{
+    list-style-type: none;
+    border-bottom: rgb(193, 193, 193);
+    text-decoration: none;
+}
+div.chat ul.menuButtons li:hover *{
+    color: white;
+}
 div.cover {
     bottom:     0;
     right:      0;
