@@ -12,6 +12,8 @@ function Lobby ( id ) {
 
     this.users          = [];
     this.line_history   = [];
+    this.chat_history   = [];
+
     this.id             =  id;
     // console.log('NEW ROOM ID:',id);
 
@@ -45,6 +47,10 @@ function Lobby ( id ) {
 function User ( id ) {
     this.id     = id;
     this.name;
+}
+function Chat ( name, message ) {
+    this.name       = name;
+    this.message    = message;
 }
 ////////////////////////////////////////////////////////////
 //                    HELPER FUNCTIONS                    //
@@ -145,5 +151,20 @@ module.exports = function(io) {
             room.line_history = [];
             io.to(room.id).emit('cleared');
         });
+
+        ////////////////////////////////////////////////////////////
+        //                    CHATS CONTROLLER                    //
+        ////////////////////////////////////////////////////////////
+        socket.on('ChatController', function(data) {
+            var room = grabRoom(data.lobby, allLobbies);
+            io.to(data.lobby).emit('messageReceive', room.chat_history);
+        })
+        socket.on('messageSend', function(data) {
+            var message = new Chat( data.message.name, data.message.message );
+            var room = grabRoom(data.lobby, allLobbies);
+            room.chat_history.push(message);
+
+            io.to(data.lobby).emit('messageReceive', room.chat_history);
+        })
     })
 }

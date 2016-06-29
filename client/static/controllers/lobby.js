@@ -3,6 +3,12 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.lobbyName    = '';
     $(document).ready(function() {
         $('.displayName').focus();
+        $('.bgAnim').css('width', $(window).width());
+        $('.bgAnim').css('height', $(window).height());
+        $(window).resize(function() {
+            $('.bgAnim').css('width', $(window).width());
+            $('.bgAnim').css('height', $(window).height());
+        })
     })
 
     socket.on('lobbyStatus', function(data) {
