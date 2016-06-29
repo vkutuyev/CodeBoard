@@ -14,6 +14,7 @@ function Lobby ( id ) {
     this.line_history   = [];
     this.chat_history   = [];
     this.screenshot     = '';
+    this.savestate;
 
     this.id             =  id;
 
@@ -140,9 +141,7 @@ module.exports = function(io) {
                 socket.join(room.id);
             } else {
                 socket.join(room.id);
-                for (var i in room.line_history) {
-                    socket.emit('draw_line', room.line_history[i] );
-                }
+                socket.emit('load_canv', room.savestate)
             }
         })
         socket.on('draw_line', function (data) {
@@ -162,6 +161,10 @@ module.exports = function(io) {
             room.screenshot = data.canvas;
             io.to(room.id).emit('load_canv', data.canvas);
         });
+        socket.on('savestate', function(data) {
+            var room = grabRoom(data.lobby, allLobbies);
+            room.savestate = data.canvas;
+        })
 
         ////////////////////////////////////////////////////////////
         //                    CHATS CONTROLLER                    //
