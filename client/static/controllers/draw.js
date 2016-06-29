@@ -35,7 +35,6 @@ app.controller('DrawController', function($scope, $location, socket) {
             bigTyping = false,
             smallTyping = false;
         context.textBaseline = 'top';
-        context.font = "15px Verdana";
 
         $(document).on('keydown', function(e){
             if(e.keyCode == 27 && typing){          // Pressed escape
@@ -54,6 +53,7 @@ app.controller('DrawController', function($scope, $location, socket) {
                 if(pText){
                     inptext = pText;
                     var pos = $("#smalltext").position();
+                    context.font = "15px Verdana";
                     context.fillText(inptext,pos.left+10,pos.top+10);
                 }
                 else if(cText){
@@ -61,6 +61,7 @@ app.controller('DrawController', function($scope, $location, socket) {
                     var pos = $("#largetext").position();
                     var splitstr = inptext.split('\n');
                     for(var line of splitstr){
+                        context.font = "15px Verdana";
                         context.fillText(line, pos.left, pos.top);
                         pos.top += 20;
                     }
@@ -73,7 +74,7 @@ app.controller('DrawController', function($scope, $location, socket) {
                 $('#ctextinput').val('');
                 typing = false;
 
-                // Save screen to png file and send to server
+                // Save screen to png file and send to server   HOWARD123
                 if(pText || cText){
                     dataURL = canvas.toDataURL();
                     socket.emit('save_canv', { canvas: dataURL, lobby: roomId});
@@ -213,7 +214,7 @@ app.controller('DrawController', function($scope, $location, socket) {
         }); // End of $button.on click
 
 
-        // Loading canvas from screenshot
+        // Loading canvas from screenshot   HOWARD123
         socket.on('load_canv', function(data){
             var board = new Image;
             board.src = data;

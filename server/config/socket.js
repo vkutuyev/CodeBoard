@@ -152,7 +152,7 @@ module.exports = function(io) {
             room.line_history = [];
             io.to(room.id).emit('cleared');
         });
-        socket.on('save_canv', function(data){
+        socket.on('save_canv', function(data){  // HOWARD123
             var room = grabRoom(data.lobby, allLobbies);
             room.screenshot = data.canvas;
             io.to(room.id).emit('load_canv', data.canvas);
