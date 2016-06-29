@@ -178,7 +178,7 @@ module.exports = function(io) {
             io.to(data.lobby).emit('messageReceive', room.chat_history);
         })
         socket.on('joinChat', function(data) {
-            var message = new Chat( '',data.name+' has joined the lobby.');
+            var message = new Chat( '-----',data.name+' has joined the lobby.');
             var room = grabRoom( data.lobby, allLobbies );
             room.chat_history.push(message);
 

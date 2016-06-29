@@ -1,4 +1,4 @@
-div.container.chat {
+div.chat {
     bottom:     0;
     right:      0;
 
@@ -7,34 +7,34 @@ div.container.chat {
 
     background:     rgb(250, 250, 250);
 
-    border:         1px solid rgba(152, 152, 152, 0.7);
-    border-radius:  10px;
+    /*border:         1px solid rgba(152, 152, 152, 0.7);*/
+    box-shadow:       3px 3px 3px 3px rgba(152, 152, 152, 0.7);
 }
-div.container.chat div.chatRow div.columns.top {
+div.chat div.chatRow div.columns.top {
     border: 1px solid rgba(152, 152, 152, 0.8);
     padding: 1em;
     border-radius: 3px;
     height: 10em;
     background: white;
 }
-div.container.chat div.row.chatInputRow textarea[ng-model="chatbox"] {
+div.chat div.row.chatInputRow textarea[ng-model="chatbox"] {
     resize: none;
     border-radius: 3px;
     margin-top: 1em;
     height: 2em;
     background: white;
 }
-div.container.chat div.row.title div.columns.three.toggleButton div {
+div.chat div.row.title div.columns.three.toggleButton div {
     text-align: right;
 }
-div.container.chat div.row.title:hover {
+div.chat div.row.title:hover {
     cursor: pointer;
     color: rgb(200, 200, 200);
 }
-div.container.chat div.row.chatRow div.columns.chatCol {
+div.chat div.row.chatRow div.columns.chatCol {
     overflow: scroll;
 }
-div.cover.container {
+div.cover {
     bottom:     0;
     right:      0;
 
