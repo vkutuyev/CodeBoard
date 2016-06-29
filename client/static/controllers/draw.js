@@ -81,6 +81,7 @@ app.controller('DrawController', function($scope, $location, socket) {
                 if(pText || cText){
                     dataURL = canvas.toDataURL();
                     socket.emit('save_canv', { canvas: dataURL, lobby: roomId});
+                    socket.emit('savestate', { canvas: dataURL, lobby: roomId});
                 }
             }   // End of enter key if check
         })
@@ -119,7 +120,12 @@ app.controller('DrawController', function($scope, $location, socket) {
             }
         };
         canvas.onmouseup = function(e){
-            if(e.which==1){ mouse.click = false; }
+            if(e.which==1){
+                mouse.click = false;
+
+                dataURL = canvas.toDataURL();
+                socket.emit('savestate', { canvas: dataURL, lobby: roomId});
+            }
         };
         $(document).mouseup(function(e) {
             if (smallText) {

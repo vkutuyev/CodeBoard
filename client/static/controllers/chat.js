@@ -6,8 +6,47 @@ app.controller('ChatController', function($scope, socket, $location) {
     $scope.chatbox = '';
     socket.emit('ChatController', {lobby: $scope.lobby});
 
-    var height = parseInt($('div.chat').height())-8;
-    // $('div.chat').css('bottom', '-'+height);
+    var height = parseInt($('div.chat').height())-7;
+    $('div.chat').css('bottom', '-'+height);
+
+    $('.chat').width( $('.chat').width( parseInt($(window).width())-24  ))
+    $('.chat').css('right', -1);
+
+    $(window).resize(function(e) {
+        $('.chat').width( $('.chat').width( parseInt($(window).width())-24  ))
+        $('.chat').css('right', -1);
+            $('.cover').height( $('.chat').height() );
+            $('.cover').width( $('.chat').width() );
+            $('.cover').css('bottom', $('.chat').css('bottom'));
+            $('.cover').css('right', $('.chat').css('right'));
+    })
+
+    if (!$scope.currentName || $scope.currentName.trim().length <= 1) {
+        $('.cover').height( $('.chat').height() );
+        $('.cover').width( $('.chat').width() );
+        $('.cover').css('bottom', $('.chat').css('bottom'));
+        $('.cover').css('right', $('.chat').css('right'));
+    }
+    $('.cover').click(function(e) {
+        e.stopPropagation();
+        var bottom = parseInt($('div.cover').css('bottom'));
+        var bottom = parseInt($('div.chat').css('bottom'));
+
+        if (bottom < 0) {
+            $('div.cover').animate({bottom: 0}, 500);
+            $('div.chat').animate({bottom: 0}, 500);
+            $('.chatDisplayName').focus();
+        } else {
+            console.log('DOWN');
+            var height = parseInt($('div.cover').height())-8;
+            $('div.cover').animate({bottom: '-'+height}, 500);
+            var height = parseInt($('div.chat').height())-8;
+            $('div.chat').animate({bottom: '-'+height}, 500);
+        }
+    })
+    $('.chatDisplayName').click(function(e) {e.stopPropagation();})
+    $('.chat input').click(function(e) {e.stopPropagation();})
+
     socket.on('messageReceive', function(data) {
         log = data;
         html = '';
@@ -37,12 +76,6 @@ app.controller('ChatController', function($scope, socket, $location) {
             socket.emit('messageSend', {lobby: $scope.lobby, message: message});
             $('.chatTextArea').val('');
         }
-    }
-    if (!$scope.currentName) {
-        $('.cover').height($('.chat').height());
-        $('.cover').width($('.chat').width());
-        $('.cover').css('bottom', $('.chat').css('bottom'));
-        $('.cover').css('right', $('.chat').css('right'));
     }
 
     $scope.toggleChat = function() {
