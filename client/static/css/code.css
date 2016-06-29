@@ -37,4 +37,6 @@ div.codeEdit textarea.CETA {
     background: black;
     color: white;
     height: 100%;
+    font-family: monospace;
+    font-size: 1.1em;
 }
