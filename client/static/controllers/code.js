@@ -117,10 +117,11 @@ app.controller('CodeController', function($scope, $location, socket) {
             //;
             // console.log(';')
             code += e.key;
-        } else {
+        } else if (!e.metaKey && !e.altKey && !e.ctrlKey && e.keyCode != 20 && e.keyCode != 16 && e.keyCode != 38 && e.keyCode != 40 && e.keyCode != 37 && e.keyCode != 39){
             //All else
             code += e.key;
         }
+        console.log(e);
     })
     $('.CETA').keyup(function(e) {
         if (e.keyCode == 8) {
