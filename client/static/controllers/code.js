@@ -1,7 +1,8 @@
 app.controller('CodeController', function($scope, $location, socket) {
     var option = {
             resize: false,
-            hidden: false
+            hidden: false,
+            shft  : false
         },
         code   = '',
         lobby  = $location.$$path.substr(1);
@@ -49,6 +50,20 @@ app.controller('CodeController', function($scope, $location, socket) {
     }
 
 
+    $(document).keydown(function(e) {
+        if (e.keyCode == 16) {
+            option.shft = true;
+        }
+    })
+    $(document).keyup(function(e) {
+        if (e.keyCode == 16) {
+            option.shft = false;
+        }
+        if (e.keyCode == 9 && option.shft) {
+            $('.CETA').blur();
+            toggleTextEditor();
+        }
+    })
     $(window).resize(function() {
         $('.codeEdit').height( $(window).height() );
 
@@ -83,27 +98,37 @@ app.controller('CodeController', function($scope, $location, socket) {
         if (e.keyCode == 9) {
             //tab
             e.preventDefault();
-            $('.CETA').val( $('.CETA').val()+'    ' );
+            // $('.CETA').val( $('.CETA').val()+'    ' );
+            code += '    ';
             // console.log('tab')
         } else if (e.keyCode == 32) {
             //space
             // console.log('space')
+            code += e.key;
         } else if (e.keyCode == 13) {
             //enter
             // console.log('enter')
+            code += '\n';
         } else if (e.keyCode == 8) {
             //backspace
             // console.log(';')
+            code = $('.CETA').val();
         } else if (e.keyCode == 186) {
             //;
             // console.log(';')
+            code += e.key;
         } else {
             //All else
             code += e.key;
         }
     })
     $('.CETA').keyup(function(e) {
-        socket.emit('codeSend', {lobby: lobby, code: $('.CETA').val()});
+        if (e.keyCode == 8) {
+            //backspace
+            // console.log(';')
+            code = $('.CETA').val();
+        }
+        socket.emit('codeSend', {lobby: lobby, code: code});
     })
 
 

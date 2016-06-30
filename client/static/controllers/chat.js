@@ -1,11 +1,13 @@
 app.controller('ChatController', function($scope, socket, $location) {
-    var log         = [];
+    var log         = [],
+        option      = {
+            shft    : false
+        }
 
     $scope.lobby    = $location.$$path.substr(1);
     $scope.chatbox  = '';
     $scope.currentName;
 
-    $('.chatDisplayName').focus();
 
     socket.emit('ChatController', {lobby: $scope.lobby});
 
@@ -31,6 +33,7 @@ app.controller('ChatController', function($scope, socket, $location) {
         $('.cover').css('right', $('.chat').css('right'));
     }
     $('.cover').click(function(e) {
+        $('.chatDisplayName').focus();
         e.stopPropagation();
         var bottom = parseInt($('div.cover').css('bottom'));
         var bottom = parseInt($('div.chat').css('bottom'));
@@ -45,6 +48,21 @@ app.controller('ChatController', function($scope, socket, $location) {
             $('div.cover').animate({bottom: '-'+height}, 500);
             var height = parseInt($('div.chat').height())-32;
             $('div.chat').animate({bottom: '-'+height}, 500);
+        }
+    })
+    $(document).keydown(function(e) {
+        if (e.keyCode == 16) {
+            option.shft = true;
+        }
+    })
+    $(document).keyup(function(e) {
+        if (e.keyCode == 16) {
+            option.shft = false;
+        }
+        if (e.keyCode == 192 && option.shft && $scope.currentName) {
+            $('.chatTextArea').blur();
+            e.preventDefault();
+            $scope.toggleChat();
         }
     })
     $('.chatDisplayName').click(function(e) {e.stopPropagation();})

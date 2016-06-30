@@ -131,6 +131,9 @@ app.controller('DrawController', function($scope, $location, socket) {
         var largeText = false;
         // register mouse event handlers
         canvas.onmousedown = function(e){
+            $('canvas').focus();
+            $('.CETA').blur();
+            $('.CETA').css('-webkit-user-select', 'none');
 
             if(!erasing && context.strokeStyle == '#000000'){
                 console.log('in !erasing');
@@ -170,6 +173,7 @@ app.controller('DrawController', function($scope, $location, socket) {
             }
         };
         canvas.onmouseup = function(e){
+            $('.CETA').blur();
             if(e.which==1){
                 mouse.click = false;
 
