@@ -1,8 +1,9 @@
 app.controller('CodeController', function($scope, $location, socket) {
     var option = {
-            resize: false,
-            hidden: false,
-            shft  : false
+            resize  : false,
+            hidden  : false,
+            shft    : false,
+            ctbmove : false
         },
         code   = '',
         lobby  = $location.$$path.substr(1);
@@ -12,6 +13,11 @@ app.controller('CodeController', function($scope, $location, socket) {
 
     $('.codeEdit').height( parseInt($(window).height())- 32 );
     $('.codeEditor').height( $('.codeEdit').height()-32 );
+    $('#ctbbox').css('display', 'none');
+
+    var offscreen = parseInt($('.CEResize').width())-parseInt($('.codeEdit').width());
+    $('.codeEdit').css('right', offscreen);
+    option.hidden = true;
 
     function toggleTextEditor() {
         if (option.hidden) {
@@ -121,7 +127,6 @@ app.controller('CodeController', function($scope, $location, socket) {
             //All else
             code += e.key;
         }
-        console.log(e);
     })
     $('.CETA').keyup(function(e) {
         if (e.keyCode == 8) {
@@ -130,9 +135,47 @@ app.controller('CodeController', function($scope, $location, socket) {
             code = $('.CETA').val();
         }
         setTimeout(function () {
-            socket.emit('codeSend', {lobby: lobby, code: code});
-        }, 20);
+            socket.emit('codeSend', {lobby: lobby, code: $('.CETA').val()});
+        }, 100);
     })
+    // $('div.codeToBoard').click(function(e) {
+        // var code = $('.CETA').val();
+        // console.log(code);
+        // if (code.trim().length > 0) {
+        //
+        // }
+    // })
+    $('div.codeToBoard i').click(function(e) {
+        // Plane goes weeeeee
+        var i = $(this);
+        console.log('fly!');
+        $(this).addClass('fly');
+        setTimeout(function () {
+            i.removeClass('fly');
+        }, 3650);
+
+        // Code pass to server
+        var code = $('.CETA').val();
+        console.log(code);
+        if (code.trim().length > 0) {
+            socket.emit('code_to_board', {code: code, lobby: lobby});
+        }
+    })
+    $('#ctbmove').mousedown(function(e) {
+        option.ctbmove = true;
+        var tDiff = e.pageY-parseInt($('#ctbbox').css('top')),
+        lDiff = e.pageX-parseInt($('#ctbbox').css('left'));
+        $(document).mousemove(function(e) {
+            if (option.ctbmove) {
+                $('#ctbbox').css('top' , e.pageY-tDiff);
+                $('#ctbbox').css('left', e.pageX-lDiff);
+            }
+        })
+    })
+    $('#ctbmove').mouseup(function(e) {
+        option.ctbmove = false;
+    })
+
 
 
     socket.on('codeReceive', function(data) {
@@ -142,6 +185,17 @@ app.controller('CodeController', function($scope, $location, socket) {
         // console.log(html);
         $('.CETA').val(data.code);
     })
+
+    socket.on('code_to_board', function(data){
+        console.log('received code from server: ', data.code);
+        $('#ctbta').val(data.code);
+        $('#ctbbox').css('display', 'block');
+        $('#ctbbox').css('top', parseInt($(window).height())/2-parseInt($('#ctbbox').height()) );
+        $('#ctbbox').css('left', parseInt($(window).width())/2-parseInt($('#ctbbox').width()) );
+        $('#ctbta').height( document.getElementById('ctbta').scrollHeight );
+        $('#ctbta').width( document.getElementById('ctbta').scrollWidth );
+    })
+
 })
 /*
 backspace   : 8

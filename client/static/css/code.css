@@ -43,3 +43,50 @@ div.codeEdit textarea.CETA {
     font-family: monospace;
     font-size: 1.1em;
 }
+div.codeEdit div.codeToBoard i {
+    transform: rotate(180deg);
+}
+div.codeEdit div.codeToBoard:hover {
+    color: rgb(169, 197, 252);
+    cursor: pointer;
+}
+div.codeEdit div.codeToBoard i:hover {
+}
+@-webkit-keyframes fly {
+    10% {transform: translate3d(-300px, 0px, 0px);}
+    50% {transform: translate3d(1000px, 0px, 0px);}
+    75% {transform: rotate(180deg);}
+    80% {transform: translate3d(300px, 0px, 0px);}
+    100% {transform: translate3d(0px, 0px, 0px);}
+}
+.fly {
+    transition: transform 1s ease-in-out;
+    -webkit-animation-name:             fly;
+    -webkit-animation-duration:         5s;
+    -webkit-animation-iteration-count:  infinite;
+    -webkit-animation-timing-function:  ease;
+}
+
+#ctbbox{
+    position: fixed;
+}
+#ctbta{
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-family: monospace;
+    border: 0 none;
+    font-size: 1.5em;
+    height: auto;
+    width: 100%;
+    padding: 1em;
+}
+#ctbmove {
+    background: steelblue;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 10px;
+    width: 100%;
+    border-radius: 5px 5px 0 0;
+    cursor: move;
+}

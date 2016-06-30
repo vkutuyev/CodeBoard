@@ -209,5 +209,11 @@ module.exports = function(io) {
         socket.on('toggleCoding', function() {
             socket.emit('toggleTextEditor');
         })
+
+        socket.on('code_to_board', function(data){
+            console.log('received code in server: ', data);
+            io.to(data.lobby).emit('code_to_board', {code: data.code});
+        })
+
     })
 }
