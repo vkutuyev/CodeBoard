@@ -129,7 +129,9 @@ app.controller('CodeController', function($scope, $location, socket) {
             // console.log(';')
             code = $('.CETA').val();
         }
-        socket.emit('codeSend', {lobby: lobby, code: code});
+        setTimeout(function () {
+            socket.emit('codeSend', {lobby: lobby, code: code});
+        }, 20);
     })
 
 
