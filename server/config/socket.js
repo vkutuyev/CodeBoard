@@ -17,6 +17,7 @@ function Lobby ( id ) {
     this.screenshot     = '';
     this.savestate;
     this.codestate;
+    this.showCode = false;
 
     this.id             =  id;
 
@@ -79,18 +80,6 @@ module.exports = function(io) {
 
         socket.on('disconnect', function(socket) {
             allUsers.splice(allUsers.indexOf(user),1);
-
-            // var room;
-            // for (lobby of allLobbies) {
-            //     if (lobby.roomContains(user)) {
-            //         var index = lobby.roomContains(user);
-            //         room = lobby;
-            //         lobby.users.splice(lobby.users[index], 1);
-            //     }
-            // }
-            // if (room) {
-            //     io.to(room.id).emit('User Disconnected', room.users);
-            // }
         })
 
         ////////////////////////////////////////////////////////////
@@ -160,15 +149,24 @@ module.exports = function(io) {
             room.line_history = [];
             io.to(room.id).emit('cleared');
         });
-        socket.on('save_canv', function(data){  // HOWARD123
+        socket.on('save_canv', function(data){
             var room = grabRoom(data.lobby, allLobbies);
             room.screenshot = data.canvas;
             io.to(room.id).emit('load_canv', data.canvas);
         });
+        socket.on('get_canv', function(data){
+            var room = grabRoom(data.lobby, allLobbies);
+            io.emit('get_canv', room);
+        });
+        socket.on('load_canv', function(data){
+            var room = grabRoom(data.lobby, allLobbies);
+            room.savestate = room.screenshot;
+            io.to(room.id).emit('load_canv', room.screenshot);
+        });
         socket.on('savestate', function(data) {
             var room = grabRoom(data.lobby, allLobbies);
             room.savestate = data.canvas;
-        })
+        });
 
         ////////////////////////////////////////////////////////////
         //                    CHATS CONTROLLER                    //
@@ -221,9 +219,8 @@ module.exports = function(io) {
         })
         socket.on('codeSend', function(data) {
             var room = grabRoom(data.lobby, allLobbies);
-                room.codestate = data.code;
+            room.codestate = data.code;
 
-            // console.log(room.codestate);
             io.to(data.lobby).emit('codeReceive', {code: room.codestate});
         })
 
@@ -233,9 +230,13 @@ module.exports = function(io) {
 
         socket.on('code_to_board', function(data){
             console.log('received code in server: ', data);
+            var room = grabRoom(data.lobby, allLobbies);
+            room.showCode = true;
             io.to(data.lobby).emit('code_to_board', {code: data.code});
         })
         socket.on('clscbt', function(data) {
+            var room = grabRoom(data.lobby, allLobbies);
+            room.showCode = false;
             io.to(data.lobby).emit('closecbt');
         })
     })

@@ -51,7 +51,6 @@ app.controller('ChatController', function($scope, socket, $location) {
             $('div.chat').animate({bottom: 0}, 500);
             $('.chatDisplayName').focus();
         } else {
-            console.log('DOWN');
             var height = parseInt($('div.cover').height())-32;
             $('div.cover').animate({bottom: '-'+height}, 500);
             var height = parseInt($('div.chat').height())-32;
@@ -132,6 +131,15 @@ app.controller('ChatController', function($scope, socket, $location) {
     }
     $scope.toggleCoding = function() {
         socket.emit('toggleCoding');
+    }
+    $scope.save_canv = function(){
+        socket.emit('get_canv', {lobby: $scope.lobby});
+    }
+    $scope.load_canv = function(){
+        var r = confirm("Loading will discard all unsaved changes. Load anyway?");
+        if (r) {
+            socket.emit('load_canv', {lobby: $scope.lobby});
+        }
     }
 
 })

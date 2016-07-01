@@ -8,7 +8,7 @@ app.controller('CodeController', function($scope, $location, socket) {
         code   = '',
         lobby  = $location.$$path.substr(1);
 
-    socket.emit('CodeController', {lobby: lobby});
+    socket.emit('CodeController', {lobby: lobby, ctbbox: $('#ctbbox').css('display')});
     socket.on('toggleTextEditor', function() {toggleTextEditor();})
 
     $('.codeEdit').height( parseInt($(window).height())- 32 );
@@ -21,15 +21,11 @@ app.controller('CodeController', function($scope, $location, socket) {
 
     function toggleTextEditor() {
         if (option.hidden) {
-            console.log('currently hidden');
-            console.log(option.hidden);
             //unhide
             $('.codeEdit').animate({ right: 0 }, 500);
 
             option.hidden = false;
         } else {
-            console.log('currently shown');
-            console.log(option.hidden);
             //hide
             var offscreen = parseInt($('.CEResize').width())-parseInt($('.codeEdit').width());
             $('.codeEdit').animate({ right: offscreen }, 500);
@@ -49,7 +45,6 @@ app.controller('CodeController', function($scope, $location, socket) {
             'function'
         ];
         if ( arr[i] && purpleKeywords.includes(arr[i]) ){
-            // console.log(arr);
             return '<span class="purple">' + arr[i] + '</span> ' + cArrToHtml( arr, i+1 );
         }
         return arr[i] + ' ' + cArrToHtml( arr, i+1 );
@@ -94,7 +89,6 @@ app.controller('CodeController', function($scope, $location, socket) {
         }
     })
     $('.hide').click(function(e) {
-        console.log('HIDE');
         if (!option.hidden) {
             toggleTextEditor();
             option.hidden = true;
@@ -104,24 +98,18 @@ app.controller('CodeController', function($scope, $location, socket) {
         if (e.keyCode == 9) {
             //tab
             e.preventDefault();
-            // $('.CETA').val( $('.CETA').val()+'    ' );
             code += '    ';
-            // console.log('tab')
         } else if (e.keyCode == 32) {
             //space
-            // console.log('space')
             code += e.key;
         } else if (e.keyCode == 13) {
             //enter
-            // console.log('enter')
             code += '\n';
         } else if (e.keyCode == 8) {
             //backspace
-            // console.log(';')
             code = $('.CETA').val();
         } else if (e.keyCode == 186) {
             //;
-            // console.log(';')
             code += e.key;
         } else if (!e.metaKey && !e.altKey && !e.ctrlKey && e.keyCode != 20 && e.keyCode != 16 && e.keyCode != 38 && e.keyCode != 40 && e.keyCode != 37 && e.keyCode != 39){
             //All else
@@ -131,24 +119,15 @@ app.controller('CodeController', function($scope, $location, socket) {
     $('.CETA').keyup(function(e) {
         if (e.keyCode == 8) {
             //backspace
-            // console.log(';')
             code = $('.CETA').val();
         }
         setTimeout(function () {
             socket.emit('codeSend', {lobby: lobby, code: $('.CETA').val()});
         }, 100);
     })
-    // $('div.codeToBoard').click(function(e) {
-        // var code = $('.CETA').val();
-        // console.log(code);
-        // if (code.trim().length > 0) {
-        //
-        // }
-    // })
     $('div.codeToBoard i').click(function(e) {
         // Plane goes weeeeee
         var i = $(this);
-        console.log('fly!');
         $(this).addClass('fly');
         setTimeout(function () {
             i.removeClass('fly');
@@ -156,7 +135,6 @@ app.controller('CodeController', function($scope, $location, socket) {
 
         // Code pass to server
         var code = $('.CETA').val();
-        console.log(code);
         if (code.trim().length > 0) {
             socket.emit('code_to_board', {code: code, lobby: lobby});
         }
@@ -180,15 +158,10 @@ app.controller('CodeController', function($scope, $location, socket) {
         option.ctbmove = false;
     })
 
-
     socket.on('closecbt', function() {
         $('#ctbbox').css('display', 'none');
     })
     socket.on('codeReceive', function(data) {
-        // var codeArr = data.code.split(' '),
-        //     html    = codeArr.length>0?cArrToHtml(codeArr):'';
-
-        // console.log(html);
         $('.CETA').val(data.code);
     })
 

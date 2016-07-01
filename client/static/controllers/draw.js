@@ -44,25 +44,25 @@ app.controller('DrawController', function($scope, $location, socket) {
             erasing = false;
         context.textBaseline = 'top';
 
-            // Dropdown menu sorcery
+        // Dropdown menu sorcery
+		//cache nav
+		var nav = $("#topNav");
+		//add indicators and hovers to submenu parents
+		nav.find("li").each(function() {
+			if ($(this).find("ul").length > 0) {
+				//show subnav on hover
+				$(this).mouseenter(function() {
+                    if (!dragScreen) {
+                        $(this).find("ul").stop(true, true).slideDown();
+                    }
+				});
+				//hide submenus on exit
+				$(this).mouseleave(function() {
+					$(this).find("ul").stop(true, true).slideUp();
+				});
+			}
+		});
 
-        		//cache nav
-        		var nav = $("#topNav");
-        		//add indicators and hovers to submenu parents
-        		nav.find("li").each(function() {
-        			if ($(this).find("ul").length > 0) {
-        				//show subnav on hover
-        				$(this).mouseenter(function() {
-                            if (!dragScreen) {
-                                $(this).find("ul").stop(true, true).slideDown();
-                            }
-        				});
-        				//hide submenus on exit
-        				$(this).mouseleave(function() {
-        					$(this).find("ul").stop(true, true).slideUp();
-        				});
-        			}
-        		});
         $(document).on('keydown', function(e){
             if(e.keyCode == 27){          // Pressed escape
                 if(typing){
@@ -120,7 +120,7 @@ app.controller('DrawController', function($scope, $location, socket) {
                 typing = false;
                 $('#drawing').css({'cursor':"url('../img/cursor/marker_white_sm.png'), auto"});
 
-                // Save screen to png file and send to server   HOWARD123
+                // Save screen to png file and send to server
                 if(pText || cText){
                     dataURL = canvas.toDataURL();
                     socket.emit('save_canv', { canvas: dataURL, lobby: roomId});
@@ -137,7 +137,6 @@ app.controller('DrawController', function($scope, $location, socket) {
             $('.CETA').css('-webkit-user-select', 'none');
 
             if(!erasing && context.strokeStyle == '#000000'){
-                console.log('in !erasing');
                 context.strokeStyle = 'white';
             }
 
@@ -320,8 +319,7 @@ app.controller('DrawController', function($scope, $location, socket) {
 
         }); // End of $button.on click
 
-
-        // Loading canvas from screenshot   HOWARD123
+        // Loading canvas from screenshot
         socket.on('load_canv', function(data){
             var board = new Image;
             board.src = data;
@@ -329,8 +327,15 @@ app.controller('DrawController', function($scope, $location, socket) {
             board.onload = function() {
                 context.drawImage(board,0,0, window.innerWidth, window.innerHeight);
             };
+            $('#drawing').css({'cursor':"url('../img/cursor/marker_white_sm.png'), auto"});
+            context.strokeStyle = 'white';
+            context.lineWidth = 2;
         })
 
+        socket.on('get_canv', function(data){
+            dataURL = canvas.toDataURL();
+            socket.emit('save_canv', { canvas: dataURL, lobby: roomId});
+        })
 
     })  // End of div.draw ready
 })
