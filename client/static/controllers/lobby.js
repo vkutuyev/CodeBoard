@@ -12,9 +12,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
     })
 
     socket.on('lobbyStatus', function(data) {
-        console.log('something');
-        console.log(data);
-        console.log($location);
         $location.url('/'+data.lobby.id);
     })
 

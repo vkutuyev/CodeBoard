@@ -79,17 +79,18 @@ module.exports = function(io) {
 
         socket.on('disconnect', function(socket) {
             allUsers.splice(allUsers.indexOf(user),1);
-            var room;
-            for (lobby of allLobbies) {
-                if (lobby.roomContains(user)) {
-                    var index = lobby.roomContains(user);
-                    room = lobby;
-                    lobby.users.splice(lobby.users[index], 1);
-                }
-            }
-            if (room) {
-                io.to(room.id).emit('User Disconnected', room.users);
-            }
+
+            // var room;
+            // for (lobby of allLobbies) {
+            //     if (lobby.roomContains(user)) {
+            //         var index = lobby.roomContains(user);
+            //         room = lobby;
+            //         lobby.users.splice(lobby.users[index], 1);
+            //     }
+            // }
+            // if (room) {
+            //     io.to(room.id).emit('User Disconnected', room.users);
+            // }
         })
 
         ////////////////////////////////////////////////////////////
@@ -186,9 +187,29 @@ module.exports = function(io) {
         socket.on('joinChat', function(data) {
             var message = new Chat( '-----',data.name+' has joined the lobby.');
             var room = grabRoom( data.lobby, allLobbies );
+            var found = false;
+            for(var user of room.users){
+                if(user.id == '/#'+data.id){
+                    found = true;
+                    user.name = data.name;
+                }
+            }
+            if(!found){
+                room.users.push({id: '/#'+data.id, name: data.name});
+            }
             room.chat_history.push(message);
 
             io.to(data.lobby).emit('messageReceive', room.chat_history);
+        })
+        socket.on('left_chat', function(data){
+            if(data.name){
+                var message = new Chat('-----',data.name+' has left the lobby.')
+                var room = grabRoom( data.lobby, allLobbies );
+
+                room.chat_history.push(message);
+
+                io.to(data.lobby).emit('messageReceive', room.chat_history);
+            }
         })
 
         ////////////////////////////////////////////////////////////

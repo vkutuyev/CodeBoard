@@ -34,8 +34,8 @@ app.controller('DrawController', function($scope, $location, socket) {
         context.lineJoin = 'round';
         context.strokeStyle = 'white';
         context.fillStyle = 'white';
+        context.lineWidth = 2;
         var dataURL;
-        // var zoomScale = 1;
 
         // variables for text inputs
         var typing = false,
@@ -77,6 +77,7 @@ app.controller('DrawController', function($scope, $location, socket) {
                 $('#drawing').css({'cursor':"url('../img/cursor/marker_white_sm.png'), auto"});
                 erasing = false;
                 context.lineWidth = 2;
+                context.strokeStyle = 'white';
             }
             if(e.keyCode == 13 && typing && !e.shiftKey){      // Pressed enter
                 var inptext, posX, posY;
@@ -249,6 +250,9 @@ app.controller('DrawController', function($scope, $location, socket) {
         });
         socket.on('cleared', function(){
             canvas.width = canvas.width;
+            $('#drawing').css({'cursor':"url('../img/cursor/marker_white_sm.png'), auto"});
+            context.strokeStyle = 'white';
+            context.lineWidth = 2;
         });
         // Pen colors/sizes, reset buttons
         $('button').on('click', function(){
@@ -313,25 +317,6 @@ app.controller('DrawController', function($scope, $location, socket) {
                     context.lineWidth = 5;
                 }
             }
-
-            // Zoom testing
-            // if(this.id == 'zoomout' || this.id == 'zoomin'){
-            //     var dataURL = canvas.toDataURL();
-            //     var board = new Image;
-            //     if(this.id == 'zoomout'){
-            //         if(zoomScale > 1){ zoomScale = 1; }
-            //         zoomScale *= .95;
-            //     }
-            //     else{
-            //         if(zoomScale < 1){ zoomScale = 1; }
-            //         zoomScale *= 1.05;
-            //     }
-            //     board.src = dataURL;
-            //     canvas.width = canvas.width;
-            //     board.onload = function() {
-            //         context.drawImage(board,0,0, window.innerWidth*zoomScale, window.innerHeight*zoomScale);
-            //     };
-            // }
 
         }); // End of $button.on click
 

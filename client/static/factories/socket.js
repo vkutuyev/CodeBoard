@@ -18,6 +18,9 @@ app.factory('socket', function ($rootScope) {
           }
         });
       })
+    },
+    currentId: function(){
+        return socket.id;
     }
   };
 });

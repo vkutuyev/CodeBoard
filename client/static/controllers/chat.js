@@ -1,4 +1,12 @@
 app.controller('ChatController', function($scope, socket, $location) {
+
+    // Send user info on disconnect
+    $(window).on('beforeunload', function(){
+        if($scope.currentName){
+            socket.emit('left_chat', {name: $scope.currentName, lobby: $scope.lobby});
+        }
+    });
+
     var log         = [],
         option      = {
             shft    : false
@@ -117,7 +125,7 @@ app.controller('ChatController', function($scope, socket, $location) {
         if ($scope.displayName && $scope.displayName.trim().length > 1) {
             $scope.currentName = $scope.displayName;
             //Send User
-            socket.emit('joinChat', {name: $scope.currentName, lobby: $scope.lobby});
+            socket.emit('joinChat', {id: socket.currentId(), name: $scope.currentName, lobby: $scope.lobby});
             $('.cover').hide();
             $('.chatTextArea').focus();
         }
