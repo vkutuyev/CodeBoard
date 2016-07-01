@@ -162,22 +162,28 @@ app.controller('CodeController', function($scope, $location, socket) {
         }
     })
     $('#ctbmove').mousedown(function(e) {
-        option.ctbmove = true;
-        var tDiff = e.pageY-parseInt($('#ctbbox').css('top')),
-        lDiff = e.pageX-parseInt($('#ctbbox').css('left'));
-        $(document).mousemove(function(e) {
-            if (option.ctbmove) {
-                $('#ctbbox').css('top' , e.pageY-tDiff);
-                $('#ctbbox').css('left', e.pageX-lDiff);
-            }
-        })
+        if (option.shft) {
+            socket.emit('clscbt', {lobby: lobby});
+        } else {
+            option.ctbmove = true;
+            var tDiff = e.pageY-parseInt($('#ctbbox').css('top')),
+            lDiff = e.pageX-parseInt($('#ctbbox').css('left'));
+            $(document).mousemove(function(e) {
+                if (option.ctbmove) {
+                    $('#ctbbox').css('top' , e.pageY-tDiff);
+                    $('#ctbbox').css('left', e.pageX-lDiff);
+                }
+            })
+        }
     })
     $('#ctbmove').mouseup(function(e) {
         option.ctbmove = false;
     })
 
 
-
+    socket.on('closecbt', function() {
+        $('#ctbbox').css('display', 'none');
+    })
     socket.on('codeReceive', function(data) {
         // var codeArr = data.code.split(' '),
         //     html    = codeArr.length>0?cArrToHtml(codeArr):'';
