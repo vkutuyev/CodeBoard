@@ -3,7 +3,9 @@ app.controller('CodeController', function($scope, $location, socket) {
             resize  : false,
             hidden  : false,
             shft    : false,
-            ctbmove : false
+            ctbmove : false,
+            typing  : false,
+            tDelay  : 0
         },
         code   = '',
         lobby  = $location.$$path.substr(1);
@@ -55,6 +57,8 @@ app.controller('CodeController', function($scope, $location, socket) {
         if (e.keyCode == 16) {
             option.shft = true;
         }
+        option.typing = true;
+        tDelay = 0;
     })
     $(document).keyup(function(e) {
         if (e.keyCode == 16) {
@@ -67,7 +71,6 @@ app.controller('CodeController', function($scope, $location, socket) {
     })
     $(window).resize(function() {
         $('.codeEdit').height( $(window).height() );
-
     })
     $('.CEResize').mousedown(function(e) {
         if (!option.hidden) {
