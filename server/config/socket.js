@@ -235,6 +235,8 @@ module.exports = function(io) {
             console.log('received code in server: ', data);
             io.to(data.lobby).emit('code_to_board', {code: data.code});
         })
-
+        socket.on('clscbt', function(data) {
+            io.to(data.lobby).emit('closecbt');
+        })
     })
 }
