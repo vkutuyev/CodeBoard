@@ -145,8 +145,8 @@ module.exports = function(io) {
         });
         socket.on('clear_board', function(data){
             var room = grabRoom(data.lobby, allLobbies);
-
             room.line_history = [];
+            room.savestate = '';
             io.to(room.id).emit('cleared');
         });
         socket.on('save_canv', function(data){
