@@ -4,14 +4,14 @@
 
     <div class="row">
         <div class="columns four offset-by-four">
-            <h1>CodeBoard</h1>
+            <h1 id=projname>CodeBoard</h1>
         </div>
     </div>
     <div class="row option">
         <div class="columns two offset-by-four createCol">
-            <input type="submit" value="Create" ng-click="createLobby()" class="createButton">
+            <input id=createbtn type="submit" value="Create" ng-click="createLobby()" class="createButton">
         </div>
-        <div class="columns two joinCol">
+        <div class="columns two joinCol" id=joinrmbox>
             <div class="row">
                 <div class="columns twelve">
                     <input type="text" placeholder="Lobby ID" class="lobbyName lobbyInput" ng-model="lobbyName">
