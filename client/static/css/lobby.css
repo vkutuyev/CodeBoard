@@ -46,4 +46,21 @@ div.container.lobby {
     box-shadow: 0px 0px 20px black;
 }
 
+#nameDiv{
+    text-shadow: 0px 0px 0px !important;
+    color: rgb(105, 112, 110);
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    top: 75vh;
+    text-align: center;
+    background: white;
+    box-shadow: 0px 0px 20px black;
+    border-radius: 5px;
+    padding: 10px;
+    width: 20%;
+}
+
 /*# sourceMappingURL=lobby.css.map */
