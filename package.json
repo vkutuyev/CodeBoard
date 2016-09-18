@@ -1,7 +1,7 @@
 {
-  "name": "SocketRoom",
+  "name": "CodeBoard",
   "version": "1.0.0",
-  "description": "Description goes here. This version contains angular & angular route support.",
+  "description": "Online realtime whiteboard/code-sharing app.",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

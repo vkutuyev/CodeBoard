@@ -10,15 +10,14 @@ var app             = express();
 app.use(bodyParser.json());
 app.use(express.static(__dirname + "/client/static"));
 
-//Routes require
-// require('./server/config/mongoose.js');
-require('./server/config/routes.js')(app)
+//Routes
+require('./server/config/routes.js')(app);
 
 ////////////////////////////////////////////////////////////
 //                     Listen to Port                     //
 ////////////////////////////////////////////////////////////
-var port = 7000;
-var server = app.listen(port, function() {
+var port    = 7000;
+var server  = app.listen(port, function() {
     console.log("Hey, Listen! (ROOOOM "+port+")");
 })
 ////////////////////////////////////////////////////////////

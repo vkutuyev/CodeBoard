@@ -22,8 +22,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
 
         $scope.displayName = '';
         $scope.lobbyName = '';
-
-        // $location.url('/asdf')
     }
     $scope.joinLobby = function() {
         console.log('User',$scope.displayName,'joined lobby:',$scope.lobbyName)

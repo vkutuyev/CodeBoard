@@ -1,26 +1,19 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title></title>
+        <title>CodeBoard</title>
         <!-- Pre-Made Library/Frameworks -->
         <link rel="stylesheet" href="./css/skeleton.css">
         <link rel="stylesheet" href="./css/font-awesome.min.css">
         <link rel="stylesheet" href="./css/ng-animate.css">
-
         <!-- Our css files -->
         <link rel="stylesheet" href="./css/all.css">
         <link rel="stylesheet" href="./css/lobby.css">
         <link rel="stylesheet" href="./css/draw.css">
         <link rel="stylesheet" href="./css/chat.css">
         <link rel="stylesheet" href="./css/code.css">
-
-        <style>
-        body{
-            background-color: black;
-        }
-        </style>
-
     </head>
+
     <body ng-app='app'>
 
         <div ng-view=""></div>
@@ -30,16 +23,13 @@
         <!-- Angular src -->
         <script src="./js/angular.min.js"></script>
         <script src="./js/angular-route.min.js"></script>
-        <script src="./js/angular-animate.min.js" charset="utf-8"></script>
-
+        <script src="./js/angular-animate.min.js"></script>
         <!-- Sockets -->
         <script src="./js/socket.io.min.js"></script>
         <!-- Angular Config -->
         <script src="./config/config.js"></script>
         <!-- Factories -->
         <script src="./factories/socket.js"></script>
-        <!-- <script src="./factories/chat.js"></script> -->
-
         <!-- Controllers -->
         <script src="./controllers/lobby.js"></script>
         <script src="./controllers/draw.js"></script>

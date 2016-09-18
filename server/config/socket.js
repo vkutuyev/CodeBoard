@@ -4,7 +4,6 @@
 var allLobbies  = [],
     allUsers    = [];
 
-//console.log( io.sockets.adapter.rooms );
 ////////////////////////////////////////////////////////////
 //                   CLASS DECLARATIONS                   //
 ////////////////////////////////////////////////////////////
@@ -17,8 +16,7 @@ function Lobby ( id ) {
     this.screenshot     = '';
     this.savestate;
     this.codestate;
-    this.showCode = false;
-
+    this.showCode       = false;
     this.id             =  id;
 
     if (!id) {

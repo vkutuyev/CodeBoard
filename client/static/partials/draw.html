@@ -1,80 +1,49 @@
 <div id=drawview class="draw" ng-controller="DrawController">
 
+    <!--- Whiteboard canvas --->
+    <canvas id=drawing></canvas>
+
+    <!--- Right-click menu --->
     <div id="rightmenu" hidden=true>
         <nav id="topNav">
             <ul>
-
-                <li class=mainitem> <!--- toolbar item 1 --->
+                <li class=mainitem> <!--- Colors --->
                     <img id=painticon src="./img/paintcolor.png" alt="Color">
                     <ul class=dropitem>
-                        <li>
-                            <button id=color1><span class=coloricon>●</span></button>
-                        </li>
-                        <li>
-                            <button id=color2><span class=coloricon>●</span></button>
-                        </li>
-                        <li>
-                            <button id=color3><span class=coloricon>●</span></button>
-                        </li>
-                        <li>
-                            <button id=color4><span class=coloricon>●</span></button>
-                        </li>
-                        <li>
-                            <button id=color5><span class=coloricon>●</span></button>
-                        </li>
+                        <li><button id=color1><span class=coloricon>●</span></button></li>
+                        <li><button id=color2><span class=coloricon>●</span></button></li>
+                        <li><button id=color3><span class=coloricon>●</span></button></li>
+                        <li><button id=color4><span class=coloricon>●</span></button></li>
+                        <li><button id=color5><span class=coloricon>●</span></button></li>
                     </ul>
-                </li> <!--- end of item 1 --->
-
-                <li class=mainitem>
+                </li>
+                <li class=mainitem> <!--- Widths --->
                     <i id=brushicon class="fa fa-paint-brush" aria-hidden="true"></i>
                     <ul class=dropitem>
-                        <li>
-                            <button id=width1>|</button>
-                        </li>
-                        <li>
-                            <button id=width2>|</button>
-                        </li>
-                        <li>
-                            <button id=width3>|</button>
-                        </li>
+                        <li><button id=width1>|</button></li>
+                        <li><button id=width2>|</button></li>
+                        <li><button id=width3>|</button></li>
                     </ul>
                 </li>
-
-                <li class=mainitem>
+                <li class=mainitem> <!--- Erasers --->
                     <img id=erasericon src="./img/eraser.png" alt="Eraser" />
                     <ul class=dropitem>
-                        <li>
-                            <button id=eraser><img src="./img/eraser2.png" alt="Eraser2" /></button>
-                        </li>
-                        <li>
-                            <button id=resetbtn><img src="./img/whiteboard.png" alt="Whiteboard" /></button>
-                        </li>
+                        <li><button id=eraser><img src="./img/eraser2.png" alt="Eraser2" /></button></li>
+                        <li><button id=resetbtn><img src="./img/whiteboard.png" alt="Whiteboard" /></button></li>
                     </ul>
                 </li>
-
-                <li class=mainitem>
+                <li class=mainitem> <!--- Text/Code --->
                     <i id=texticon class="fa fa-lg fa-keyboard-o" aria-hidden="true"></i>
                     <ul class=dropitem>
-                        <li>
-                            <button id="simpText">ABC</button>
-                        </li>
-                        <li>
-                            <button id="bigText"><i id=codeicon class="fa fa-lg fa-code" aria-hidden="true"></i></button>
-                        </li>
+                        <li><button id="simpText">ABC</button></li>
+                        <li><button id="bigText"><i id=codeicon class="fa fa-lg fa-code" aria-hidden="true"></i></button></li>
                     </ul>
                 </li>
-
             </ul>
         </nav>
-    </div>
+    </div> <!--- End of right-click menu --->
 
-        <canvas id=drawing></canvas>
-
-    <!-- <div id="zoombtns">
-        <button id=zoomin>+</button>
-        <button id=zoomout>-</button>
-    </div> -->
-
+    <!--- Coding text areas --->
     <div id="smalltext" hidden=true>
         <input id='ptextinput' type="text" placeholder='Simple text...' autocomplete='off' spellcheck='false' autocorrect='off'>
     </div>
@@ -82,7 +51,7 @@
         <textarea id='ctextinput' placeholder='Enter code...' autocomplete='off' spellcheck='false' autocorrect='off'></textarea>
     </div>
 
-</div>
+</div> <!--- End of whiteboard div --->
 
 
 <div class="codeEdit" ng-controller="CodeController">
@@ -113,8 +82,19 @@
         <div id="ctbmove"></div>
         <textarea id=ctbta></textarea>
     </div>
-</div>
+</div> <!--- End of side coding div --->
+
+
 <div class="chat" ng-controller="ChatController">
+
+    <div class="cover">
+        Click here to chat<br><br>
+        Please enter a name<br><br>
+        <form>
+            <input type="text" ng-model="displayName" class="chatDisplayName">
+            <input type="submit" ng-click="setName()">
+        </form>
+    </div>
 
     <div class="row title" ng-click="toggleChat()">
         <div class="columns three"><b>Menu</b></div>
@@ -150,23 +130,4 @@
         </div>
     </div>
 
-
-
-    <div class="cover">
-        Click here to chat
-        <br>
-        <br>
-        Please enter a name
-        <br>
-        <br>
-        <form>
-            <input type="text" ng-model="displayName" class="chatDisplayName">
-            <input type="submit" ng-click="setName()">
-        </form>
-    </div>
-
-
-
-    <!-- Code to Board text area -->
-
-</div>
+</div> <!--- End of chat div --->

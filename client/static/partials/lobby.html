@@ -1,6 +1,7 @@
 <div class="container lobby" ng-controller="LobbyController">
 
-    <canvas class='bgAnim' id='null'></canvas>
+    <!--- Background circles canvas --->
+    <canvas class='bgAnim' id='bgCanvas'></canvas>
 
     <div class="row">
         <div class="columns four offset-by-four">
@@ -25,13 +26,14 @@
         </div>
     </div>
 
+    <!--- Created by box --->
     <div id='nameDiv'>
         <h6 style='margin-bottom: 0px; font-size: 0.8em'>Created By</h6>
         <h6 style='margin-bottom: 0px; font-size: 0.8em'><a href='http://howardjiang.com' target='_blank' style='text-decoration: none'>Howard Jiang</a>&nbsp;&nbsp;||&nbsp;&nbsp;<a href='http://vkutuyev.com' target='_blank' style='text-decoration: none'>Vadim Kutuyev</h6>
     </div>
 
     <!-- Background scripts -->
-    <script type='text/paperscript' src='./js/background.js'></script>
+    <script type='text/paperscript' src='./js/background.js' canvas='bgCanvas'></script>
     <script src="./js/paper-full.min.js"></script>
 
 </div>
