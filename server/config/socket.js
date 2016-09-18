@@ -237,5 +237,13 @@ module.exports = function(io) {
             room.showCode = false;
             io.to(data.lobby).emit('closecbt');
         })
+
+        ////////////////////////////////////////////////////////////
+        //                    ADMIN CONTROLLER                    //
+        ////////////////////////////////////////////////////////////
+        socket.on('adminInfo', function() {
+            socket.emit('adminInfo', {lobbies: allLobbies, users: allUsers});
+        })
+
     })
 }
