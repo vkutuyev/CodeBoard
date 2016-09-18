@@ -16,18 +16,12 @@ app.controller('LobbyController', function($scope, $location, socket) {
     })
 
     $scope.createLobby = function() {
-        console.log('User',$scope.displayName,'created lobby:',$scope.lobbyName)
-
-        socket.emit('createLobby', {lobby: $scope.lobbyName, user: $scope.displayName})
-
+        socket.emit('createLobby', {lobby: $scope.lobbyName, user: $scope.displayName});
         $scope.displayName = '';
         $scope.lobbyName = '';
     }
     $scope.joinLobby = function() {
-        console.log('User',$scope.displayName,'joined lobby:',$scope.lobbyName)
-
-        socket.emit('joinLobby', {lobby: $scope.lobbyName, user: $scope.displayName})
-
+        socket.emit('joinLobby', {lobby: $scope.lobbyName, user: $scope.displayName});
         $scope.displayName = '';
         $scope.lobbyName = '';
     }

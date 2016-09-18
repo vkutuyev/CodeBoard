@@ -8,8 +8,6 @@ app.controller('DrawController', function($scope, $location, socket) {
         e.preventDefault();
     }, false);
 
-
-
     $('div.draw').ready(function() {
 
         $('#drawing').css({'cursor':"url('../img/cursor/marker_white_sm.png'), auto"});
@@ -21,31 +19,32 @@ app.controller('DrawController', function($scope, $location, socket) {
             pos_prev: false
         };
         // get canvas element and create context
-        var canvas  = document.getElementById('drawing');
-        var context = canvas.getContext('2d');
-        var width   = window.innerWidth;
-        var height  = window.innerHeight;
-        var dragScreen = false;
+        var canvas      = document.getElementById('drawing');
+        var context     = canvas.getContext('2d');
+        var width       = window.innerWidth;
+        var height      = window.innerHeight;
+        var dragScreen  = false;
         // set canvas to full browser width/height
-        canvas.width = width;
-        canvas.height = height;
+        canvas.width    = width;
+        canvas.height   = height;
         // misc context/canvas settings
-        context.lineCap = 'round';
-        context.lineJoin = 'round';
+        context.lineCap     = 'round';
+        context.lineJoin    = 'round';
         context.strokeStyle = 'white';
-        context.fillStyle = 'white';
-        context.lineWidth = 2;
+        context.fillStyle   = 'white';
+        context.lineWidth   = 2;
         var dataURL;
 
         // variables for text inputs
-        var typing = false,
-            bigTyping = false,
-            smallTyping = false,
-            erasing = false;
+        var typing           = false,
+            bigTyping        = false,
+            smallTyping      = false,
+            erasing          = false,
+            smallText        = false,
+            largeText        = false;
         context.textBaseline = 'top';
 
-        // Dropdown menu sorcery
-		//cache nav
+        // Dropdown menu
 		var nav = $("#topNav");
 		//add indicators and hovers to submenu parents
 		nav.find("li").each(function() {
@@ -63,8 +62,36 @@ app.controller('DrawController', function($scope, $location, socket) {
 			}
 		});
 
+        // draw line received from server
+        socket.on('draw_line', function (data) {
+            var line = data.line;
+            context.beginPath();
+            context.moveTo(line[0].x * width, line[0].y * height);
+            context.lineTo(line[1].x * width, line[1].y * height);
+            context.strokeStyle = data.lineColor;
+            context.lineWidth = data.penWidth;
+            context.lineCap = 'round';
+            context.lineJoin = 'round';
+            context.stroke();
+        });
+
+        // main loop, running every 25ms
+        function mainLoop() {
+            // check if the user is drawing
+            if (mouse.click && mouse.move && mouse.pos_prev) {
+                // send line to to the server
+                socket.emit('draw_line', { path:{ line: [ mouse.pos, mouse.pos_prev ], lineColor: context.strokeStyle, penWidth: context.lineWidth }, lobby: roomId});
+                mouse.move = false;
+            }
+            mouse.pos_prev = {x: mouse.pos.x, y: mouse.pos.y};
+            setTimeout(mainLoop, 25);
+        }
+        mainLoop();
+
+        // Key press event handlers
         $(document).on('keydown', function(e){
-            if(e.keyCode == 27){          // Pressed escape
+            // Pressed escape
+            if(e.keyCode == 27){
                 if(typing){
                     var tf = document.getElementById('smalltext');
                     var tf2 = document.getElementById('largetext');
@@ -79,7 +106,8 @@ app.controller('DrawController', function($scope, $location, socket) {
                 context.lineWidth = 2;
                 context.strokeStyle = 'white';
             }
-            if(e.keyCode == 13 && typing && !e.shiftKey){      // Pressed enter
+            // Pressed enter
+            if(e.keyCode == 13 && typing && !e.shiftKey){
                 var inptext, posX, posY;
                 var pText = $('#ptextinput').val();
                 var cText = $('#ctextinput').val();
@@ -128,9 +156,8 @@ app.controller('DrawController', function($scope, $location, socket) {
                 }
             }   // End of enter key if check
         })
-        var smallText = false;
-        var largeText = false;
-        // register mouse event handlers
+
+        // Mouse event handlers
         canvas.onmousedown = function(e){
             $('canvas').focus();
             $('.CETA').blur();
@@ -219,30 +246,7 @@ app.controller('DrawController', function($scope, $location, socket) {
                 dragScreen = false;
             }
         })
-        // draw line received from server
-        socket.on('draw_line', function (data) {
-            var line = data.line;
-            context.beginPath();
-            context.moveTo(line[0].x * width, line[0].y * height);
-            context.lineTo(line[1].x * width, line[1].y * height);
-            context.strokeStyle = data.lineColor;
-            context.lineWidth = data.penWidth;
-            context.lineCap = 'round';
-            context.lineJoin = 'round';
-            context.stroke();
-        });
-        // main loop, running every 25ms
-        function mainLoop() {
-            // check if the user is drawing
-            if (mouse.click && mouse.move && mouse.pos_prev) {
-                // send line to to the server
-                socket.emit('draw_line', { path:{ line: [ mouse.pos, mouse.pos_prev ], lineColor: context.strokeStyle, penWidth: context.lineWidth }, lobby: roomId});
-                mouse.move = false;
-            }
-            mouse.pos_prev = {x: mouse.pos.x, y: mouse.pos.y};
-            setTimeout(mainLoop, 25);
-        }
-        mainLoop();
+
         // reset function to clear canvas
         $('#resetbtn').on('click', function(){
             socket.emit('clear_board', {lobby: roomId});
@@ -253,9 +257,9 @@ app.controller('DrawController', function($scope, $location, socket) {
             context.strokeStyle = 'white';
             context.lineWidth = 2;
         });
+
         // Pen colors/sizes, reset buttons
         $('button').on('click', function(){
-
             if(this.id == 'color1'){
                 context.strokeStyle = 'blue';
                 erasing = false;

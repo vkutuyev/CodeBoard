@@ -10,12 +10,11 @@ app.controller('ChatController', function($scope, socket, $location) {
     var log         = [],
         option      = {
             shft    : false
-        }
+        };
 
     $scope.lobby    = $location.$$path.substr(1);
     $scope.chatbox  = '';
     $scope.currentName;
-
 
     socket.emit('ChatController', {lobby: $scope.lobby});
 
