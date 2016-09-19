@@ -92,7 +92,14 @@ app.controller('CodeController', function($scope, $location, socket) {
             code += e.key;
         } else if (e.keyCode == 8) {
             //backspace
-            code = $('.CETA').val();
+            if(this.selectionStart == this.selectionEnd){
+                e.preventDefault();
+                code = code.substring(0,code.length-1);
+                $('.CETA').val(code);
+            }
+            else{
+                code = $('.CETA').val();
+            }
         } else if (e.keyCode == 13) {
             //enter
             code += '\n';
@@ -109,6 +116,9 @@ app.controller('CodeController', function($scope, $location, socket) {
             //backspace
             code = $('.CETA').val();
         }
+        console.log('=========socket.currentId()=========');
+        console.log(socket.currentId());
+        console.log('=========socket.currentId()=========');
         setTimeout(function () {
             socket.emit('codeSend', {lobby: lobby, code: code, id: socket.currentId()});
         }, 100);
@@ -155,8 +165,10 @@ app.controller('CodeController', function($scope, $location, socket) {
             // Clear textarea if code sent is empty (ie: everything was erased)
             if(!data.code){
                 $('.CETA').val('');
+                code = '';
             }
             else{
+                code = data.code;
                 $('.CETA').val(data.code);
             }
         }
