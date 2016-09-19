@@ -75,7 +75,12 @@ app.controller('AdminController', function($scope, socket, $location){
 
     // Join displayed lobby
     $scope.join = function(id) {
-        socket.emit('joinLobby', {lobby: id, user: ''});
+        if(!id){
+            $location.path('/');
+        }
+        else{
+            socket.emit('joinLobby', {lobby: id, user: ''});
+        }
     }
     // Delete displayed lobby
     $scope.delete = function(id) {
