@@ -218,7 +218,7 @@ module.exports = function(io) {
             var room = grabRoom(data.lobby, allLobbies);
             room.codestate = data.code;
 
-            io.to(data.lobby).emit('codeReceive', {code: room.codestate});
+            io.to(data.lobby).emit('codeReceive', {code: room.codestate, id: data.id});
         })
 
         socket.on('toggleCoding', function() {

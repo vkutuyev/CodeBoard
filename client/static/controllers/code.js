@@ -90,9 +90,6 @@ app.controller('CodeController', function($scope, $location, socket) {
         } else if (e.keyCode == 32) {
             //space
             code += e.key;
-        // } else if (e.keyCode == 8) {
-        //     //backspace
-        //     code = $('.CETA').val();
         } else if (e.keyCode == 13) {
             //enter
             code += '\n';
@@ -110,7 +107,7 @@ app.controller('CodeController', function($scope, $location, socket) {
             code = $('.CETA').val();
         }
         setTimeout(function () {
-            socket.emit('codeSend', {lobby: lobby, code: code});
+            socket.emit('codeSend', {lobby: lobby, code: code, id: socket.currentId()});
         }, 100);
     })
     $('div.codeToBoard i').click(function(e) {
@@ -150,13 +147,15 @@ app.controller('CodeController', function($scope, $location, socket) {
         $('#ctbbox').css('display', 'none');
     })
     socket.on('codeReceive', function(data) {
-        // Clear textarea if code sent is empty (ie: everything was erased)
-        if(!data.code){
-            $('.CETA').val('');
-        }
-        // Only update code if it's different
-        if(data.code != code){
-            $('.CETA').val(data.code);
+        // Only update local code if someone else typed
+        if(data.id != socket.currentId()){
+            // Clear textarea if code sent is empty (ie: everything was erased)
+            if(!data.code){
+                $('.CETA').val('');
+            }
+            else{
+                $('.CETA').val(data.code);
+            }
         }
     })
 
