@@ -241,8 +241,10 @@ module.exports = function(io) {
         ////////////////////////////////////////////////////////////
         //                    ADMIN CONTROLLER                    //
         ////////////////////////////////////////////////////////////
-        socket.on('adminInfo', function() {
-            socket.emit('adminInfo', {lobbies: allLobbies, users: allUsers});
+        socket.on('adminPW', function(pass) {
+            if(pass === 'rundown'){
+                socket.emit('adminInfo', {lobbies: allLobbies});
+            }
         })
 
     })

@@ -1,3 +1,29 @@
-<div ng-controller="AdminController">
-    Admin
+<div id=adminPan ng-controller="AdminController">
+
+    <div class='row' ng-if='!admin'>
+        <input id=adminpw type="password" ng-model=pass ng-change="checkAdmin(pass)">
+    </div>
+
+    <div id=lobbyInfo class='row' ng-if='admin'>
+        <div id=lobbyListBox class='two columns offset-by-one'>
+            <h1>Lobbies:</h1>
+            <div id='lobbyList'>
+                <div class='lobbyID row' ng-repeat='lobby in lobbies' ng-click='showInfo(this)'>{{lobby.id}}</div>
+            </div>
+        </div>
+        <div id=adminInfoBox class='eight columns offset-by-one' ng-show=clicked>
+            <div id=adminBoard class='row'>
+                <canvas id=adminCanv></canvas>
+            </div>
+            <div class='row'>
+                <div id=adminChat class='eight columns'>
+                    Chat goes here
+                </div>
+                <div id=adminAction class='four columns'>
+                    Actions go here
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>

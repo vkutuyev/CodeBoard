@@ -1,0 +1,34 @@
+#adminPan {
+    color: white !important;
+    height: 500px;
+}
+
+#adminpw {
+    width: 150px;
+    height: 38px;
+    margin-top: calc(50vh - 19px);
+    margin-left: calc(50vw - 75px);
+    text-align: center;
+}
+
+#lobbyInfo {
+    margin-top: 5vh;
+}
+
+#lobbyList {
+    background: steelblue;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.lobbyID {
+    text-align: center;
+    margin-bottom: 5px;
+    max-width: 25vw;
+}
+
+#adminBoard {
+    margin-bottom: 25px;
+    height: 75vh;
+    width: 66vw;
+}
