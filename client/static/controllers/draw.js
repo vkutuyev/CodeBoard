@@ -1,7 +1,9 @@
 app.controller('DrawController', function($scope, $location, socket) {
 
     var roomId = $location.$$path.substr(1);
-    socket.emit('DrawController', {lobby: roomId});
+    if(roomId != 'admin'){
+        socket.emit('DrawController', {lobby: roomId});
+    }
 
     // Block default right-click menu
     document.addEventListener("contextmenu", function(e){

@@ -125,7 +125,6 @@ module.exports = function(io) {
         ///////////////////////////////////////////////////////////
         socket.on('DrawController', function(data) {
             var room = grabRoom(data.lobby, allLobbies);
-            console.log('test room id in socket.on draw: ', room.id);
             if (!room) {
                 room = new Lobby(data.lobby);
                 allLobbies.push(room);
@@ -227,7 +226,6 @@ module.exports = function(io) {
         })
 
         socket.on('code_to_board', function(data){
-            console.log('received code in server: ', data);
             var room = grabRoom(data.lobby, allLobbies);
             room.showCode = true;
             io.to(data.lobby).emit('code_to_board', {code: data.code});
@@ -245,6 +243,16 @@ module.exports = function(io) {
             if(pass === 'rundown'){
                 socket.emit('adminInfo', {lobbies: allLobbies});
             }
+        })
+        socket.on('delLobby', function(id) {
+            var ind;
+            for (var i=0; i < allLobbies.length; i++){
+                if(allLobbies[i].id == id){
+                    ind = i;
+                }
+            }
+            allLobbies.splice(ind, 1);
+            socket.emit('updateInfo', {lobbies: allLobbies});
         })
 
     })

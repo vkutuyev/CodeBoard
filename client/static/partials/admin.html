@@ -7,20 +7,20 @@
     <div id=lobbyInfo class='row' ng-if='admin'>
         <div id=lobbyListBox class='two columns offset-by-one'>
             <h1>Lobbies:</h1>
-            <div id='lobbyList'>
-                <div class='lobbyID row' ng-repeat='lobby in lobbies' ng-click='showInfo(this)'>{{lobby.id}}</div>
-            </div>
+            <button id=adminPrint ng-click=print()>Print</button>
+            <ul id='lobbyList'>
+                <li class='lobbyID row' ng-repeat='lobby in lobbies' ng-click='showInfo(this)'>{{lobby.id}} ({{lobby.users.length}})</li>
+            </ul>
         </div>
         <div id=adminInfoBox class='eight columns offset-by-one' ng-show=clicked>
             <div id=adminBoard class='row'>
                 <canvas id=adminCanv></canvas>
             </div>
             <div class='row'>
-                <div id=adminChat class='eight columns'>
-                    Chat goes here
-                </div>
+                <div id=adminChat class='eight columns'></div>
                 <div id=adminAction class='four columns'>
-                    Actions go here
+                    <button id=adminJoin ng-click=join(lobbyID)>Join Lobby</button>
+                    <button id=adminDelete ng-click=delete(lobbyID)>Delete Lobby</button>
                 </div>
             </div>
         </div>

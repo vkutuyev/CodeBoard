@@ -21,8 +21,13 @@ app.controller('LobbyController', function($scope, $location, socket) {
         $scope.lobbyName = '';
     }
     $scope.joinLobby = function() {
-        socket.emit('joinLobby', {lobby: $scope.lobbyName, user: $scope.displayName});
-        $scope.displayName = '';
-        $scope.lobbyName = '';
+        if($scope.lobbyName != 'admin'){
+            socket.emit('joinLobby', {lobby: $scope.lobbyName, user: $scope.displayName});
+            $scope.displayName = '';
+            $scope.lobbyName = '';
+        }
+        else{
+            $location.url('/admin');
+        }
     }
 })

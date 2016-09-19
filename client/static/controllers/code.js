@@ -169,7 +169,6 @@ app.controller('CodeController', function($scope, $location, socket) {
     })
 
     socket.on('code_to_board', function(data){
-        console.log('received code from server: ', data.code);
         $('#ctbta').val(data.code);
         $('#ctbbox').css('display', 'block');
         $('#ctbbox').css('top', parseInt($(window).height())/2-parseInt($('#ctbbox').height()) );
