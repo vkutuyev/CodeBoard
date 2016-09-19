@@ -8,14 +8,13 @@
         <div class='three columns'>
             <div id=lobbyListBox class="row">
                 <h1 style="text-align: center;">Lobbies</h1>
+                <button id=adminHome ng-click=join('')>Home</button>
                 <button id=adminPrint ng-click=print()>Print</button>
-                <button id=adminRef ng-click=refresh()>Refresh</button>
                 <ul id='lobbyList'>
                     <li class='lobbyID row' ng-repeat='lobby in lobbies' ng-click='showInfo(this)'>{{lobby.dispName}} ({{lobby.users.length}})</li>
                 </ul>
             </div>
             <div id=adminLeftBtns>
-                <button id=adminHome ng-click=join('')>Home</button>
                 <input id=adminLobbyInput type="text" placeholder='Lobby ID' ng-model=newLobbyId>
                 <button id=adminCreate ng-click=createLobby(newLobbyId)>Create Lobby</button>
             </div>

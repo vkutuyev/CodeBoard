@@ -26,6 +26,7 @@
     border-radius: 10px;
     padding: 15px;
     overflow-y: scroll !important;
+    height: 50vh;
     max-height: 50vh;
 }
 
