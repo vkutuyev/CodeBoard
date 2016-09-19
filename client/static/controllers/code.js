@@ -35,23 +35,6 @@ app.controller('CodeController', function($scope, $location, socket) {
             option.hidden = true;
         }
     }
-    function cArrToHtml(arr, i) {
-        if (i == undefined) {i = 0}
-        if (i >= arr.length) {
-            return '';
-        }
-        var purpleKeywords = [
-            'if',
-            'var',
-            'else',
-            'function'
-        ];
-        if ( arr[i] && purpleKeywords.includes(arr[i]) ){
-            return '<span class="purple">' + arr[i] + '</span> ' + cArrToHtml( arr, i+1 );
-        }
-        return arr[i] + ' ' + cArrToHtml( arr, i+1 );
-    }
-
 
     $(document).keydown(function(e) {
         if (e.keyCode == 16) {
@@ -101,22 +84,32 @@ app.controller('CodeController', function($scope, $location, socket) {
         if (e.keyCode == 9) {
             //tab
             e.preventDefault();
-            code += '    ';
-        } else if (e.keyCode == 32) {
-            //space
-            code += e.key;
+            var s = this.selectionStart;
+            this.value = this.value.substring(0,this.selectionStart) + '    ' + this.value.substring(this.selectionEnd);
+            this.selectionEnd = s+4;
+            code = this.value;
+        } else if (e.keyCode == 8) {
+            //backspace
+            if(this.selectionStart == this.selectionEnd){
+                e.preventDefault();
+                var s = this.selectionStart;
+                this.value = this.value.substring(0,this.selectionStart-1) + this.value.substring(this.selectionEnd);
+                this.selectionEnd = s-1;
+                code = this.value;
+            }
+            else{
+                code = $('.CETA').val();
+            }
         } else if (e.keyCode == 13) {
             //enter
             code += '\n';
-        } else if (e.keyCode == 8) {
-            //backspace
-            code = $('.CETA').val();
-        } else if (e.keyCode == 186) {
-            //;
-            code += e.key;
-        } else if (!e.metaKey && !e.altKey && !e.ctrlKey && e.keyCode != 20 && e.keyCode != 16 && e.keyCode != 38 && e.keyCode != 40 && e.keyCode != 37 && e.keyCode != 39){
+        } else if (!e.metaKey && !e.altKey && !e.ctrlKey && e.keyCode != 20 && e.keyCode != 16 && !(e.keyCode > 32 && e.keyCode < 41) ){
             //All else
-            code += e.key;
+            e.preventDefault();
+            var s = this.selectionStart;
+            this.value = this.value.substring(0,this.selectionStart) + e.key + this.value.substring(this.selectionEnd);
+            this.selectionEnd = s+1;
+            code = this.value;
         }
     })
     $('.CETA').keyup(function(e) {
@@ -125,7 +118,7 @@ app.controller('CodeController', function($scope, $location, socket) {
             code = $('.CETA').val();
         }
         setTimeout(function () {
-            socket.emit('codeSend', {lobby: lobby, code: $('.CETA').val()});
+            socket.emit('codeSend', {lobby: lobby, code: code, id: socket.currentId()});
         }, 100);
     })
     $('div.codeToBoard i').click(function(e) {
@@ -165,7 +158,18 @@ app.controller('CodeController', function($scope, $location, socket) {
         $('#ctbbox').css('display', 'none');
     })
     socket.on('codeReceive', function(data) {
-        $('.CETA').val(data.code);
+        // Only update local code if someone else typed
+        if(data.id != socket.currentId()){
+            // Clear textarea if code sent is empty (ie: everything was erased)
+            if(!data.code){
+                $('.CETA').val('');
+                code = '';
+            }
+            else{
+                code = data.code;
+                $('.CETA').val(data.code);
+            }
+        }
     })
 
     socket.on('code_to_board', function(data){
