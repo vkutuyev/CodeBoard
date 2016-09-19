@@ -26,7 +26,7 @@ app.controller('AdminController', function($scope, socket){
     }
 
     // Displaying saved canvas screenshot
-    $scope.drawScreen(pic) {
+    $scope.drawScreen = function(pic) {
         var canvas      = document.getElementById('adminCanv');
         var width       = $('#adminBoard').width();
         var height      = $('#adminBoard').height();
