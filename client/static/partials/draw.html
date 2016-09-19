@@ -88,8 +88,7 @@
 <div class="chat" ng-controller="ChatController">
 
     <div class="cover">
-        Click here to chat<br><br>
-        Please enter a name<br><br>
+        <span id='chatMsg'>Click Here to Chat</span><br><br>
         <form>
             <input type="text" ng-model="displayName" class="chatDisplayName">
             <input type="submit" ng-click="setName()">
@@ -101,7 +100,7 @@
         <div class="columns two"><b>Chatbox</b></div>
         <div class="columns one"><b>Lobby:</b></div>
         <div class="columns five" ng-bind="lobby"></div>
-        <div class="columns one toggleButton"><div><i class="fa fa-caret-square-o-down" aria-hidden="true"></i></div></div>
+        <div class="columns one toggleButton"><div><i id=caret class="fa fa-caret-square-o-down" aria-hidden="true"></i></div></div>
     </div>
     <div class="row">
         <div class="columns two menu">

@@ -12,24 +12,25 @@ app.controller('AdminController', function($scope, socket, $location){
     // Receiving and formatting lobby info
     socket.on('adminInfo', function(data){
         $scope.admin = true;
-        for (lobby of data.lobbies) {
-            if(lobby.id.length > 10){
-                lobby.id = lobby.id.substring(0,11);
-            }
-            $scope.lobbies.push(lobby);
-        }
+        $scope.setLobbies(data);
     })
-
     // Updating lobby info
     socket.on('updateInfo', function(data){
         $scope.lobbies = [];
+        $scope.setLobbies(data);
+    })
+    // Set display and IDs of lobbies
+    $scope.setLobbies = function(data) {
         for (lobby of data.lobbies) {
             if(lobby.id.length > 10){
-                lobby.id = lobby.id.substring(0,11);
+                lobby.dispName = lobby.id.substring(0,11);
+            }
+            else{
+                lobby.dispName = lobby.id;
             }
             $scope.lobbies.push(lobby);
         }
-    })
+    }
 
     // 'Printing out' all lobbies
     $scope.print = function() {

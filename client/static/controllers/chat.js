@@ -46,10 +46,12 @@ app.controller('ChatController', function($scope, socket, $location) {
         var bottom = parseInt($('div.chat').css('bottom'));
 
         if (bottom < 0) {
+            $('#chatMsg').text('Please Enter Name');
             $('div.cover').animate({bottom: 0}, 500);
             $('div.chat').animate({bottom: 0}, 500);
             $('.chatDisplayName').focus();
         } else {
+            $('#chatMsg').text('Click Here to Chat');
             var height = parseInt($('div.cover').height())-32;
             $('div.cover').animate({bottom: '-'+height}, 500);
             var height = parseInt($('div.chat').height())-32;
@@ -109,9 +111,13 @@ app.controller('ChatController', function($scope, socket, $location) {
         var bottom = parseInt($('div.chat').css('bottom'));
 
         if (bottom < 0) {
+            $('#caret').removeClass('fa-caret-square-o-up');
+            $('#caret').addClass('fa-caret-square-o-down');
             $('div.chat').animate({bottom: 0}, 500);
             $('.chatTextArea').focus();
         } else {
+            $('#caret').removeClass('fa-caret-square-o-down');
+            $('#caret').addClass('fa-caret-square-o-up');
             var height = parseInt($('div.chat').height())-24;
             $('div.chat').animate({bottom: '-'+height}, 500);
             if ($('.chatTextArea').focus()) {

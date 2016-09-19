@@ -15,6 +15,10 @@
     margin-top: 5vh;
 }
 
+#lobbyListBox {
+    margin: 0 4%;
+}
+
 #lobbyList {
     background: steelblue;
     border-radius: 10px;
@@ -26,6 +30,9 @@
     margin-bottom: 5px;
     max-width: 25vw;
 }
+    .lobbyID:hover {
+        color: yellow;
+    }
 
 #adminChat{
     height: 15vh;
@@ -51,4 +58,11 @@
     background-color: rgb(194, 30, 30);
     color: white;
     text-shadow: 0px 0px 4px black;
+}
+#adminID{
+    text-align: center;
+    margin: 0 auto;
+    display: block;
+    margin-top: -5px;
+    margin-bottom: 10px;
 }
