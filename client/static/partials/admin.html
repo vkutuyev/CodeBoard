@@ -11,7 +11,7 @@
                 <button id=adminHome ng-click=join('')>Home</button>
                 <button id=adminPrint ng-click=print()>Print</button>
                 <ul id='lobbyList'>
-                    <li class='lobbyID row' ng-repeat='lobby in lobbies' ng-click='showInfo(this)'>{{lobby.dispName}} ({{lobby.users.length}})</li>
+                    <li class='lobbyID row' ng-repeat='lobby in lobbies' ng-click='showInfo(this)'>{{lobby.dispName}} ({{lobby.userCount}})</li>
                 </ul>
             </div>
             <div id=adminLeftBtns>

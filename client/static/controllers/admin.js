@@ -28,6 +28,7 @@ app.controller('AdminController', function($scope, socket, $location){
             else{
                 lobby.dispName = lobby.id;
             }
+            lobby.userCount = Object.keys(lobby.users).length;
             $scope.lobbies.push(lobby);
         }
     }
