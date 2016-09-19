@@ -2,7 +2,7 @@
 //                        VARIABLE                        //
 ////////////////////////////////////////////////////////////
 var allLobbies  = [],
-    allUsers    = [];
+    allUser     = {};
 
 ////////////////////////////////////////////////////////////
 //                   CLASS DECLARATIONS                   //
@@ -10,7 +10,8 @@ var allLobbies  = [],
 function Lobby ( id ) {
     var valid = 'abcdefghijklmnopqrstuvqxyz1234567890'.split('');
 
-    this.users          = [];
+    this.users           = {};
+
     this.line_history   = [];
     this.chat_history   = [];
     this.screenshot     = '';
@@ -46,10 +47,6 @@ function Lobby ( id ) {
         return false;
     }
 }
-function User ( id ) {
-    this.id     = id;
-    this.name;
-}
 function Chat ( name, message ) {
     this.name       = name;
     this.message    = message;
@@ -68,35 +65,33 @@ function grabRoom( id, lobbyList, i ) {
 //                     MODULE EXPORTS                     //
 ////////////////////////////////////////////////////////////
 module.exports = function(io) {
-    var allUsers        = [],
-        allLobbies      = [],
-        line_history    = [];
+    //allUsers defined very top.
+    //allLobbies defined very top.
+    var line_history    = [];
 
     io.sockets.on('connection', function(socket) {
-        var user = new User( socket.id );
-        allUsers.push(user);
+        allUser[socket.id] = '';
 
         socket.on('disconnect', function(socket) {
-            allUsers.splice(allUsers.indexOf(user),1);
+            delete allUser[socket.id];
         })
 
         ////////////////////////////////////////////////////////////
         //                    LOBBY CONTROLLER                    //
         ////////////////////////////////////////////////////////////
         socket.on('createLobby', function(data) {
-            user.name = data.user;
 
             var lobby = new Lobby();
-            allLobbies.push(lobby);
-            lobby.users.push(user);
+            lobby.users[socket.id] = data.user.split('<').join('&lt;');
 
             socket.join(lobby.id);
+
 
             io.to(lobby.id).emit('lobbyStatus', {lobby});
         })
 
         socket.on('joinLobby', function(data) {
-            user.name = data.user;
+            allUser[socket.id] = data.user.split('<').join('&lt;');
 
             var lobby;
             for (var room of allLobbies) {
@@ -105,7 +100,7 @@ module.exports = function(io) {
                 }
             }
             if (lobby) {
-                lobby.users.push(user);
+                lobby.users[socket.id] = allUser[socket.id];
 
                 socket.join(lobby.id);
 
@@ -115,7 +110,7 @@ module.exports = function(io) {
                 allLobbies.push(lobby);
 
                 socket.join(lobby.id);
-                lobby.users.push(user);
+                lobby.users[socket.id] = data.user.split('<').join('&lt;');
                 io.to(lobby.id).emit('lobbyStatus', {lobby});
             }
         })
@@ -173,24 +168,20 @@ module.exports = function(io) {
             io.to(data.lobby).emit('messageReceive', room.chat_history);
         })
         socket.on('messageSend', function(data) {
-            var message = new Chat( data.message.name, data.message.message );
+            var msg  = data.message.message.split('<').join('&lt;');
+            var message = new Chat( data.message.name.split('<').join('&lt;'), msg );
             var room = grabRoom(data.lobby, allLobbies);
             room.chat_history.push(message);
 
             io.to(data.lobby).emit('messageReceive', room.chat_history);
         })
         socket.on('joinChat', function(data) {
-            var message = new Chat( '-----',data.name+' has joined the lobby.');
+            var message = new Chat( '-----',data.name.split('<').join('&lt;')+' has joined the lobby.');
             var room = grabRoom( data.lobby, allLobbies );
             var found = false;
-            for(var user of room.users){
-                if(user.id == '/#'+data.id){
-                    found = true;
-                    user.name = data.name;
-                }
-            }
+            allUser[socket.id] = data.name.split('<').join('&lt;');
             if(!found){
-                room.users.push({id: '/#'+data.id, name: data.name});
+                room.users[socket.id] = allUser[socket.id];
             }
             room.chat_history.push(message);
 
@@ -198,12 +189,15 @@ module.exports = function(io) {
         })
         socket.on('left_chat', function(data){
             if(data.name){
-                var message = new Chat('-----',data.name+' has left the lobby.')
+                var message = new Chat('-----',data.name.split('<').join('&lt;')+' has left the lobby.')
                 var room = grabRoom( data.lobby, allLobbies );
 
-                room.chat_history.push(message);
+                console.log(room);
+                if (room) {
+                    room.chat_history.push(message);
+                    io.to(data.lobby).emit('messageReceive', room.chat_history);
+                }
 
-                io.to(data.lobby).emit('messageReceive', room.chat_history);
             }
         })
 
