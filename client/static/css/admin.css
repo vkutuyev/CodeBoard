@@ -38,6 +38,7 @@
     height: 15vh;
     padding: 15px;
     border: 4px solid white;
+    overflow: auto;
 }
 #adminPrint{
     margin-bottom: 20px;
