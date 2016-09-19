@@ -36,14 +36,16 @@ app.controller('AdminController', function($scope, socket, $location){
     $scope.print = function() {
         console.log($scope.lobbies);
     }
+    // Refreshing lobby list
+    $scope.refresh = function() {
+        socket.emit('lobbyRefresh');
+    }
 
     // Displaying clicked lobby info
     $scope.showInfo = function(data) {
         $scope.clicked  = true;
         $scope.lobbyID  = data.lobby.id;
-        if(data.lobby.savestate){
-            $scope.drawScreen(data.lobby.savestate);
-        }
+        $scope.drawScreen(data.lobby.savestate || '');
         if(data.lobby.chat_history){
             $scope.chat = '';
             for (message of data.lobby.chat_history){
@@ -79,6 +81,15 @@ app.controller('AdminController', function($scope, socket, $location){
     $scope.delete = function(id) {
         $scope.clicked = false;
         socket.emit('delLobby', id);
+    }
+    // Create new lobby
+    $scope.createLobby = function(lobby) {
+        if($scope.lobbyName != 'admin'){
+            socket.emit('joinLobby', {lobby: lobby, user: ''});
+        }
+        else{
+            $location.url('/admin');
+        }
     }
 
 })

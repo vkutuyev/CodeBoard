@@ -254,6 +254,9 @@ module.exports = function(io) {
             allLobbies.splice(ind, 1);
             socket.emit('updateInfo', {lobbies: allLobbies});
         })
+        socket.on('lobbyRefresh', function() {
+            socket.emit('updateInfo', {lobbies: allLobbies});
+        })
 
     })
 }
