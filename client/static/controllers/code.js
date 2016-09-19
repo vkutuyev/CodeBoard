@@ -35,22 +35,22 @@ app.controller('CodeController', function($scope, $location, socket) {
             option.hidden = true;
         }
     }
-    function cArrToHtml(arr, i) {
-        if (i == undefined) {i = 0}
-        if (i >= arr.length) {
-            return '';
-        }
-        var purpleKeywords = [
-            'if',
-            'var',
-            'else',
-            'function'
-        ];
-        if ( arr[i] && purpleKeywords.includes(arr[i]) ){
-            return '<span class="purple">' + arr[i] + '</span> ' + cArrToHtml( arr, i+1 );
-        }
-        return arr[i] + ' ' + cArrToHtml( arr, i+1 );
-    }
+    // function cArrToHtml(arr, i) {
+    //     if (i == undefined) {i = 0}
+    //     if (i >= arr.length) {
+    //         return '';
+    //     }
+    //     var purpleKeywords = [
+    //         'if',
+    //         'var',
+    //         'else',
+    //         'function'
+    //     ];
+    //     if ( arr[i] && purpleKeywords.includes(arr[i]) ){
+    //         return '<span class="purple">' + arr[i] + '</span> ' + cArrToHtml( arr, i+1 );
+    //     }
+    //     return arr[i] + ' ' + cArrToHtml( arr, i+1 );
+    // }
 
 
     $(document).keydown(function(e) {
@@ -101,16 +101,15 @@ app.controller('CodeController', function($scope, $location, socket) {
         if (e.keyCode == 9) {
             //tab
             e.preventDefault();
-            code += '    ';
+            var s = this.selectionStart;
+            this.value = this.value.substring(0,this.selectionStart) + "\t" + this.value.substring(this.selectionEnd);
+            this.selectionEnd = s+1;
         } else if (e.keyCode == 32) {
             //space
             code += e.key;
         } else if (e.keyCode == 13) {
             //enter
             code += '\n';
-        } else if (e.keyCode == 8) {
-            //backspace
-            code = $('.CETA').val();
         } else if (e.keyCode == 186) {
             //;
             code += e.key;
@@ -165,7 +164,10 @@ app.controller('CodeController', function($scope, $location, socket) {
         $('#ctbbox').css('display', 'none');
     })
     socket.on('codeReceive', function(data) {
-        $('.CETA').val(data.code);
+        // Only update code if someone else has typed
+        if(data.code != code){
+            $('.CETA').val(data.code);
+        }
     })
 
     socket.on('code_to_board', function(data){
