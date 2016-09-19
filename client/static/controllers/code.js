@@ -35,23 +35,6 @@ app.controller('CodeController', function($scope, $location, socket) {
             option.hidden = true;
         }
     }
-    // function cArrToHtml(arr, i) {
-    //     if (i == undefined) {i = 0}
-    //     if (i >= arr.length) {
-    //         return '';
-    //     }
-    //     var purpleKeywords = [
-    //         'if',
-    //         'var',
-    //         'else',
-    //         'function'
-    //     ];
-    //     if ( arr[i] && purpleKeywords.includes(arr[i]) ){
-    //         return '<span class="purple">' + arr[i] + '</span> ' + cArrToHtml( arr, i+1 );
-    //     }
-    //     return arr[i] + ' ' + cArrToHtml( arr, i+1 );
-    // }
-
 
     $(document).keydown(function(e) {
         if (e.keyCode == 16) {
@@ -107,6 +90,9 @@ app.controller('CodeController', function($scope, $location, socket) {
         } else if (e.keyCode == 32) {
             //space
             code += e.key;
+        // } else if (e.keyCode == 8) {
+        //     //backspace
+        //     code = $('.CETA').val();
         } else if (e.keyCode == 13) {
             //enter
             code += '\n';
@@ -124,7 +110,7 @@ app.controller('CodeController', function($scope, $location, socket) {
             code = $('.CETA').val();
         }
         setTimeout(function () {
-            socket.emit('codeSend', {lobby: lobby, code: $('.CETA').val()});
+            socket.emit('codeSend', {lobby: lobby, code: code});
         }, 100);
     })
     $('div.codeToBoard i').click(function(e) {
@@ -164,7 +150,11 @@ app.controller('CodeController', function($scope, $location, socket) {
         $('#ctbbox').css('display', 'none');
     })
     socket.on('codeReceive', function(data) {
-        // Only update code if someone else has typed
+        // Clear textarea if code sent is empty (ie: everything was erased)
+        if(!data.code){
+            $('.CETA').val('');
+        }
+        // Only update code if it's different
         if(data.code != code){
             $('.CETA').val(data.code);
         }
