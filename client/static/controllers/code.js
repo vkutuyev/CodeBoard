@@ -90,6 +90,9 @@ app.controller('CodeController', function($scope, $location, socket) {
         } else if (e.keyCode == 32) {
             //space
             code += e.key;
+        } else if (e.keyCode == 8) {
+            //backspace
+            code = $('.CETA').val();
         } else if (e.keyCode == 13) {
             //enter
             code += '\n';
