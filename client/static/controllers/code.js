@@ -85,8 +85,8 @@ app.controller('CodeController', function($scope, $location, socket) {
             //tab
             e.preventDefault();
             var s = this.selectionStart;
-            this.value = this.value.substring(0,this.selectionStart) + "\t" + this.value.substring(this.selectionEnd);
-            this.selectionEnd = s+1;
+            this.value = this.value.substring(0,this.selectionStart) + '    ' + this.value.substring(this.selectionEnd);
+            this.selectionEnd = s+4;
             code = this.value;
         } else if (e.keyCode == 8) {
             //backspace
