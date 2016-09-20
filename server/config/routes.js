@@ -2,6 +2,7 @@
 //                        Routes                        //
 //////////////////////////////////////////////////////////
 module.exports = function(app) {
-    // Catches random null /GET attempts
-    app.get('/null', function(req, res) {})
+    app.get('/', function(req, res) {
+        
+    })
 }
