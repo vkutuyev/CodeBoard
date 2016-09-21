@@ -40,3 +40,14 @@
     100%   { left: -500px; opacity: 0; }
 }
 /***********************/
+
+#bluebtn {
+    position: absolute;
+    left: 50px;
+    top: 250px;
+}
+#redbtn {
+    position: absolute;
+    left: 50px;
+    top: 300px;
+}

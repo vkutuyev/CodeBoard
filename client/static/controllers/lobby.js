@@ -1,4 +1,11 @@
 app.controller('LobbyController', function($scope, $location, socket) {
+    //////////////////////////////////////////
+    ///           Scope Variables          ///
+    //////////////////////////////////////////
+    $scope.fillStyle = 'white';
+    $scope.strokeStyle = 'white';
+    $scope.lineWidth  = 2;
+
 
     //////////////////////////////////////////
     ///        Initial Canvas Setup        ///
@@ -19,13 +26,10 @@ app.controller('LobbyController', function($scope, $location, socket) {
     var height      = window.innerHeight;
     canvas.width    = width;
     canvas.height   = height;
-    var boundRect;
+    var boundRect   = canvas.getBoundingClientRect();
     // misc context/canvas settings
     context.lineCap     = 'round';
     context.lineJoin    = 'round';
-    context.strokeStyle = 'white';
-    context.fillStyle   = 'white';
-    context.lineWidth   = 2;
     var dataURL;
 
 
@@ -34,12 +38,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
     //////////////////////////////////////////
     canvas.onmousedown = function(e){
         // Drawing or dragging
-        if(!e.shiftKey){
-            mouse.click  = true;
-        }
-        else {
-            mouse.moving = true;
-        }
+        if(!e.shiftKey) { mouse.click  = true; }
+        else            { mouse.moving = true; }
+
         boundRect       = canvas.getBoundingClientRect();
         var posx        = e.clientX - boundRect.left;
         var posy        = e.clientY - boundRect.top;
@@ -47,23 +48,22 @@ app.controller('LobbyController', function($scope, $location, socket) {
         context.moveTo(posx, posy);
     }
     canvas.onmousemove = function(e){
+        // Grab mouse coordinates
+        var posx    = e.clientX - boundRect.left;
+        var posy    = e.clientY - boundRect.top;
+        mouse.pos   = {x: posx, y: posy};
+
         if(mouse.click){
-            // Grab mouse coordinates
-            var posx    = e.clientX - boundRect.left;
-            var posy    = e.clientY - boundRect.top;
-            mouse.pos   = {x: posx, y: posy};
             socket.emit('draw_line', {
                 line: {
-                    coords: [mouse.pos, mouse.pos_prev]
+                    coords      : [mouse.pos, mouse.pos_prev],
+                    strokeStyle : $scope.strokeStyle,
+                    lineWidth   : $scope.lineWidth
                 }
             });
             mouse.pos_prev = {x: posx, y: posy};
         }
         else if(mouse.moving){
-            // Grab mouse coordinates
-            var posx    = e.clientX - boundRect.left;
-            var posy    = e.clientY - boundRect.top;
-            mouse.pos   = {x: posx, y: posy};
             // Scroll screen by mouse movement
             var scrollDist = mouse.pos_prev.x - mouse.pos.x;
             document.getElementById('lobbyDiv').scrollLeft += scrollDist;
@@ -80,6 +80,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
         context.beginPath();
         context.moveTo(line[0].x, line[0].y);
         context.lineTo(line[1].x, line[1].y);
+        context.strokeStyle = data.line.strokeStyle;
+        context.lineWidth = data.line.lineWidth;
         context.stroke();
         context.closePath();
     });
@@ -88,12 +90,29 @@ app.controller('LobbyController', function($scope, $location, socket) {
     //////////////////////////////////////////
     ///         Keyboard Keypresses        ///
     //////////////////////////////////////////
+    /*
+    backspace   : 8
+    tab         : 9
+    space       : 32
+    enter       : 13
+    ;           : 186
+
+    alt         : 91
+    shift       : 16
+    */
     $(document).on('keydown', function(e){
         if(e.shiftKey && !mouse.click){
-            // Change cursor to move icon on Shift
+            // Shift
             $('#drawBoard').css('cursor', 'move');
         }
+        if(e.keyCode == 27){
+            // Escape
+            $('#drawBoard').css({'cursor':"url('../img/cursor/marker_white_sm.png'), auto"});
+            $scope.strokeStyle = 'white';
+            $scope.lineWidth  = 2;
+        }
     })
+
     $(document).on('keyup', function(e) {
         if(e.keyCode == 16){
             // Reset cursor on Shift lift
@@ -101,15 +120,12 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
     })
 
+
+
+
+    $scope.color = function(color) {
+        $scope.strokeStyle = color;
+    }
+
+
 })
-
-/*
-backspace   : 8
-tab         : 9
-space       : 32
-enter       : 13
-;           : 186
-
-alt         : 91
-shift       : 16
-*/
