@@ -1,5 +1,23 @@
 app.controller('LobbyController', function($scope, $location, socket) {
-
+    //////////////////////////////////////////
+    ///            Lobby System            ///
+    //////////////////////////////////////////
+    //Checks the lobby
+    if ($location.url() != '/') {
+        var path = $location.url().split('/')[1];
+        console.log(path);
+        socket.emit('join_lobby', {path: path});
+    }
+    socket.on('join_lobby_success', function(data) {
+        console.log('Success');
+        console.log(data);
+        $location.url('/');
+    })
+    socket.on('join_lobby_failure', function(data) {
+        console.log('Failure');
+        console.log(data);
+    })
+    //socket emit (checklobby)
     //////////////////////////////////////////
     ///        Initial Canvas Setup        ///
     //////////////////////////////////////////

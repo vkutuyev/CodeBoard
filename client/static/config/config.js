@@ -1,11 +1,14 @@
 var app = angular.module('app', ['ngRoute', 'ngAnimate']);
 
-app.config(function($routeProvider) {
+app.config(function($routeProvider, $locationProvider) {
     $routeProvider
-    .when('/', {
+    .when('/:id', {
         templateUrl: 'partials/lobby.html'
     })
     .otherwise({
-        redirectTo: '/'
+        // redirectTo: '/'
+        templateUrl: 'partials/lobby.html'
     })
+
+    $locationProvider.html5Mode(true);
 })
