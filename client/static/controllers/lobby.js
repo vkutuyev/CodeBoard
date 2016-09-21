@@ -33,22 +33,19 @@ app.controller('LobbyController', function($scope, $location, socket) {
     canvas.onmousedown = function(e){
         mouse.click = true;
         context.closePath();
-        canvasX = e.pageX - canvas.offsetLeft;
-        canvasY = e.pageY - canvas.offsetTop;
-        context.moveTo(canvasX, canvasY);
-        mouse.pos_prev = {x: canvasX, y: canvasY};
+        context.moveTo(e.pageX, e.pageY);
+        mouse.pos_prev = {x: e.pageX, y: e.pageY};
     }
     canvas.onmousemove = function(e){
         if(mouse.click){
-            canvasX = e.pageX - canvas.offsetLeft;
-            canvasY = e.pageY - canvas.offsetTop;
-            mouse.pos = {x: canvasX, y: canvasY};
-            socket.emit('draw_line', { path: { line: [mouse.pos, mouse.pos_prev] } });
-            mouse.pos_prev = {x: canvasX, y: canvasY};
+            mouse.pos = {x: e.pageX, y: e.pageY};
+            socket.emit('draw_line', { path: {line: [mouse.pos, mouse.pos_prev]} });
+            mouse.pos_prev = {x: e.pageX, y: e.pageY};
         }
     }
     canvas.onmouseup = function(e){
         mouse.click = false;
+        context.stroke();
     };
     // Drawing the line from server
     socket.on('draw_line', function (data) {

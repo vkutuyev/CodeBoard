@@ -14,9 +14,10 @@ module.exports = function(io) {
             socket.emit('draw_line', line.path);
         })
 
+
+
         socket.on('disconnect', function(socket) {
 
         })
-
     })
 }
