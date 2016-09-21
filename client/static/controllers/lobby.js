@@ -37,7 +37,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
         var posx        = e.clientX - boundRect.left;
         var posy        = e.clientY - boundRect.top;
         mouse.pos_prev  = {x: posx, y: posy};
-        context.closePath();
         context.moveTo(posx, posy);
     }
     canvas.onmousemove = function(e){
@@ -56,6 +55,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     canvas.onmouseup = function(e){
         mouse.click = false;
         context.stroke();
+        context.closePath();
     };
     // Drawing the line from server
     socket.on('draw_line', function (data) {
