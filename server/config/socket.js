@@ -8,8 +8,8 @@ module.exports = function(io) {
         //////////////////////////////////////////
         ///          Canvas Drawing            ///
         //////////////////////////////////////////
-        socket.on('draw_line', function(line){
-            socket.emit('draw_line', line.path);
+        socket.on('draw_line', function(data){
+            socket.emit('draw_line', data);
         })
 
 

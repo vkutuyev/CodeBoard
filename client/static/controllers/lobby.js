@@ -45,7 +45,11 @@ app.controller('LobbyController', function($scope, $location, socket) {
             var posx    = e.clientX - boundRect.left;
             var posy    = e.clientY - boundRect.top;
             mouse.pos   = {x: posx, y: posy};
-            socket.emit('draw_line', { path: {line: [mouse.pos, mouse.pos_prev]} });
+            socket.emit('draw_line', {
+                line: {
+                    coords: [mouse.pos, mouse.pos_prev]
+                }
+            });
             mouse.pos_prev = {x: posx, y: posy};
         }
     }
@@ -55,7 +59,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     };
     // Drawing the line from server
     socket.on('draw_line', function (data) {
-        var line = data.line;
+        var line = data.line.coords;
         context.beginPath();
         context.moveTo(line[0].x, line[0].y);
         context.lineTo(line[1].x, line[1].y);
