@@ -73,8 +73,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
     canvas.onmouseup = function(e){
         mouse.click = false;
         mouse.moving = false;
-        context.stroke();
-        context.closePath();
     };
     // Drawing the line from server
     socket.on('draw_line', function (data) {
@@ -83,5 +81,35 @@ app.controller('LobbyController', function($scope, $location, socket) {
         context.moveTo(line[0].x, line[0].y);
         context.lineTo(line[1].x, line[1].y);
         context.stroke();
+        context.closePath();
     });
+
+
+    //////////////////////////////////////////
+    ///         Keyboard Keypresses        ///
+    //////////////////////////////////////////
+    $(document).on('keydown', function(e){
+        if(e.shiftKey && !mouse.click){
+            // Change cursor to move icon on Shift
+            $('#drawBoard').css('cursor', 'move');
+        }
+    })
+    $(document).on('keyup', function(e) {
+        if(e.keyCode == 16){
+            // Reset cursor on Shift lift
+            $('#drawBoard').css({'cursor':"url('../img/cursor/marker_white_sm.png'), auto"});
+        }
+    })
+
 })
+
+/*
+backspace   : 8
+tab         : 9
+space       : 32
+enter       : 13
+;           : 186
+
+alt         : 91
+shift       : 16
+*/
