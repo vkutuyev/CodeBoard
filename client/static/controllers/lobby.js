@@ -13,11 +13,12 @@ app.controller('LobbyController', function($scope, $location, socket) {
     // get canvas element and create context
     var canvas      = document.getElementById('drawBoard');
     var context     = canvas.getContext('2d');
-    // set canvas to full browser width/height
-    var width       = window.innerWidth;
+    // set canvas size properties
+    var width       = window.innerWidth*2;
     var height      = window.innerHeight;
     canvas.width    = width;
     canvas.height   = height;
+    var boundRect;
     // misc context/canvas settings
     context.lineCap     = 'round';
     context.lineJoin    = 'round';
@@ -31,16 +32,21 @@ app.controller('LobbyController', function($scope, $location, socket) {
     ///          Canvas Drawing            ///
     //////////////////////////////////////////
     canvas.onmousedown = function(e){
-        mouse.click = true;
+        mouse.click     = true;
+        boundRect       = canvas.getBoundingClientRect();
+        var posx        = e.clientX - boundRect.left;
+        var posy        = e.clientY - boundRect.top;
+        mouse.pos_prev  = {x: posx, y: posy};
         context.closePath();
-        context.moveTo(e.pageX, e.pageY);
-        mouse.pos_prev = {x: e.pageX, y: e.pageY};
+        context.moveTo(posx, posy);
     }
     canvas.onmousemove = function(e){
         if(mouse.click){
-            mouse.pos = {x: e.pageX, y: e.pageY};
+            var posx    = e.clientX - boundRect.left;
+            var posy    = e.clientY - boundRect.top;
+            mouse.pos   = {x: posx, y: posy};
             socket.emit('draw_line', { path: {line: [mouse.pos, mouse.pos_prev]} });
-            mouse.pos_prev = {x: e.pageX, y: e.pageY};
+            mouse.pos_prev = {x: posx, y: posy};
         }
     }
     canvas.onmouseup = function(e){
