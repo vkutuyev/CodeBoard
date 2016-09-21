@@ -3,3 +3,51 @@
     width: 105vw;
     height: 105vh;
 }
+
+#menuHam {
+    position: absolute;
+    z-index: 10;
+    top: 2%;
+    left: 2%;
+    color: white;
+    padding: 10px;
+}
+    #menuHam:hover {
+        text-shadow: 0px 0px 4px white;
+    }
+
+#scrollPop {
+    position: absolute;
+    top: calc(100% - 75px);
+    height: 50px;
+    width: 200px;
+    color: white;
+    font-size: 12px;
+    text-align: center;
+    vertical-align: middle;
+    /* Slide/fade Animation */
+    animation-name: slideAndFade;
+    animation-duration: 8s;
+    animation-fill-mode: forwards;
+}
+
+
+/* Animation Keyframes */
+@keyframes slideAndFade {
+    0%     { left: 100%; opacity: 1; }
+    25%    { left: calc(100% - 250px); opacity: 1; }
+    95%    { left: calc(100% - 250px); opacity: 0; }
+    100%   { left: -500px; opacity: 0; }
+}
+/***********************/
+
+#bluebtn {
+    position: absolute;
+    left: 50px;
+    top: 250px;
+}
+#redbtn {
+    position: absolute;
+    left: 50px;
+    top: 300px;
+}

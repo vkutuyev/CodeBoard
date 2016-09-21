@@ -23,7 +23,7 @@ module.exports = function(io) {
         ///          Canvas Drawing            ///
         //////////////////////////////////////////
         socket.on('draw_line', function(data){
-            socket.emit('draw_line', data);
+            io.emit('draw_line', data);
         })
 
 
