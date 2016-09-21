@@ -7,6 +7,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     // Create mouse object to track mouse clicks/position
     var mouse = {
         click: false,
+        moving: false,
         pos: {x:0, y:0},
         pos_prev: false
     };
@@ -32,7 +33,13 @@ app.controller('LobbyController', function($scope, $location, socket) {
     ///          Canvas Drawing            ///
     //////////////////////////////////////////
     canvas.onmousedown = function(e){
-        mouse.click     = true;
+        // Drawing or dragging
+        if(!e.shiftKey){
+            mouse.click  = true;
+        }
+        else {
+            mouse.moving = true;
+        }
         boundRect       = canvas.getBoundingClientRect();
         var posx        = e.clientX - boundRect.left;
         var posy        = e.clientY - boundRect.top;
@@ -41,6 +48,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     }
     canvas.onmousemove = function(e){
         if(mouse.click){
+            // Grab mouse coordinates
             var posx    = e.clientX - boundRect.left;
             var posy    = e.clientY - boundRect.top;
             mouse.pos   = {x: posx, y: posy};
@@ -51,9 +59,20 @@ app.controller('LobbyController', function($scope, $location, socket) {
             });
             mouse.pos_prev = {x: posx, y: posy};
         }
+        else if(mouse.moving){
+            // Grab mouse coordinates
+            var posx    = e.clientX - boundRect.left;
+            var posy    = e.clientY - boundRect.top;
+            mouse.pos   = {x: posx, y: posy};
+            // Scroll screen by mouse movement
+            var scrollDist = mouse.pos_prev.x - mouse.pos.x;
+            document.getElementById('lobbyDiv').scrollLeft += scrollDist;
+            mouse.pos_prev = {x: posx, y: posy};
+        }
     }
     canvas.onmouseup = function(e){
         mouse.click = false;
+        mouse.moving = false;
         context.stroke();
         context.closePath();
     };
