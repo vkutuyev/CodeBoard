@@ -20,6 +20,11 @@
     animation-fill-mode: forwards;
 }
 
+#tmp_canvas {
+	position: absolute;
+	left: 0px; right: 0;
+	bottom: 0; top: 0;
+}
 
 /* Animation Keyframes */
 @keyframes slideAndFade {
@@ -27,3 +32,15 @@
     100%    { left: calc(100% - 210px); }
 }
 /***********************/
+
+
+.testbtn1 {
+    position:absolute;
+    left: 50%;
+    z-index: 100;
+}
+.testbtn2 {
+    position: absolute;
+    left: 60%;
+    z-index: 100;
+}
