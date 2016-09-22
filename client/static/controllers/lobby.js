@@ -10,6 +10,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.menuOpen     = false;
     $scope.clicked      = false;
     $scope.dragging     = false;
+    // Random UI
+    $scope.scrollMsg    = true;
 
     //////////////////////////////////////////
     ///            Lobby System            ///
@@ -88,7 +90,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     }
     canvas.onmousemove = function(e){
         mouse.pos = mouseCoords(e);
-
+        // If drawing
         if(mouse.click){
             socket.emit('draw_line', {
                 line: {
@@ -98,7 +100,13 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 }
             });
         }
+        // If dragging
         else if(mouse.moving){
+            // Fade out tutorial msg
+            if($scope.scrollMsg){
+                $('#scrollPop').animate({ opacity: 0 }, 2000);
+                $scope.scrollMsg = false;
+            }
             // Scroll screen by mouse movement
             var scrollDist = mouse.pos_prev.x - mouse.pos.x;
             document.getElementById('lobbyDiv').scrollLeft += scrollDist;

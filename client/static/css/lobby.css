@@ -6,25 +6,24 @@
 
 #scrollPop {
     position: absolute;
-    top: calc(100% - 75px);
+    top: calc(100% - 50px);
     height: 50px;
     width: 200px;
+    z-index: -10;
     color: white;
     font-size: 12px;
     text-align: center;
     vertical-align: middle;
     /* Slide/fade Animation */
     animation-name: slideAndFade;
-    animation-duration: 8s;
+    animation-duration: 1s;
     animation-fill-mode: forwards;
 }
 
 
 /* Animation Keyframes */
 @keyframes slideAndFade {
-    0%     { left: 100%; opacity: 1; }
-    25%    { left: calc(100% - 250px); opacity: 1; }
-    95%    { left: calc(100% - 250px); opacity: 0; }
-    100%   { left: -500px; opacity: 0; }
+    0%     { left: 100%; }
+    100%    { left: calc(100% - 210px); }
 }
 /***********************/
