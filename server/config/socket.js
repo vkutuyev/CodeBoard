@@ -1,5 +1,5 @@
 var Users   = {},
-    Lobbies = {hello_world: 'Testing'};
+    Lobbies = {};
 
 function Lobby (id) {
     this.id      = id;
