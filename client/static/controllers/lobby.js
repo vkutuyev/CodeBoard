@@ -18,12 +18,17 @@ app.controller('LobbyController', function($scope, $location, socket) {
         console.log(data);
     })
     //socket emit (checklobby)
+
+
     //////////////////////////////////////////
     ///           Scope Variables          ///
     //////////////////////////////////////////
-    $scope.fillStyle = 'white';
-    $scope.strokeStyle = 'white';
-    $scope.lineWidth  = 2;
+    // Canvas
+    $scope.fillStyle    = 'white';
+    $scope.strokeStyle  = 'white';
+    $scope.lineWidth    = 2;
+    // Lobby
+    $scope.showMenu = false;
 
     //////////////////////////////////////////
     ///        Initial Canvas Setup        ///
@@ -139,11 +144,24 @@ app.controller('LobbyController', function($scope, $location, socket) {
     })
 
 
-
-
-    $scope.color = function(color) {
-        $scope.strokeStyle = color;
+    //////////////////////////////////////////
+    ///       Lobby Helper Functions       ///
+    //////////////////////////////////////////
+    $scope.menuClicked = function(show) {
+        var midHeight = window.innerHeight / 2 + 25;
+        if(show){
+            $('#sidebar').animate({ left: -300}, 800);
+            $('#menuHam').removeClass('fa-arrows-h arrowBG');
+            $('#menuHam').addClass('fa-bars');
+            $('#menuHam').animate({ left: 25, top: 25}, 800);
+        }
+        else {
+            $('#sidebar').animate({ left: 0}, 800);
+            $('#menuHam').removeClass('fa-bars');
+            $('#menuHam').addClass('fa-arrows-h arrowBG');
+            $('#menuHam').animate({ left: 300, top: midHeight}, 800);
+        }
+        $scope.showMenu = !$scope.showMenu;
     }
-
 
 })

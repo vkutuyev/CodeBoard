@@ -4,18 +4,6 @@
     height: 105vh;
 }
 
-#menuHam {
-    position: absolute;
-    z-index: 10;
-    top: 2%;
-    left: 2%;
-    color: white;
-    padding: 10px;
-}
-    #menuHam:hover {
-        text-shadow: 0px 0px 4px white;
-    }
-
 #scrollPop {
     position: absolute;
     top: calc(100% - 75px);
@@ -40,14 +28,3 @@
     100%   { left: -500px; opacity: 0; }
 }
 /***********************/
-
-#bluebtn {
-    position: absolute;
-    left: 50px;
-    top: 250px;
-}
-#redbtn {
-    position: absolute;
-    left: 50px;
-    top: 300px;
-}
