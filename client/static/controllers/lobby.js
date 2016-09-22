@@ -28,7 +28,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.strokeStyle  = 'white';
     $scope.lineWidth    = 2;
     // Lobby
-    $scope.showMenu = false;
+    $scope.menuOpen     = false;
+    $scope.clicked      = false;
+    $scope.dragging     = false;
 
     //////////////////////////////////////////
     ///        Initial Canvas Setup        ///
@@ -145,23 +147,51 @@ app.controller('LobbyController', function($scope, $location, socket) {
 
 
     //////////////////////////////////////////
-    ///       Lobby Helper Functions       ///
+    ///         UI Key/mouse events        ///
     //////////////////////////////////////////
-    $scope.menuClicked = function(show) {
-        var midHeight = window.innerHeight / 2 + 25;
-        if(show){
-            $('#sidebar').animate({ left: -300}, 800);
-            $('#menuHam').removeClass('fa-arrows-h arrowBG');
-            $('#menuHam').addClass('fa-bars fa-2x');
-            $('#menuHam').animate({ left: 25, top: 25}, 800);
+    // Side menu hiding/sliding
+    $('#menuHam').on('mousedown', function(e) {
+        if($scope.menuOpen){
+            $scope.clicked = true;
         }
-        else {
+    })
+    $(document).on('mousemove', function(e){
+        if($scope.menuOpen && $scope.clicked){
+            $scope.dragging = true;
+            if(e.pageX > 300){
+                $('#menuHam').css('left', e.pageX-10);
+                $('#sidebar').css('width', e.pageX);
+            }
+        }
+    })
+    $('#menuHam').on('mouseup', function(e){
+        if(!$scope.menuOpen){
+            var midHeight = window.innerHeight / 2 + 25;
             $('#sidebar').animate({ left: 0}, 800);
             $('#menuHam').removeClass('fa-bars fa-2x');
             $('#menuHam').addClass('fa-arrows-h arrowBG');
-            $('#menuHam').animate({ left: 300, top: midHeight}, 800);
+            $('#menuHam').animate({ left: 290, top: midHeight}, 800);
+            $scope.menuOpen = true;
         }
-        $scope.showMenu = !$scope.showMenu;
-    }
+        else{
+            if($scope.clicked && !$scope.dragging){
+                $('#sidebar').animate({ left: -300, width: 300}, 800);
+                $('#menuHam').removeClass('fa-arrows-h arrowBG');
+                $('#menuHam').addClass('fa-bars fa-2x');
+                $('#menuHam').animate({ left: 25, top: 25}, 800);
+                $scope.menuOpen = false;
+            }
+        }
+    })
+    $(document).on('mouseup', function(e){
+        $scope.clicked = false;
+        $scope.dragging = false;
+    })
+
+
+    //////////////////////////////////////////
+    ///        Lobby Scope Functions       ///
+    //////////////////////////////////////////
+
 
 })
