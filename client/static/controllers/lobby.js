@@ -122,20 +122,23 @@ app.controller('LobbyController', function($scope, $location, socket) {
         // If drawing
         if(mouse.click){
             mouse.pos = mouseCoords(e);
+            pts.push(mouse.pos);
             // If offline
             if(!$scope.currentLobby){
-                pts.push({x: mouse.pos.x, y: mouse.pos.y});
-		        onPaint();
+		        onPaint(pts, $scope.strokeStyle, $scope.lineWidth, 'off');
             }
             // If connected
             else {
                 socket.emit('draw_line', {
-                    line: {
-                        coords      : [mouse.pos, mouse.pos_prev],
-                        strokeStyle : $scope.strokeStyle,
-                        lineWidth   : $scope.lineWidth
-                    }
+                    line: { pts: pts, strokeStyle: $scope.strokeStyle, lineWidth: $scope.lineWidth}
                 });
+                // socket.emit('draw_line', {
+                //     line: {
+                //         coords      : [mouse.pos, mouse.pos_prev],
+                //         strokeStyle : $scope.strokeStyle,
+                //         lineWidth   : $scope.lineWidth
+                //     }
+                // });
             }
             mouse.pos_prev = mouse.pos;
         }
@@ -154,14 +157,17 @@ app.controller('LobbyController', function($scope, $location, socket) {
     }
     // Drawing the line from server
     socket.on('draw_line', function (data) {
-        var line = data.line.coords;
-        context.beginPath();
-        context.moveTo(line[0].x, line[0].y);
-        context.lineTo(line[1].x, line[1].y);
-        context.strokeStyle = data.line.strokeStyle;
-        context.lineWidth   = data.line.lineWidth;
-        context.stroke();
-        context.closePath();
+        // var line = data.line.coords;
+        // context.beginPath();
+        // context.moveTo(line[0].x, line[0].y);
+        // context.lineTo(line[1].x, line[1].y);
+        // context.strokeStyle = data.line.strokeStyle;
+        // context.lineWidth   = data.line.lineWidth;
+        // context.stroke();
+        // context.closePath();
+        onPaint(data.line.pts, data.line.strokeStyle, data.line.lineWidth, 'on');
+
+
     });
 
 
@@ -266,9 +272,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
     		context.drawImage(tmp_canvas, dist, 0);
     		// Clearing tmp canvas
     		tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
-    		// Emptying up Pencil Points
-    		pts = [];
         }
+        // Emptying up Pencil Points
+        pts = [];
     })
 
 
@@ -285,34 +291,42 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $('#scrollPop').animate({ opacity: 0 }, 2000);
             $scope.scrollMsg = false;
         },
-        onPaint = function() {
-            tmp_ctx.strokeStyle = $scope.strokeStyle;
-            tmp_ctx.lineWidth   = $scope.lineWidth;
+        onPaint = function(ptsArr, color, penWidth, status) {
+            if(status == 'off'){
+                t_ctx = tmp_ctx;
+            }
+            else if(status == 'on'){
+                t_ctx = context;
+            }
+            t_ctx.strokeStyle = color;
+            t_ctx.lineWidth   = penWidth;
     		// Saving all the points in an array
-    		pts.push({x: mouse.pos.x, y: mouse.pos.y});
-    		if (pts.length < 3) {
-    			var b = pts[0];
-    			tmp_ctx.beginPath();
-    			tmp_ctx.arc(b.x, b.y, tmp_ctx.lineWidth / 2, 0, Math.PI * 2, !0);
-    			tmp_ctx.fill();
-    			tmp_ctx.closePath();
+    		if (ptsArr.length < 3) {
+    			var b = ptsArr[0];
+    			t_ctx.beginPath();
+    			t_ctx.arc(b.x, b.y, t_ctx.lineWidth / 2, 0, Math.PI * 2, !0);
+    			t_ctx.fill();
+    			t_ctx.closePath();
     			return;
     		}
-    		// Tmp canvas is always cleared up before drawing.
-    		tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
-    		tmp_ctx.beginPath();
-    		tmp_ctx.moveTo(pts[0].x, pts[0].y);
+            if(status == 'off'){
+                // Tmp canvas is always cleared up before drawing.
+                t_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
+            }
+
+            t_ctx.beginPath();
+            t_ctx.moveTo(ptsArr[0].x, ptsArr[0].y);
 
             $scope.test = 0;
-    		for (var i = 1; i < pts.length - 2; i++) {
+    		for (var i = 1; i < ptsArr.length - 2; i++) {
                 $scope.test++;
-    			var c = (pts[i].x + pts[i + 1].x) / 2;
-    			var d = (pts[i].y + pts[i + 1].y) / 2;
-    			tmp_ctx.quadraticCurveTo(pts[i].x, pts[i].y, c, d);
+    			var c = (ptsArr[i].x + ptsArr[i + 1].x) / 2;
+    			var d = (ptsArr[i].y + ptsArr[i + 1].y) / 2;
+    			t_ctx.quadraticCurveTo(ptsArr[i].x, ptsArr[i].y, c, d);
     		}
     		// For the last 2 points
-    		tmp_ctx.quadraticCurveTo( pts[i].x, pts[i].y, pts[i + 1].x, pts[i + 1].y );
-    		tmp_ctx.stroke();
+    		t_ctx.quadraticCurveTo( ptsArr[i].x, ptsArr[i].y, ptsArr[i + 1].x, ptsArr[i + 1].y );
+    		t_ctx.stroke();
     	};
     // Scope functions
     $scope.setOnOff = function(onoff) {
