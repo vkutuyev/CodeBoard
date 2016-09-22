@@ -3,6 +3,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     ///            Lobby System            ///
     //////////////////////////////////////////
     //Checks the lobby
+    $scope.currentLobby
     if ($location.url() != '/') {
         var path = $location.url().split('/')[1];
         console.log(path);
@@ -20,6 +21,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
             console.log('Success');
             console.log(data);
             $location.url('/');
+            $scope.currentLobby = data.lobby_data.id
         } else {
             console.log('Failure');
             console.log(data);
