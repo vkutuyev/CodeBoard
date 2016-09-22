@@ -1,4 +1,6 @@
 <div id=lobbyDiv class="container lobby" ng-controller="LobbyController">
+    <input type="text" style="position: fixed; top: 200px; left: 200px;" ng-model="lobby_name">
+    <div id="createLobbyTest" style="position: fixed; width: 50px; height: 50px; background: blue; top: 300px; left: 300px;" ng-click="createLobby()"></div>
 
     <!--- Whiteboard canvas --->
     <canvas id='drawBoard' />

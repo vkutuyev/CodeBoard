@@ -18,19 +18,26 @@ module.exports = function(io) {
         //////////////////////////////////////////
         ///            Lobby System            ///
         //////////////////////////////////////////
+        socket.on('create_lobby', function(data) {
+            if (!Lobbies[data.path]) {
+                Lobbies[data.path] = new Lobby(data.path);
+                socket.emit('create_lobby_status', {success: true, path: data.path})
+            } else {
+                socket.emit('create_lobby_status', {success: false, path: data.path})
+            }
+        })
 
         socket.on('join_lobby', function(data) {
             if (Lobbies[data.path]) {
-                socket.emit('join_lobby_success', {success: true, lobby_data: Lobbies[data.path]})
-                socket.join(data.path)
-                Lobbies[data.path] = new Lobby(data.path);
+                socket.emit('join_lobby_status', {success: true, lobby_data: Lobbies[data.path]})
+                socket.join(data.path);
                 Lobbies[data.path].users[socket.id] = Users[socket.id];
-                Users[socket.id].lobby = data.path
+                Users[socket.id].lobby = data.path;
                 console.log('___________________________');
                 console.log("Lobbies", Lobbies);
                 console.log("Users", Users);
             } else {
-                socket.emit('join_lobby_failure', {success: false, lobby_data: ''})
+                socket.emit('join_lobby_status', {success: false, lobby_data: ''})
             }
         })
 
