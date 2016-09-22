@@ -1,5 +1,19 @@
 app.controller('LobbyController', function($scope, $location, socket) {
     //////////////////////////////////////////
+    ///           Scope Variables          ///
+    //////////////////////////////////////////
+    // Canvas
+    $scope.fillStyle    = 'white';
+    $scope.strokeStyle  = 'white';
+    $scope.lineWidth    = 2;
+    // Sidebar
+    $scope.menuOpen     = false;
+    $scope.clicked      = false;
+    $scope.dragging     = false;
+    // Random UI
+    $scope.scrollMsg    = true;
+
+    //////////////////////////////////////////
     ///            Lobby System            ///
     //////////////////////////////////////////
     //Checks the lobby
@@ -42,15 +56,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
         socket.emit('join_lobby', {path: path});
     }
      //socket emit (checklobby)
-    //////////////////////////////////////////
-    ///           Scope Variables          ///
-    //////////////////////////////////////////
-    // Canvas
-    $scope.fillStyle    = 'white';
-    $scope.strokeStyle  = 'white';
-    $scope.lineWidth    = 2;
-    // Lobby
-    $scope.showMenu = false;
 
     //////////////////////////////////////////
     ///        Initial Canvas Setup        ///
@@ -87,17 +92,13 @@ app.controller('LobbyController', function($scope, $location, socket) {
         else            { mouse.moving = true; }
 
         boundRect       = canvas.getBoundingClientRect();
-        var posx        = e.clientX - boundRect.left;
-        var posy        = e.clientY - boundRect.top;
-        mouse.pos_prev  = {x: posx, y: posy};
-        context.moveTo(posx, posy);
+        var pos         = mouseCoords(e);
+        mouse.pos_prev  = pos;
+        context.moveTo(pos.x, pos.y);
     }
     canvas.onmousemove = function(e){
-        // Grab mouse coordinates
-        var posx    = e.clientX - boundRect.left;
-        var posy    = e.clientY - boundRect.top;
-        mouse.pos   = {x: posx, y: posy};
-
+        mouse.pos = mouseCoords(e);
+        // If drawing
         if(mouse.click){
             socket.emit('draw_line', {
                 line: {
@@ -106,19 +107,19 @@ app.controller('LobbyController', function($scope, $location, socket) {
                     lineWidth   : $scope.lineWidth
                 }
             });
-            mouse.pos_prev = {x: posx, y: posy};
         }
+        // If dragging
         else if(mouse.moving){
+            // Fade out tutorial msg
+            if($scope.scrollMsg){
+                hideScrollMsg();
+            }
             // Scroll screen by mouse movement
             var scrollDist = mouse.pos_prev.x - mouse.pos.x;
             document.getElementById('lobbyDiv').scrollLeft += scrollDist;
-            mouse.pos_prev = {x: posx, y: posy};
         }
+        mouse.pos_prev = mouse.pos;
     }
-    canvas.onmouseup = function(e){
-        mouse.click = false;
-        mouse.moving = false;
-    };
     // Drawing the line from server
     socket.on('draw_line', function (data) {
         var line = data.line.coords;
@@ -126,7 +127,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         context.moveTo(line[0].x, line[0].y);
         context.lineTo(line[1].x, line[1].y);
         context.strokeStyle = data.line.strokeStyle;
-        context.lineWidth = data.line.lineWidth;
+        context.lineWidth   = data.line.lineWidth;
         context.stroke();
         context.closePath();
     });
@@ -148,7 +149,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $(document).on('keydown', function(e){
         if(e.shiftKey && !mouse.click){
             // Shift
-            $('#drawBoard').css('cursor', 'move');
+            $('#drawBoard').css('cursor', 'ew-resize');
         }
         if(e.keyCode == 27){
             // Escape
@@ -161,29 +162,83 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $(document).on('keyup', function(e) {
         if(e.keyCode == 16){
             // Reset cursor on Shift lift
-            $('#drawBoard').css({'cursor':"url('../img/cursor/marker_white_sm.png'), auto"});
+            $('#drawBoard').css({'cursor':"url('../img/cursor/marker_"+$scope.strokeStyle+"_sm.png'), auto"});
         }
     })
 
 
     //////////////////////////////////////////
-    ///       Lobby Helper Functions       ///
+    ///         UI Key/mouse events        ///
     //////////////////////////////////////////
-    $scope.menuClicked = function(show) {
-        var midHeight = window.innerHeight / 2 + 25;
-        if(show){
-            $('#sidebar').animate({ left: -300}, 800);
-            $('#menuHam').removeClass('fa-arrows-h arrowBG');
-            $('#menuHam').addClass('fa-bars fa-2x');
-            $('#menuHam').animate({ left: 25, top: 25}, 800);
+    // Side menu hiding/sliding
+    $('#menuHam').on('mousedown', function(e) {
+        if($scope.menuOpen){
+            $scope.clicked = true;
+        }
+    })
+    $(document).on('mousemove', function(e){
+        if($scope.menuOpen && $scope.clicked){
+            $scope.dragging = true;
+            if(e.pageX > 310){
+                $('#menuHam').css('left', e.pageX-20);
+                $('#sidebar').css('width', e.pageX-10);
+            }
+        }
+    })
+    $('#menuHam').on('mouseup', function(e){
+        if(!$scope.menuOpen){
+            $('#sidebar').animate({ left: 0}, 800);
+            $('#menuHam').animate({
+                left: 295, top: 0, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0
+            }, 800);
+            $scope.menuOpen = true;
+        }
+        else{
+            if(!$scope.dragging){
+                $('#sidebar').animate({ left: -300, width: 300}, 600);
+                $('#menuHam').animate({
+                    left: 10, top: 10, borderTopLeftRadius: 15, borderBottomLeftRadius: 15, borderTopRightRadius: 15
+                }, 600);
+                $scope.menuOpen = false;
+            }
+        }
+    })
+    // Cursor change
+    $('#menuHam').on('mouseover', function(e){
+        if(!$scope.menuOpen){
+            $('#menuHam').css('cursor', 'pointer');
         }
         else {
-            $('#sidebar').animate({ left: 0}, 800);
-            $('#menuHam').removeClass('fa-bars fa-2x');
-            $('#menuHam').addClass('fa-arrows-h arrowBG');
-            $('#menuHam').animate({ left: 300, top: midHeight}, 800);
+            $('#menuHam').css('cursor', 'ew-resize');
         }
-        $scope.showMenu = !$scope.showMenu;
-    }
+    })
+    // Detecting scroll to hide message
+    $('.lobby').on('scroll', function() {
+        hideScrollMsg();
+    })
+
+    //////////////////////////////////////////
+    ///            Mouseup Resets          ///
+    //////////////////////////////////////////
+    $(document).on('mouseup', function(e){
+        $scope.clicked  = false;
+        $scope.dragging = false;
+        mouse.click     = false;
+        mouse.moving    = false;
+    })
+
+
+    //////////////////////////////////////////
+    ///           Helper Functions         ///
+    //////////////////////////////////////////
+    var mouseCoords = function(e) {
+            var posx = e.clientX - boundRect.left;
+            var posy = e.clientY - boundRect.top;
+            return { x: posx, y: posy };
+        },
+        hideScrollMsg = function() {
+            $('#scrollPop').animate({ opacity: 0 }, 2000);
+            $scope.scrollMsg = false;
+        };
 
 })

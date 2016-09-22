@@ -1,19 +1,14 @@
 #menuHam {
     position: absolute;
     z-index: 10;
-    top: 25px;
-    left: 25px;
+    top: 10px;
+    left: 10px;
     color: white;
     padding: 10px;
+    background: rgb(13, 66, 96);
+    border-radius: 15px;
+    text-shadow: 0px 0px 10px black;
 }
-    #menuHam:hover {
-        text-shadow: 0px 0px 4px white;
-    }
-    .arrowBG {
-        background: rgb(13, 66, 96);
-        border-top-right-radius: 25px;
-        border-bottom-right-radius: 25px;
-    }
 
 #sidebar {
     position: absolute;
@@ -22,6 +17,7 @@
     background: white;
     z-index: 50;
     width: 300px;
+    min-width: 300px;
     height: 100vh;
     border-right: 10px solid rgb(13, 66, 96);
 }
