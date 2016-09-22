@@ -1,6 +1,4 @@
 <div id=lobbyDiv class="container lobby" ng-controller="LobbyController">
-    <input type="text" style="position: fixed; top: 200px; left: 200px;" ng-model="lobby_name">
-    <div id="createLobbyTest" style="position: fixed; width: 50px; height: 50px; background: blue; top: 300px; left: 300px;" ng-click="createLobby()"></div>
 
     <!--- Whiteboard canvas --->
     <canvas id='drawBoard' />
@@ -15,6 +13,12 @@
     <div id="sidebar">
         <h1 ng-bind="currentLobby"></h1>
         Test
+
+        <p ng-bind='join_lobby_error'></p>
     </div>
 
+    <input type="text" style="position: fixed; top: 200px; left: 300px;" ng-model="lobby_name">
+    <input type="text" style="position: fixed; top: 250px; left: 300px;" ng-model="join_lobby">
+    <div id="createLobbyTest" style="position: fixed; width: 50px; height: 50px; background: blue; top: 200px; left: 450px;" ng-click="createLobby()">Create</div>
+    <div id="joinLobbyTest" style="position: fixed; width: 50px; height: 50px; background: green; top: 250px; left: 450px;" ng-click="joinLobby()">Join</div>
 </div>
