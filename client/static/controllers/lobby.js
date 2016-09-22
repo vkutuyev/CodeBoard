@@ -104,8 +104,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         else if(mouse.moving){
             // Fade out tutorial msg
             if($scope.scrollMsg){
-                $('#scrollPop').animate({ opacity: 0 }, 2000);
-                $scope.scrollMsg = false;
+                hideScrollMsg();
             }
             // Scroll screen by mouse movement
             var scrollDist = mouse.pos_prev.x - mouse.pos.x;
@@ -205,15 +204,19 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $('#menuHam').css('cursor', 'ew-resize');
         }
     })
+    // Detecting scroll to hide message
+    $('.lobby').on('scroll', function() {
+        hideScrollMsg();
+    })
 
     //////////////////////////////////////////
     ///            Mouseup Resets          ///
     //////////////////////////////////////////
     $(document).on('mouseup', function(e){
-        $scope.clicked = false;
+        $scope.clicked  = false;
         $scope.dragging = false;
-        mouse.click = false;
-        mouse.moving = false;
+        mouse.click     = false;
+        mouse.moving    = false;
     })
 
 
@@ -221,9 +224,13 @@ app.controller('LobbyController', function($scope, $location, socket) {
     ///           Helper Functions         ///
     //////////////////////////////////////////
     var mouseCoords = function(e) {
-        var posx    = e.clientX - boundRect.left;
-        var posy    = e.clientY - boundRect.top;
-        return { x: posx, y: posy };
-    }
+            var posx = e.clientX - boundRect.left;
+            var posy = e.clientY - boundRect.top;
+            return { x: posx, y: posy };
+        },
+        hideScrollMsg = function() {
+            $('#scrollPop').animate({ opacity: 0 }, 2000);
+            $scope.scrollMsg = false;
+        };
 
 })
