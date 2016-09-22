@@ -11,8 +11,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.clicked      = false;
     // Lobby
     $scope.currentLobby;    // Being used to check for on/offline status
-    $scope.lobby_name   = 'Create Lobby';
-    $scope.join_lobby   = 'Join Lobby';
+    $scope.lobby_name;
+    $scope.join_lobby;
     // Random UI
     $scope.scrollMsg    = true;
 
@@ -130,15 +130,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
             // If connected
             else {
                 socket.emit('draw_line', {
-                    line: { pts: pts, strokeStyle: $scope.strokeStyle, lineWidth: $scope.lineWidth}
+                    line: { pts: pts, strokeStyle: $scope.strokeStyle, lineWidth: $scope.lineWidth},
+                    lobby: $scope.currentLobby
                 });
-                // socket.emit('draw_line', {
-                //     line: {
-                //         coords      : [mouse.pos, mouse.pos_prev],
-                //         strokeStyle : $scope.strokeStyle,
-                //         lineWidth   : $scope.lineWidth
-                //     }
-                // });
             }
             mouse.pos_prev = mouse.pos;
         }
@@ -157,17 +151,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
     }
     // Drawing the line from server
     socket.on('draw_line', function (data) {
-        // var line = data.line.coords;
-        // context.beginPath();
-        // context.moveTo(line[0].x, line[0].y);
-        // context.lineTo(line[1].x, line[1].y);
-        // context.strokeStyle = data.line.strokeStyle;
-        // context.lineWidth   = data.line.lineWidth;
-        // context.stroke();
-        // context.closePath();
+        console.log('drawing from online');
         onPaint(data.line.pts, data.line.strokeStyle, data.line.lineWidth, 'on');
-
-
     });
 
 
@@ -328,13 +313,5 @@ app.controller('LobbyController', function($scope, $location, socket) {
     		t_ctx.quadraticCurveTo( ptsArr[i].x, ptsArr[i].y, ptsArr[i + 1].x, ptsArr[i + 1].y );
     		t_ctx.stroke();
     	};
-    // Scope functions
-    $scope.setOnOff = function(onoff) {
-        if(onoff == 'on'){
-            $scope.currentLobby = 'test';
-        }
-        else {
-            $scope.currentLobby = null;
-        }
-    }
+
 })

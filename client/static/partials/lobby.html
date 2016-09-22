@@ -1,8 +1,5 @@
 <div id=lobbyDiv class="container lobby" ng-controller="LobbyController">
 
-    <button class='testbtn1' ng-click=setOnOff('on')>ONLINE</button>
-    <button class='testbtn2' ng-click=setOnOff('off')>OFFLINE</button>
-
     <!-- Whiteboard canvases -->
     <canvas id='drawBoard' />
     <canvas id='tmp_canvas' />
@@ -17,13 +14,12 @@
     <div id="sidebar">
         <div id="sideBorder"></div>
         <h1 ng-bind="currentLobby"></h1>
-        Test
 
         <p ng-bind='join_lobby_error'></p>
     </div>
 
-    <input type="text" style="position: fixed; top: 200px; left: 300px;" ng-model="lobby_name">
-    <input type="text" style="position: fixed; top: 250px; left: 300px;" ng-model="join_lobby">
-    <div id="createLobbyTest" style="position: fixed; width: 50px; height: 50px; background: blue; top: 200px; left: 450px;" ng-click="createLobby()">Create</div>
-    <div id="joinLobbyTest" style="position: fixed; width: 50px; height: 50px; background: green; top: 250px; left: 450px;" ng-click="joinLobby()">Join</div>
+    <input type="text" style="position: fixed; top: 200px; left: 300px;" ng-model="lobby_name" placeholder='Create Lobby'>
+    <input type="text" style="position: fixed; top: 250px; left: 300px;" ng-model="join_lobby" placeholder='Join Lobby'>
+    <button id="createLobbyTest" style="position: fixed; width: 50px; height: 50px; background: blue; top: 200px; left: 450px;" ng-click="createLobby()">Create</button>
+    <button id="joinLobbyTest" style="position: fixed; width: 50px; height: 50px; background: green; top: 250px; left: 450px;" ng-click="joinLobby()">Join</button>
 </div>

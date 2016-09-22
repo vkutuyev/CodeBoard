@@ -62,7 +62,8 @@ module.exports = function(io) {
         ///          Canvas Drawing            ///
         //////////////////////////////////////////
         socket.on('draw_line', function(data){
-            io.emit('draw_line', data);
+            // io.emit('draw_line', data);
+            io.to(data.lobby).emit('draw_line', data);
         })
     })
 }
