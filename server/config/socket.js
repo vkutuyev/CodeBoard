@@ -60,7 +60,5 @@ module.exports = function(io) {
         socket.on('draw_line', function(data){
             io.emit('draw_line', data);
         })
-
-
     })
 }
