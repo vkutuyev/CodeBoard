@@ -9,7 +9,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
     // Sidebar
     $scope.menuOpen     = false;
     $scope.clicked      = false;
-    $scope.dragging     = false;
     // Lobby
     $scope.currentLobby;    // Being used to check for on/offline status
     $scope.lobby_name   = 'Create Lobby';
@@ -202,46 +201,44 @@ app.controller('LobbyController', function($scope, $location, socket) {
     ///         UI Key/mouse events        ///
     //////////////////////////////////////////
     // Side menu hiding/sliding
-    $('#menuHam').on('mousedown', function(e) {
+    $('#sideBorder').on('mousedown', function(e) {
         if($scope.menuOpen){
             $scope.clicked = true;
         }
     })
     $(document).on('mousemove', function(e){
         if($scope.menuOpen && $scope.clicked){
-            $scope.dragging = true;
-            if(e.pageX > 310){
-                $('#menuHam').css('left', e.pageX-20);
-                $('#sidebar').css('width', e.pageX-10);
+            if(e.pageX > 300){
+                $('#menuHam').css('left', e.pageX);
+                $('#sidebar').css('width', e.pageX);
+                $('#sideBorder').css('left', e.pageX);
             }
         }
     })
     $('#menuHam').on('mouseup', function(e){
         if(!$scope.menuOpen){
             $('#sidebar').animate({ left: 0}, 800);
+            $('#sideBorder').animate({ left: 290 }, 800);
             $('#menuHam').animate({
                 left: 295, top: 0, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0
             }, 800);
             $scope.menuOpen = true;
         }
         else{
-            if(!$scope.dragging){
-                $('#sidebar').animate({ left: -300, width: 300}, 600);
-                $('#menuHam').animate({
-                    left: 10, top: 10, borderTopLeftRadius: 15, borderBottomLeftRadius: 15, borderTopRightRadius: 15
-                }, 600);
-                $scope.menuOpen = false;
-            }
+            $('#sidebar').animate({ left: -300, width: 300}, 600);
+            $('#sideBorder').animate({ left: 290 }, 800);
+            $('#menuHam').animate({
+                left: 10, top: 10, borderTopLeftRadius: 15, borderBottomLeftRadius: 15, borderTopRightRadius: 15
+            }, 600);
+            $scope.menuOpen = false;
         }
     })
     // Cursor change
+    $('#sideBorder').on('mouseover', function(e){
+        $('#sideBorder').css('cursor', 'ew-resize');
+    })
     $('#menuHam').on('mouseover', function(e){
-        if(!$scope.menuOpen){
-            $('#menuHam').css('cursor', 'pointer');
-        }
-        else {
-            $('#menuHam').css('cursor', 'ew-resize');
-        }
+        $('#menuHam').css('cursor', 'pointer');
     })
     // Detecting scroll to hide message
     $('.lobby').on('scroll', function() {
@@ -253,7 +250,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
     //////////////////////////////////////////
     $(document).on('mouseup', function(e){
         $scope.clicked  = false;
-        $scope.dragging = false;
         mouse.click     = false;
         mouse.moving    = false;
         // If drawing offline
