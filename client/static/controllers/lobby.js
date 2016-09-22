@@ -173,19 +173,28 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $('#menuHam').on('mouseup', function(e){
         if(!$scope.menuOpen){
             $('#sidebar').animate({ left: 0}, 800);
-            $('#menuHam').removeClass('fa-bars fa-2x');
-            $('#menuHam').addClass('fa-arrows-h arrowBG');
-            $('#menuHam').animate({ left: 295, top: 0}, 800);
+            $('#menuHam').animate({
+                left: 295, top: 0, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0
+            }, 800);
             $scope.menuOpen = true;
         }
         else{
-            if($scope.clicked && !$scope.dragging){
+            if(!$scope.dragging){
                 $('#sidebar').animate({ left: -300, width: 300}, 600);
-                $('#menuHam').removeClass('fa-arrows-h arrowBG');
-                $('#menuHam').addClass('fa-bars fa-2x');
-                $('#menuHam').animate({ left: 25, top: 25}, 600);
+                $('#menuHam').animate({
+                    left: 10, top: 10, borderTopLeftRadius: 15, borderBottomLeftRadius: 15, borderTopRightRadius: 15
+                }, 600);
                 $scope.menuOpen = false;
             }
+        }
+    })
+    // Cursor change
+    $('#menuHam').on('mouseover', function(e){
+        if(!$scope.menuOpen){
+            $('#menuHam').css('cursor', 'pointer');
+        }
+        else {
+            $('#menuHam').css('cursor', 'ew-resize');
         }
     })
 
