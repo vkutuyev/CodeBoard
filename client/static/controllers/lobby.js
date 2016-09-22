@@ -96,6 +96,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     ///          Canvas Drawing            ///
     //////////////////////////////////////////
     tmp_canvas.onmousedown = function(e){
+        e.preventDefault();
         if($scope.currentLobby) {
             console.log('Drawing online');
             boundRect = canvas.getBoundingClientRect();
@@ -117,6 +118,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
     }
     tmp_canvas.onmousemove = function(e){
+        e.preventDefault();
         // If drawing
         if(mouse.click){
             mouse.pos = mouseCoords(e);
@@ -202,9 +204,14 @@ app.controller('LobbyController', function($scope, $location, socket) {
     //////////////////////////////////////////
     // Side menu hiding/sliding
     $('#sideBorder').on('mousedown', function(e) {
+        e.preventDefault();
         if($scope.menuOpen){
             $scope.clicked = true;
         }
+    })
+    $('#sideBorder').on('mousemove', function(e) {
+        // Stop sidebar dragging from highlighting text inside
+        e.preventDefault();
     })
     $(document).on('mousemove', function(e){
         if($scope.menuOpen && $scope.clicked){
