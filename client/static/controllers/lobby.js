@@ -99,15 +99,16 @@ app.controller('LobbyController', function($scope, $location, socket) {
     tmp_canvas.onmousedown = function(e){
         if($scope.currentLobby) {
             console.log('Drawing online');
+            boundRect = canvas.getBoundingClientRect();
         }
         else {
             console.log('Drawing offline');
+            boundRect = tmp_canvas.getBoundingClientRect();
         }
         // Drawing or dragging
         if(!e.shiftKey) { mouse.click  = true; }
         else            { mouse.moving = true; }
 
-        boundRect       = tmp_canvas.getBoundingClientRect();
         var pos         = mouseCoords(e);
         mouse.pos_prev  = pos;
         context.moveTo(pos.x, pos.y);
@@ -117,9 +118,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
     }
     tmp_canvas.onmousemove = function(e){
-        mouse.pos = mouseCoords(e);
         // If drawing
         if(mouse.click){
+            mouse.pos = mouseCoords(e);
             // If offline
             if(!$scope.currentLobby){
                 pts.push({x: mouse.pos.x, y: mouse.pos.y});
@@ -139,6 +140,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
         // If dragging
         else if(mouse.moving){
+            mouse.pos = mouseCoords(e);
             // Fade out tutorial msg
             if($scope.scrollMsg){
                 hideScrollMsg();
@@ -298,7 +300,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
     		tmp_ctx.beginPath();
     		tmp_ctx.moveTo(pts[0].x, pts[0].y);
 
+            $scope.test = 0;
     		for (var i = 1; i < pts.length - 2; i++) {
+                $scope.test++;
     			var c = (pts[i].x + pts[i + 1].x) / 2;
     			var d = (pts[i].y + pts[i + 1].y) / 2;
     			tmp_ctx.quadraticCurveTo(pts[i].x, pts[i].y, c, d);
