@@ -11,8 +11,7 @@
     }
     .arrowBG {
         background: rgb(13, 66, 96);
-        border-top-right-radius: 25px;
-        border-bottom-right-radius: 25px;
+        border-bottom-right-radius: 10px;
     }
 
 #sidebar {
