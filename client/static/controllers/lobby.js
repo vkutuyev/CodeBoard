@@ -152,12 +152,12 @@ app.controller('LobbyController', function($scope, $location, socket) {
         if(show){
             $('#sidebar').animate({ left: -300}, 800);
             $('#menuHam').removeClass('fa-arrows-h arrowBG');
-            $('#menuHam').addClass('fa-bars');
+            $('#menuHam').addClass('fa-bars fa-2x');
             $('#menuHam').animate({ left: 25, top: 25}, 800);
         }
         else {
             $('#sidebar').animate({ left: 0}, 800);
-            $('#menuHam').removeClass('fa-bars');
+            $('#menuHam').removeClass('fa-bars fa-2x');
             $('#menuHam').addClass('fa-arrows-h arrowBG');
             $('#menuHam').animate({ left: 300, top: midHeight}, 800);
         }
