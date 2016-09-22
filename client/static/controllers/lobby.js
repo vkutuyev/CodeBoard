@@ -12,7 +12,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.dragging     = false;
     // Lobby
     $scope.currentLobby;    // Being used to check for on/offline status
-    $scope.lobby_name   = 'HELLLOOOO';
+    $scope.lobby_name   = 'Create Lobby';
+    $scope.join_lobby   = 'Join Lobby';
     // Random UI
     $scope.scrollMsg    = true;
 
@@ -33,12 +34,14 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
     })
     socket.on('join_lobby_status', function(data) {
+        $scope.join_lobby_error = '';
         if (data.success) {
             console.log('Success');
             console.log(data);
             $location.url('/');
             $scope.currentLobby = data.lobby_data.id;
         } else {
+            $scope.join_lobby_error = 'Could not find the specified lobby';
             console.log('Failure');
             console.log(data);
         }
@@ -47,6 +50,11 @@ app.controller('LobbyController', function($scope, $location, socket) {
         var path = $scope.lobby_name;
         console.log('Creating lobby', path);
         socket.emit('create_lobby', {path: path});
+    }
+    $scope.joinLobby = function() {
+        var path = $scope.join_lobby;
+        console.log('Joining lobby', path);
+        socket.emit('join_lobby', {path: path});
     }
      //socket emit (checklobby)
 

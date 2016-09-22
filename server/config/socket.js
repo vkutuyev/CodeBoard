@@ -1,5 +1,5 @@
 var Users   = {},
-    Lobbies = {hello_world: 'Testing'};
+    Lobbies = {};
 
 function Lobby (id) {
     this.id      = id;
@@ -29,6 +29,10 @@ module.exports = function(io) {
 
         socket.on('join_lobby', function(data) {
             if (Lobbies[data.path]) {
+                if (Users[socket.id].lobby) {
+                    delete Lobbies[Users[socket.id].lobby].users[socket.id];
+                    Users[socket.id].lobby = null;
+                }
                 socket.emit('join_lobby_status', {success: true, lobby_data: Lobbies[data.path]})
                 socket.join(data.path);
                 Lobbies[data.path].users[socket.id] = Users[socket.id];
