@@ -134,7 +134,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $(document).on('keydown', function(e){
         if(e.shiftKey && !mouse.click){
             // Shift
-            $('#drawBoard').css('cursor', 'move');
+            $('#drawBoard').css('cursor', 'ew-resize');
         }
         if(e.keyCode == 27){
             // Escape
