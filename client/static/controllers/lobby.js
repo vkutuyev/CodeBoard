@@ -6,6 +6,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.fillStyle    = 'white';
     $scope.strokeStyle  = 'white';
     $scope.lineWidth    = 3;
+    $scope.buffer       = 0;
     // Sidebar
     $scope.menuOpen     = false;
     $scope.clicked      = false;
@@ -65,8 +66,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
     })
     $scope.createLobby = function(save) {
         var path  = $scope.lobby_name;
-        $scope.lobby_name = '';
         var board = canvas.toDataURL();
+        $scope.lobby_name = '';
         // console.log('Creating lobby', path);
         // Save current board as savestate or clear canvas if joining new lobby
         if(save) {
@@ -182,10 +183,14 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 }
                 // If connected
                 else {
-                    socket.emit('draw_line', {
-                        line: { pts: pts, strokeStyle: $scope.strokeStyle, lineWidth: $scope.lineWidth},
-                        lobby: $scope.currentLobby
-                    });
+                    if($scope.buffer == 4) {
+                        socket.emit('draw_line', {
+                            line: { pts: pts, strokeStyle: $scope.strokeStyle, lineWidth: $scope.lineWidth},
+                            lobby: $scope.currentLobby
+                        });
+                        $scope.buffer = 0;
+                    }
+                    else { $scope.buffer++; }
                 }
                 mouse.pos_prev = mouse.pos;
             }
