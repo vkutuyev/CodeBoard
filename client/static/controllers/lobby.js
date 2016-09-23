@@ -35,6 +35,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $scope.fillStyle = color;
             $scope.strokeStyle = color;
             $('#color').val(color);
+            $('#color').css('background', color);
         });
     })
 
