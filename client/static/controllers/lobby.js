@@ -139,14 +139,13 @@ app.controller('LobbyController', function($scope, $location, socket) {
         context.moveTo(pos.x, pos.y);
         // Connected
         if ($scope.currentLobby) {
-            boundRect = canvas.getBoundingClientRect();
+            if ($scope.shape.type) { boundRect = tmp_canvas.getBoundingClientRect(); }
+            else                   { boundRect = canvas.getBoundingClientRect(); }
         }
         // Offline
         else {
             boundRect = tmp_canvas.getBoundingClientRect();
-            if (!$scope.shape.type) {
-                context.beginPath();
-            }
+            if (!$scope.shape.type) { context.beginPath(); }
         }
         // Drawing shape
         if ($scope.shape.type && mouse.click) {
@@ -159,8 +158,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
         e.preventDefault();
         // Drawing shape
         if ($scope.shape.drawing && !mouse.dragging) {
-            var coords  = mouseCoords(e);
-            $scope.shape.width = coords.x - $scope.shape.startX;
+            var coords          = mouseCoords(e);
+            $scope.shape.width  = coords.x - $scope.shape.startX;
             $scope.shape.height = coords.y - $scope.shape.startY;
             tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
             drawShape(tmp_ctx, $scope.shape.type, $scope.strokeStyle, $scope.fillStyle, $scope.lineWidth, $scope.shape.startX, $scope.shape.startY, $scope.shape.width, $scope.shape.height, 0);
@@ -201,6 +200,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
             mouse.pos_prev = mouse.pos;
         }
     }
+
     // Socket functions
     socket.on('draw_line', function (data) {
         onPaint(data.line.pts, data.line.strokeStyle, data.line.lineWidth, 'on');
@@ -390,8 +390,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
     		t_ctx.stroke();
     	},
         drawShape = function(con, type, strCol, filCol, lineWidth, startX, startY, width, height, scrLeft) {
-            // if (con == tmp_ctx) { var dist = 0; }
-            // else { var dist = scrLeft; }
             var dist                = scrLeft,
                 shapeContext        = con;
             shapeContext.lineWidth  = lineWidth;
