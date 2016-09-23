@@ -71,6 +71,9 @@ module.exports = function(io) {
         socket.on('draw_line', function(data) {
             io.to(data.lobby).emit('draw_line', data);
         })
+        socket.on('draw_shape', function(data) {
+            io.to(data.lobby).emit('draw_shape', data);
+        })
         //////////////////////////////////////////
         ///           Canvas Saving            ///
         //////////////////////////////////////////

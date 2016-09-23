@@ -145,15 +145,15 @@ app.controller('LobbyController', function($scope, $location, socket) {
         // Offline
         else {
             boundRect = tmp_canvas.getBoundingClientRect();
-            // Drawing shape
-            if ($scope.shape.type && mouse.click) {
-                $scope.shape.drawing = true;
-                $scope.shape.startX  = mouseCoords(e).x;
-                $scope.shape.startY  = mouseCoords(e).y;
-            }
-            else {
+            if (!$scope.shape.type) {
                 context.beginPath();
             }
+        }
+        // Drawing shape
+        if ($scope.shape.type && mouse.click) {
+            $scope.shape.drawing = true;
+            $scope.shape.startX  = mouseCoords(e).x;
+            $scope.shape.startY  = mouseCoords(e).y;
         }
     }
     tmp_canvas.onmousemove = function(e) {
@@ -164,7 +164,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $scope.shape.width = coords.x - $scope.shape.startX;
             $scope.shape.height = coords.y - $scope.shape.startY;
             tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
-            drawShape(tmp_ctx, $scope.strokeStyle, $scope.fillStyle, $scope.lineWidth);
+            drawShape(tmp_ctx, $scope.shape.type, $scope.strokeStyle, $scope.fillStyle, $scope.lineWidth, $scope.shape.startX, $scope.shape.startY, $scope.shape.width, $scope.shape.height, 0);
         }
         else {
             mouse.pos = mouseCoords(e);
@@ -202,10 +202,14 @@ app.controller('LobbyController', function($scope, $location, socket) {
             mouse.pos_prev = mouse.pos;
         }
     }
-    // Drawing the line from server
+    // Socket functions
     socket.on('draw_line', function (data) {
         onPaint(data.line.pts, data.line.strokeStyle, data.line.lineWidth, 'on');
     });
+    socket.on('draw_shape', function(shape) {
+        console.log('received shape');
+        drawShape(context, shape.type, shape.strokeStyle, shape.fillStyle, shape.lineWidth, shape.startX, shape.startY, shape.width, shape.height, shape.dist);
+    })
 
 
     //////////////////////////////////////////
@@ -310,23 +314,29 @@ app.controller('LobbyController', function($scope, $location, socket) {
     ///            Mouseup Events          ///
     //////////////////////////////////////////
     $(document).on('mouseup', function(e) {
-        // Drawing shape
-        if ($scope.shape.type && $scope.shape.drawing && !mouse.dragging) {
-            tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
-            drawShape(context, $scope.strokeStyle, $scope.fillStyle, $scope.lineWidth);
-            $scope.shape.drawing = false;
-        }
+        var dist = document.getElementById('lobbyDiv').scrollLeft;
         // Offline
         if (!$scope.currentLobby) {
-            var dist = document.getElementById('lobbyDiv').scrollLeft;
+            // Drawing shape
+            if ($scope.shape.type && $scope.shape.drawing && !mouse.dragging) {
+                drawShape(context, $scope.shape.type, $scope.strokeStyle, $scope.fillStyle, $scope.lineWidth, $scope.shape.startX, $scope.shape.startY, $scope.shape.width, $scope.shape.height, dist);
+                $scope.shape.drawing = false;
+            }
     		context.drawImage(tmp_canvas, dist, 0);
-    		tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
         }
         // Connected
         else{
+            // Drawing Shape
+            if ($scope.shape.type && $scope.shape.drawing && !mouse.dragging) {
+                socket.emit('draw_shape', {
+                    lobby: $scope.currentLobby, type: $scope.shape.type, strokeStyle: $scope.strokeStyle, fillStyle: $scope.fillStyle, lineWidth: $scope.lineWidth, startX: $scope.shape.startX, startY: $scope.shape.startY, width: $scope.shape.width, height: $scope.shape.height, dist: dist
+                })
+                $scope.shape.drawing = false;
+            }
             var boardState = canvas.toDataURL();
             socket.emit('savestate', { canvas: boardState, lobby: $scope.currentLobby});
         }
+        tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
         // Resetting variables
         $scope.clicked  = false;
         mouse.click     = false;
@@ -377,29 +387,30 @@ app.controller('LobbyController', function($scope, $location, socket) {
     		t_ctx.quadraticCurveTo( ptsArr[i].x, ptsArr[i].y, ptsArr[i + 1].x, ptsArr[i + 1].y );
     		t_ctx.stroke();
     	},
-        drawShape = function(con, strCol, filCol, wth) {
-            if (con == tmp_ctx) { var dist = 0; }
-            else { var dist = document.getElementById('lobbyDiv').scrollLeft; }
-            var shapeContext = con;
-            shapeContext.lineWidth = wth;
-            if ($scope.shape.type == 'rectF') {
+        drawShape = function(con, type, strCol, filCol, lineWidth, startX, startY, width, height, scrLeft) {
+            // if (con == tmp_ctx) { var dist = 0; }
+            // else { var dist = scrLeft; }
+            var dist                = scrLeft,
+                shapeContext        = con;
+            shapeContext.lineWidth  = lineWidth;
+            if (type == 'rectF') {
                 shapeContext.fillStyle = filCol;
-                shapeContext.fillRect($scope.shape.startX + dist, $scope.shape.startY, $scope.shape.width, $scope.shape.height);
+                shapeContext.fillRect(startX + dist, startY, width, height);
             }
-            if ($scope.shape.type == 'rectH') {
+            if (type == 'rectH') {
                 shapeContext.strokeStyle = strCol;
-                shapeContext.strokeRect($scope.shape.startX + dist, $scope.shape.startY, $scope.shape.width, $scope.shape.height);
+                shapeContext.strokeRect(startX + dist, startY, width, height);
             }
-            if ($scope.shape.type == 'circF' || $scope.shape.type == 'circH' ) {
-                var w2            = $scope.shape.width * $scope.shape.width,
-                    h2            = $scope.shape.height * $scope.shape.height,
+            if (type == 'circF' || type == 'circH' ) {
+                var w2            = width * width,
+                    h2            = height * height,
                     radius        = Math.sqrt(w2+h2),
                     startAngle    = 0,
                     endAngle      = Math.PI*2;
                 shapeContext.beginPath();
-            	shapeContext.arc($scope.shape.startX + dist, $scope.shape.startY, radius, startAngle, endAngle, true);
+            	shapeContext.arc(startX + dist, startY, radius, startAngle, endAngle, true);
             	shapeContext.closePath();
-                if ($scope.shape.type == 'circF') {
+                if (type == 'circF') {
                     shapeContext.fillStyle = filCol;
                     shapeContext.fill();
                 }
