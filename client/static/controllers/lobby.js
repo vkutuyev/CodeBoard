@@ -168,6 +168,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
             var coords = mouseCoords(e);
             $scope.shape.width = coords.x - $scope.shape.startX;
             $scope.shape.height = coords.y - $scope.shape.startY;
+            tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
+            drawShape(tmp_ctx);
         }
         else {
             // If drawing
@@ -305,15 +307,14 @@ app.controller('LobbyController', function($scope, $location, socket) {
     //////////////////////////////////////////
     $(document).on('mouseup', function(e){
         if($scope.shape.type && $scope.shape.drawing && !mouse.moving){
-            drawShape();
+            tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
+            drawShape(context);
             $scope.shape.drawing = false;
         }
         // If drawing offline
         if(!$scope.currentLobby){
             var dist = document.getElementById('lobbyDiv').scrollLeft;
-            // Writing down to real canvas now
     		context.drawImage(tmp_canvas, dist, 0);
-    		// Clearing tmp canvas
     		tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
         }
         // If connected
@@ -371,16 +372,16 @@ app.controller('LobbyController', function($scope, $location, socket) {
     		t_ctx.quadraticCurveTo( ptsArr[i].x, ptsArr[i].y, ptsArr[i + 1].x, ptsArr[i + 1].y );
     		t_ctx.stroke();
     	},
-        drawShape = function() {
-            console.log('drawing');
+        drawShape = function(con) {
             var dist = document.getElementById('lobbyDiv').scrollLeft;
+            var shapeContext = con;
             if($scope.shape.type == 'rectF'){
-                context.fillStyle = $scope.fillStyle;
-                context.fillRect($scope.shape.startX + dist, $scope.shape.startY, $scope.shape.width, $scope.shape.height);
+                shapeContext.fillStyle = $scope.fillStyle;
+                shapeContext.fillRect($scope.shape.startX + dist, $scope.shape.startY, $scope.shape.width, $scope.shape.height);
             }
             if($scope.shape.type == 'rectH'){
-                context.strokeStyle = $scope.strokeStyle;
-                context.strokeRect($scope.shape.startX + dist, $scope.shape.startY, $scope.shape.width, $scope.shape.height);
+                shapeContext.strokeStyle = $scope.strokeStyle;
+                shapeContext.strokeRect($scope.shape.startX + dist, $scope.shape.startY, $scope.shape.width, $scope.shape.height);
             }
             if($scope.shape.type == 'circF' || $scope.shape.type == 'circH' ){
                 var w2            = $scope.shape.width * $scope.shape.width,
@@ -388,20 +389,20 @@ app.controller('LobbyController', function($scope, $location, socket) {
                     radius        = Math.sqrt(w2+h2),
                     startAngle    = 0,
                     endAngle      = Math.PI*2;
-                context.beginPath();
-            	context.arc($scope.shape.startX + dist, $scope.shape.startY, radius, startAngle, endAngle, true);
-            	context.closePath();
+                shapeContext.beginPath();
+            	shapeContext.arc($scope.shape.startX + dist, $scope.shape.startY, radius, startAngle, endAngle, true);
+            	shapeContext.closePath();
                 if($scope.shape.type == 'circF') {
-                    context.fillStyle = $scope.fillStyle;
-                    context.fill();
+                    shapeContext.fillStyle = $scope.fillStyle;
+                    shapeContext.fill();
                 }
                 else {
-                    context.strokeStyle = $scope.strokeStyle;
-                    context.stroke();
+                    shapeContext.strokeStyle = $scope.strokeStyle;
+                    shapeContext.stroke();
                 }
             }
             // Set background back to black
-            context.fillStyle = 'black';
+            shapeContext.fillStyle = 'black';
         };
 
         // Scope functions
