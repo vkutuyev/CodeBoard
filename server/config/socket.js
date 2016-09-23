@@ -2,9 +2,11 @@ var Users   = {},
     Lobbies = {};
 
 function Lobby (id) {
-    this.id      = id;
-    this.users   = {};
-    this.chatlog = [];
+    this.id          = id;
+    this.users       = {};
+    this.chatlog     = [];
+    this.savestate   = '';
+    this.screenshots = [];
 }
 
 ////////////////////////////////////////////////////////////
@@ -21,6 +23,7 @@ module.exports = function(io) {
         socket.on('create_lobby', function(data) {
             if (!Lobbies[data.path]) {
                 Lobbies[data.path] = new Lobby(data.path);
+                Lobbies[data.path].savestate = data.canvas;
                 socket.emit('create_lobby_status', {success: true, path: data.path})
             } else {
                 socket.emit('create_lobby_status', {success: false, path: data.path})
@@ -37,33 +40,42 @@ module.exports = function(io) {
                 socket.join(data.path);
                 Lobbies[data.path].users[socket.id] = Users[socket.id];
                 Users[socket.id].lobby = data.path;
-                console.log('___________________________');
-                console.log("Lobbies", Lobbies);
-                console.log("Users", Users);
+                // console.log('___________________________');
+                // console.log("Lobbies", Lobbies);
+                // console.log("Users", Users);
             } else {
                 socket.emit('join_lobby_status', {success: false, lobby_data: ''})
             }
         })
 
+        socket.on('save_lobby', function(data) {
+            Lobbies[data.path].savestate = data.canvas;
+        })
+
         socket.on('disconnect', function() {
             if (Users[socket.id]) {
                 if (Lobbies[Users[socket.id].lobby]) {
-                    console.log(Users[socket.id].name, 'disconnected from', Users[socket.id].lobby);
+                    // console.log(Users[socket.id].name, 'disconnected from', Users[socket.id].lobby);
                     //Check to see that person has lobby or not
                     delete Lobbies[Users[socket.id].lobby].users[socket.id]
                 }
                 delete Users[socket.id];
             }
-            console.log('___________________________');
-            console.log("Lobbies", Lobbies);
-            console.log("Users", Users);
+            // console.log('___________________________');
+            // console.log("Lobbies", Lobbies);
+            // console.log("Users", Users);
         })
         //////////////////////////////////////////
         ///          Canvas Drawing            ///
         //////////////////////////////////////////
         socket.on('draw_line', function(data){
-            // io.emit('draw_line', data);
             io.to(data.lobby).emit('draw_line', data);
+        })
+        //////////////////////////////////////////
+        ///           Canvas Saving            ///
+        //////////////////////////////////////////
+        socket.on('savestate', function(data){
+            Lobbies[data.lobby].savestate = data.canvas;
         })
     })
 }

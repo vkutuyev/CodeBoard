@@ -13,13 +13,39 @@
     <!-- Sidebar -->
     <div id="sidebar">
         <div id="sideBorder"></div>
+        <h1 ng-if="!currentLobby">Offline</h1>
         <h1 ng-bind="currentLobby"></h1>
 
         <p ng-bind='join_lobby_error'></p>
     </div>
 
+
+    <!-- Temp toolbar -->
+    <div id="tools" style="position: absolute; top: 50px; left: 90%;">
+        <span style='color: white; font-size 16px; text-decoration: underline;'>Color</span><br>
+        <button ng-click=changeColor('blue')>BLUE</button><br>
+        <button ng-click=changeColor('red')>RED</button><br>
+        <button ng-click=changeColor('green')>GREEN</button><br>
+        <button ng-click=changeColor('white')>WHITE</button><br>
+        <br><br>
+        <span style='color: white; font-size 16px; text-decoration: underline;'>Size</span><br><br>
+        <input id=sizeSlide type="range" min=1 max=20 ng-model=lineWidth /><br>
+        <input id=sizeBox type='text' ng-model=lineWidth value=lineWidth style='font-size: 16px; width: 35px;' />
+        <br><br>
+        <span style='color: white; font-size 16px; text-decoration: underline;'>Shapes</span><br>
+        <button ng-click="setShape('rectF')">Filled Rect.</button>
+        <button ng-click="setShape('rectH')">Hollow Rect.</button>
+        <button ng-click="setShape('circF')">Filled Circ.</button>
+        <button ng-click="setShape('circH')">Hollow Circ.</button>
+        <br>
+        <button ng-click="setShape(null)">Pen</button>
+    </div>
+
+
+
     <input type="text" style="position: fixed; top: 200px; left: 300px;" ng-model="lobby_name" placeholder='Create Lobby'>
     <input type="text" style="position: fixed; top: 250px; left: 300px;" ng-model="join_lobby" placeholder='Join Lobby'>
-    <button id="createLobbyTest" style="position: fixed; width: 50px; height: 50px; background: blue; top: 200px; left: 450px;" ng-click="createLobby()">Create</button>
+    <button id="saveLobbyTest" style="position: fixed; width: 50px; height: 50px; background: blue; top: 200px; left: 500px;" ng-click="createLobby('save')">Save</button>
+    <button id="createLobbyTest" style="position: fixed; width: 50px; height: 50px; background: red; top: 200px; left: 450px;" ng-click="createLobby()">Create</button>
     <button id="joinLobbyTest" style="position: fixed; width: 50px; height: 50px; background: green; top: 250px; left: 450px;" ng-click="joinLobby()">Join</button>
 </div>

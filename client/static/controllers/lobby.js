@@ -5,7 +5,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     // Canvas
     $scope.fillStyle    = 'white';
     $scope.strokeStyle  = 'white';
-    $scope.lineWidth    = 4;
+    $scope.lineWidth    = 3;
     // Sidebar
     $scope.menuOpen     = false;
     $scope.clicked      = false;
@@ -15,6 +15,15 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.join_lobby;
     // Random UI
     $scope.scrollMsg    = true;
+    // Shapes
+    $scope.shape        = {
+        type: '',
+        startX: '',
+        startY: '',
+        width: '',
+        height: '',
+        drawing: false
+    }
 
     //////////////////////////////////////////
     ///            Lobby System            ///
@@ -22,37 +31,61 @@ app.controller('LobbyController', function($scope, $location, socket) {
     //Checks the lobby
     if ($location.url() != '/') {
         var path = $location.url().split('/')[1];
-        console.log(path);
+        // console.log(path);
         socket.emit('join_lobby', {path: path});
     }
     socket.on('create_lobby_status', function(data) {
         if (data.success) {
             socket.emit('join_lobby', {path: data.path})
         } else {
-            console.log('Creating lobby failure');
+            // console.log('Creating lobby failure');
         }
     })
     socket.on('join_lobby_status', function(data) {
         $scope.join_lobby_error = '';
         if (data.success) {
-            console.log('Success');
-            console.log(data);
+            // console.log('Success');
+            // console.log(data);
             $location.url('/');
             $scope.currentLobby = data.lobby_data.id;
+            // Clear canvas and load savestate
+            context.fillRect(0,0,canvas.width,canvas.height);
+            if(data.lobby_data.savestate) {
+                var board    = new Image;
+                board.src    = data.lobby_data.savestate;
+                board.onload = function() {
+                    context.drawImage(board, 0, 0);
+                }
+            }
         } else {
             $scope.join_lobby_error = 'Could not find the specified lobby';
-            console.log('Failure');
-            console.log(data);
+            // console.log('Failure');
+            // console.log(data);
         }
     })
-    $scope.createLobby = function() {
-        var path = $scope.lobby_name;
-        console.log('Creating lobby', path);
-        socket.emit('create_lobby', {path: path});
+    $scope.createLobby = function(save) {
+        var path  = $scope.lobby_name;
+        $scope.lobby_name = '';
+        var board = canvas.toDataURL();
+        // console.log('Creating lobby', path);
+        // Save current board as savestate or clear canvas if joining new lobby
+        if(save) {
+            if(!$scope.currentLobby){
+                context.fillRect(0,0,canvas.width,canvas.height);
+                socket.emit('create_lobby', {path: path, canvas: board});
+            }
+            else {
+                socket.emit('save_lobby', {path: $scope.currentLobby, canvas: board});
+            }
+        }
+        else {
+            context.fillRect(0,0,canvas.width,canvas.height);
+            socket.emit('create_lobby', {path: path});
+        }
     }
     $scope.joinLobby = function() {
         var path = $scope.join_lobby;
-        console.log('Joining lobby', path);
+        // console.log('Joining lobby', path);
         socket.emit('join_lobby', {path: path});
     }
      //socket emit (checklobby)
@@ -78,9 +111,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
     canvas.height      = height;
     var boundRect      = canvas.getBoundingClientRect();
     // misc context/canvas settings
+    context.fillStyle  = 'black';
     context.lineCap    = 'round';
     context.lineJoin   = 'round';
-    var dataURL;
     // Creating a temp canvas
     var tmp_canvas      = document.getElementById('tmp_canvas');
     var tmp_ctx         = tmp_canvas.getContext('2d');
@@ -97,61 +130,79 @@ app.controller('LobbyController', function($scope, $location, socket) {
     //////////////////////////////////////////
     tmp_canvas.onmousedown = function(e){
         e.preventDefault();
-        if($scope.currentLobby) {
-            console.log('Drawing online');
-            boundRect = canvas.getBoundingClientRect();
-        }
-        else {
-            console.log('Drawing offline');
-            boundRect = tmp_canvas.getBoundingClientRect();
-        }
+        // Temp blurring for toolbar //
+        $('#sizeBox').blur();        //
+        $('#sizeSlide').blur();      //
+        ///////////////////////////////
+
         // Drawing or dragging
         if(!e.shiftKey) { mouse.click  = true; }
         else            { mouse.moving = true; }
 
+        // Grab current mouse pos
         var pos         = mouseCoords(e);
         mouse.pos_prev  = pos;
-        context.moveTo(pos.x, pos.y);
-        // If offline
-        if(!$scope.currentLobby){
-            context.beginPath();
+
+        if($scope.shape.type) {
+            $scope.shape.drawing = true;
+            $scope.shape.startX  = mouseCoords(e).x;
+            $scope.shape.startY  = mouseCoords(e).y;
+        }
+        else {
+            if($scope.currentLobby) {
+                boundRect = canvas.getBoundingClientRect();
+            }
+            else {
+                boundRect = tmp_canvas.getBoundingClientRect();
+            }
+            context.moveTo(pos.x, pos.y);
+            // If offline
+            if(!$scope.currentLobby){
+                context.beginPath();
+            }
         }
     }
     tmp_canvas.onmousemove = function(e){
         e.preventDefault();
-        // If drawing
-        if(mouse.click){
-            mouse.pos = mouseCoords(e);
-            pts.push(mouse.pos);
-            // If offline
-            if(!$scope.currentLobby){
-		        onPaint(pts, $scope.strokeStyle, $scope.lineWidth, 'off');
+        if($scope.shape.drawing && !mouse.moving) {
+            var coords = mouseCoords(e);
+            $scope.shape.width = coords.x - $scope.shape.startX;
+            $scope.shape.height = coords.y - $scope.shape.startY;
+        }
+        else {
+            // If drawing
+            if(mouse.click){
+                mouse.pos = mouseCoords(e);
+                pts.push(mouse.pos);
+                // If offline
+                if(!$scope.currentLobby){
+                    onPaint(pts, $scope.strokeStyle, $scope.lineWidth, 'off');
+                }
+                // If connected
+                else {
+                    socket.emit('draw_line', {
+                        line: { pts: pts, strokeStyle: $scope.strokeStyle, lineWidth: $scope.lineWidth},
+                        lobby: $scope.currentLobby
+                    });
+                }
+                mouse.pos_prev = mouse.pos;
             }
-            // If connected
-            else {
-                socket.emit('draw_line', {
-                    line: { pts: pts, strokeStyle: $scope.strokeStyle, lineWidth: $scope.lineWidth},
-                    lobby: $scope.currentLobby
-                });
+            // If dragging
+            else if(mouse.moving){
+                mouse.pos = mouseCoords(e);
+                // Fade out tutorial msg
+                if($scope.scrollMsg){
+                    hideScrollMsg();
+                }
+                // Scroll screen by mouse movement
+                var scrollDist = mouse.pos_prev.x - mouse.pos.x;
+                document.getElementById('lobbyDiv').scrollLeft += scrollDist;
             }
             mouse.pos_prev = mouse.pos;
         }
-        // If dragging
-        else if(mouse.moving){
-            mouse.pos = mouseCoords(e);
-            // Fade out tutorial msg
-            if($scope.scrollMsg){
-                hideScrollMsg();
-            }
-            // Scroll screen by mouse movement
-            var scrollDist = mouse.pos_prev.x - mouse.pos.x;
-            document.getElementById('lobbyDiv').scrollLeft += scrollDist;
-        }
-        mouse.pos_prev = mouse.pos;
     }
     // Drawing the line from server
     socket.on('draw_line', function (data) {
-        console.log('drawing from online');
         onPaint(data.line.pts, data.line.strokeStyle, data.line.lineWidth, 'on');
     });
 
@@ -178,7 +229,13 @@ app.controller('LobbyController', function($scope, $location, socket) {
             // Escape
             $('#tmp_canvas').css({'cursor':"url('../img/cursor/marker_white_sm.png'), auto"});
             $scope.strokeStyle = 'white';
-            $scope.lineWidth  = 2;
+            $scope.fillStyle   = 'white';
+            $scope.lineWidth   = 3;
+            // Temp blurring for toolbar //
+            $('#sizeBox').val(3);        //
+            $('#sizeSlide').val(3);      //
+            ///////////////////////////////
+            $scope.shape.type = null;
         }
     })
 
@@ -244,12 +301,13 @@ app.controller('LobbyController', function($scope, $location, socket) {
     })
 
     //////////////////////////////////////////
-    ///            Mouseup Resets          ///
+    ///            Mouseup Events          ///
     //////////////////////////////////////////
     $(document).on('mouseup', function(e){
-        $scope.clicked  = false;
-        mouse.click     = false;
-        mouse.moving    = false;
+        if($scope.shape.type && $scope.shape.drawing && !mouse.moving){
+            drawShape();
+            $scope.shape.drawing = false;
+        }
         // If drawing offline
         if(!$scope.currentLobby){
             var dist = document.getElementById('lobbyDiv').scrollLeft;
@@ -258,7 +316,15 @@ app.controller('LobbyController', function($scope, $location, socket) {
     		// Clearing tmp canvas
     		tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
         }
-        // Emptying up Pencil Points
+        // If connected
+        else{
+            var boardState = canvas.toDataURL();
+            socket.emit('savestate', { canvas: boardState, lobby: $scope.currentLobby});
+        }
+        // Resetting variables
+        $scope.clicked  = false;
+        mouse.click     = false;
+        mouse.moving    = false;
         pts = [];
     })
 
@@ -266,7 +332,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     //////////////////////////////////////////
     ///           Helper Functions         ///
     //////////////////////////////////////////
-    // Normal functions
+    // Controller functions
     var mouseCoords = function(e) {
             var posx = e.clientX - boundRect.left;
             var posy = e.clientY - boundRect.top;
@@ -279,13 +345,13 @@ app.controller('LobbyController', function($scope, $location, socket) {
         onPaint = function(ptsArr, color, penWidth, status) {
             if(status == 'off'){
                 t_ctx = tmp_ctx;
+                t_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
             }
             else if(status == 'on'){
                 t_ctx = context;
             }
             t_ctx.strokeStyle = color;
             t_ctx.lineWidth   = penWidth;
-    		// Saving all the points in an array
     		if (ptsArr.length < 3) {
     			var b = ptsArr[0];
     			t_ctx.beginPath();
@@ -294,17 +360,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
     			t_ctx.closePath();
     			return;
     		}
-            if(status == 'off'){
-                // Tmp canvas is always cleared up before drawing.
-                t_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
-            }
-
             t_ctx.beginPath();
             t_ctx.moveTo(ptsArr[0].x, ptsArr[0].y);
-
-            $scope.test = 0;
     		for (var i = 1; i < ptsArr.length - 2; i++) {
-                $scope.test++;
     			var c = (ptsArr[i].x + ptsArr[i + 1].x) / 2;
     			var d = (ptsArr[i].y + ptsArr[i + 1].y) / 2;
     			t_ctx.quadraticCurveTo(ptsArr[i].x, ptsArr[i].y, c, d);
@@ -312,6 +370,60 @@ app.controller('LobbyController', function($scope, $location, socket) {
     		// For the last 2 points
     		t_ctx.quadraticCurveTo( ptsArr[i].x, ptsArr[i].y, ptsArr[i + 1].x, ptsArr[i + 1].y );
     		t_ctx.stroke();
-    	};
+    	},
+        drawShape = function() {
+            console.log('drawing');
+            var dist = document.getElementById('lobbyDiv').scrollLeft;
+            if($scope.shape.type == 'rectF'){
+                context.fillStyle = $scope.fillStyle;
+                context.fillRect($scope.shape.startX + dist, $scope.shape.startY, $scope.shape.width, $scope.shape.height);
+            }
+            if($scope.shape.type == 'rectH'){
+                context.strokeStyle = $scope.strokeStyle;
+                context.strokeRect($scope.shape.startX + dist, $scope.shape.startY, $scope.shape.width, $scope.shape.height);
+            }
+            if($scope.shape.type == 'circF' || $scope.shape.type == 'circH' ){
+                var w2            = $scope.shape.width * $scope.shape.width,
+                    h2            = $scope.shape.height * $scope.shape.height,
+                    radius        = Math.sqrt(w2+h2),
+                    startAngle    = 0,
+                    endAngle      = Math.PI*2;
+                context.beginPath();
+            	context.arc($scope.shape.startX + dist, $scope.shape.startY, radius, startAngle, endAngle, true);
+            	context.closePath();
+                if($scope.shape.type == 'circF') {
+                    context.fillStyle = $scope.fillStyle;
+                    context.fill();
+                }
+                else {
+                    context.strokeStyle = $scope.strokeStyle;
+                    context.stroke();
+                }
+            }
+            // Set background back to black
+            context.fillStyle = 'black';
+        };
+
+        // Scope functions
+        $scope.changeColor = function(color) {
+            $scope.strokeStyle = color;
+            $scope.fillStyle   = color;
+            if(!$scope.shape.type){
+                $('#tmp_canvas').css({'cursor':"url('../img/cursor/marker_"+$scope.strokeStyle+"_sm.png'), auto"});
+            }
+        }
+        $scope.changeWidth = function(width) {
+            $scope.lineWidth = width;
+        }
+        $scope.setShape = function(shape) {
+            if(shape) {
+                $('#tmp_canvas').css('cursor', 'crosshair');
+                $scope.shape.type = shape;
+            }
+            else {
+                $('#tmp_canvas').css({'cursor':"url('../img/cursor/marker_"+$scope.strokeStyle+"_sm.png'), auto"});
+                $scope.shape.type = null;
+            }
+        }
 
 })
