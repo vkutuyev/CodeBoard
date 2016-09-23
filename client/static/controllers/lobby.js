@@ -135,8 +135,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         if (!e.shiftKey) { mouse.click  = true; }
         else             { mouse.dragging = true; }
         // Grab current mouse pos
-        var pos         = mouseCoords(e);
-        // mouse.pos_prev  = pos;
+        var pos = mouseCoords(e);
         context.moveTo(pos.x, pos.y);
         // Connected
         if ($scope.currentLobby) {
@@ -152,8 +151,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
         // Drawing shape
         if ($scope.shape.type && mouse.click) {
             $scope.shape.drawing = true;
-            $scope.shape.startX  = mouseCoords(e).x;
-            $scope.shape.startY  = mouseCoords(e).y;
+            $scope.shape.startX  = pos.x;
+            $scope.shape.startY  = pos.y;
         }
     }
     tmp_canvas.onmousemove = function(e) {
@@ -207,8 +206,11 @@ app.controller('LobbyController', function($scope, $location, socket) {
         onPaint(data.line.pts, data.line.strokeStyle, data.line.lineWidth, 'on');
     });
     socket.on('draw_shape', function(shape) {
-        console.log('received shape');
         drawShape(context, shape.type, shape.strokeStyle, shape.fillStyle, shape.lineWidth, shape.startX, shape.startY, shape.width, shape.height, shape.dist);
+    })
+    socket.on('board_clear', function() {
+        context.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
+        tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
     })
 
 
@@ -444,8 +446,13 @@ app.controller('LobbyController', function($scope, $location, socket) {
             }
         }
         $scope.clearCanvas = function() {
-            tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
-            context.clearRect(0, 0, canvas.width, canvas.height);
+            if ($scope.currentLobby) {
+                socket.emit('board_clear', $scope.currentLobby);
+            }
+            else {
+                tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
+                context.clearRect(0, 0, canvas.width, canvas.height);
+            }
         }
 
 })

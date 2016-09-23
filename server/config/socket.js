@@ -74,6 +74,9 @@ module.exports = function(io) {
         socket.on('draw_shape', function(data) {
             io.to(data.lobby).emit('draw_shape', data);
         })
+        socket.on('board_clear', function(lobby) {
+            io.to(lobby).emit('board_clear');
+        })
         //////////////////////////////////////////
         ///           Canvas Saving            ///
         //////////////////////////////////////////
