@@ -136,7 +136,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         else             { mouse.dragging = true; }
         // Grab current mouse pos
         var pos         = mouseCoords(e);
-        mouse.pos_prev  = pos;
+        // mouse.pos_prev  = pos;
         context.moveTo(pos.x, pos.y);
         // Connected
         if ($scope.currentLobby) {
@@ -167,9 +167,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
             drawShape(tmp_ctx, $scope.strokeStyle, $scope.fillStyle, $scope.lineWidth);
         }
         else {
+            mouse.pos = mouseCoords(e);
             // Drawing
             if (mouse.click) {
-                mouse.pos = mouseCoords(e);
                 pts.push(mouse.pos);
                 // Offline
                 if (!$scope.currentLobby) {
@@ -178,7 +178,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 // Connected
                 else {
                     // Send coords every X mousemoves to help with socket lag/overload
-                    if ($scope.buffer == 4) {
+                    if ($scope.buffer == 2) {
                         socket.emit('draw_line', {
                             line: { pts: pts, strokeStyle: $scope.strokeStyle, lineWidth: $scope.lineWidth},
                             lobby: $scope.currentLobby
@@ -187,18 +187,17 @@ app.controller('LobbyController', function($scope, $location, socket) {
                     }
                     else { $scope.buffer++; }
                 }
-                mouse.pos_prev = mouse.pos;
             }
             // Dragging
             else if (mouse.dragging) {
-                mouse.pos = mouseCoords(e);
                 // Fade out tutorial msg
-                if ($scope.scrollMsg) {
-                    hideScrollMsg();
-                }
+                if ($scope.scrollMsg) { hideScrollMsg(); }
                 // Scroll screen by mouse movement
                 var scrollDist = mouse.pos_prev.x - mouse.pos.x;
-                document.getElementById('lobbyDiv').scrollLeft += scrollDist;
+                // Ignore huge scroll changes caused by desyncs/miscalcs
+                if (Math.abs(scrollDist) < 200) {
+                    document.getElementById('lobbyDiv').scrollLeft += scrollDist;
+                }
             }
             mouse.pos_prev = mouse.pos;
         }
