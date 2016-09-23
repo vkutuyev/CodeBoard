@@ -27,17 +27,14 @@
 
     </div>
 
-
+    <div id="pickerDiv">
+        <div id="colorPicker"></div>
+    </div>
     <!-- Temp toolbar -->
-    <div id="tools" style="position: absolute; top: 50px; left: 90%;">
-        <span style='color: white; font-size 16px; text-decoration: underline;'>Color</span><br>
-        <button ng-click=changeColor('blue')>BLUE</button><br>
-        <button ng-click=changeColor('red')>RED</button><br>
-        <button ng-click=changeColor('green')>GREEN</button><br>
-        <button ng-click=changeColor('white')>WHITE</button><br>
-        <br><br>
+    <div id="tools" style="position: absolute; top: 200px; left: 90%;">
+        <form><input type="text" id="color" name="color" ng-model='strokeStyle' style='width: 100px;' /></form>
         <span style='color: white; font-size 16px; text-decoration: underline;'>Size</span><br><br>
-        <input id=sizeSlide type="range" min=1 max=20 ng-model=lineWidth /><br>
+        <input id=sizeSlide type="range" min=1 max=20 ng-model=lineWidth style='width: 75%;'/><br>
         <input id=sizeBox type='text' ng-model=lineWidth value=lineWidth style='font-size: 16px; width: 35px;' />
         <br><br>
         <span style='color: white; font-size 16px; text-decoration: underline;'>Shapes</span><br>

@@ -32,3 +32,9 @@
     100%    { left: calc(100% - 210px); }
 }
 /***********************/
+
+#pickerDiv {
+    position: absolute;
+    right: 0;
+    top: 0;
+}

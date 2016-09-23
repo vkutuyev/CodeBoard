@@ -3,8 +3,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
     ///           Scope Variables          ///
     //////////////////////////////////////////
     // Canvas
-    $scope.fillStyle    = 'white';
-    $scope.strokeStyle  = 'white';
+    $scope.fillStyle    = '#fff';
+    $scope.strokeStyle  = '#fff';
     $scope.lineWidth    = 3;
     $scope.buffer       = 0;
     // Sidebar
@@ -25,6 +25,18 @@ app.controller('LobbyController', function($scope, $location, socket) {
         height: '',
         drawing: false
     }
+
+    //////////////////////////////////////////
+    ///           Document Ready           ///
+    //////////////////////////////////////////
+    $(document).ready(function() {
+        // Initialize color picker wheel
+        $('#colorPicker').farbtastic(function callback(color){
+            $scope.fillStyle = color;
+            $scope.strokeStyle = color;
+            $('#color').val(color);
+        });
+    })
 
     //////////////////////////////////////////
     ///            Lobby System            ///
