@@ -68,13 +68,13 @@ module.exports = function(io) {
         //////////////////////////////////////////
         ///          Canvas Drawing            ///
         //////////////////////////////////////////
-        socket.on('draw_line', function(data){
+        socket.on('draw_line', function(data) {
             io.to(data.lobby).emit('draw_line', data);
         })
         //////////////////////////////////////////
         ///           Canvas Saving            ///
         //////////////////////////////////////////
-        socket.on('savestate', function(data){
+        socket.on('savestate', function(data) {
             Lobbies[data.lobby].savestate = data.canvas;
         })
     })

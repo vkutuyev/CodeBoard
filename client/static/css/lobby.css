@@ -32,15 +32,3 @@
     100%    { left: calc(100% - 210px); }
 }
 /***********************/
-
-
-.testbtn1 {
-    position:absolute;
-    left: 50%;
-    z-index: 100;
-}
-.testbtn2 {
-    position: absolute;
-    left: 60%;
-    z-index: 100;
-}
