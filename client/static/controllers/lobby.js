@@ -137,21 +137,21 @@ app.controller('LobbyController', function($scope, $location, socket) {
         // Grab current mouse pos
         var pos         = mouseCoords(e);
         mouse.pos_prev  = pos;
-        // Drawing shape
-        if ($scope.shape.type) {
-            $scope.shape.drawing = true;
-            $scope.shape.startX  = mouseCoords(e).x;
-            $scope.shape.startY  = mouseCoords(e).y;
+        context.moveTo(pos.x, pos.y);
+        // Connected
+        if ($scope.currentLobby) {
+            boundRect = canvas.getBoundingClientRect();
         }
+        // Offline
         else {
-            context.moveTo(pos.x, pos.y);
-            // Connected
-            if ($scope.currentLobby) {
-                boundRect = canvas.getBoundingClientRect();
+            boundRect = tmp_canvas.getBoundingClientRect();
+            // Drawing shape
+            if ($scope.shape.type && mouse.click) {
+                $scope.shape.drawing = true;
+                $scope.shape.startX  = mouseCoords(e).x;
+                $scope.shape.startY  = mouseCoords(e).y;
             }
-            // Offline
             else {
-                boundRect = tmp_canvas.getBoundingClientRect();
                 context.beginPath();
             }
         }
@@ -160,7 +160,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         e.preventDefault();
         // Drawing shape
         if ($scope.shape.drawing && !mouse.dragging) {
-            var coords = mouseCoords(e);
+            var coords  = mouseCoords(e);
             $scope.shape.width = coords.x - $scope.shape.startX;
             $scope.shape.height = coords.y - $scope.shape.startY;
             tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
@@ -379,7 +379,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
     		t_ctx.stroke();
     	},
         drawShape = function(con, strCol, filCol, wth) {
-            var dist = document.getElementById('lobbyDiv').scrollLeft;
+            if (con == tmp_ctx) { var dist = 0; }
+            else { var dist = document.getElementById('lobbyDiv').scrollLeft; }
             var shapeContext = con;
             shapeContext.lineWidth = wth;
             if ($scope.shape.type == 'rectF') {
