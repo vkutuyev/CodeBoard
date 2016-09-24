@@ -3,8 +3,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
     ///           Scope Variables          ///
     //////////////////////////////////////////
     // Canvas
-    $scope.fillStyle    = '#fff';
-    $scope.strokeStyle  = '#fff';
+    $scope.fillStyle    = '#ffffff';
+    $scope.strokeStyle  = '#ffffff';
     $scope.lineWidth    = 3;
     $scope.buffer       = 0;
     // Sidebar
@@ -119,8 +119,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
     var canvas         = document.getElementById('drawBoard');
     var context        = canvas.getContext('2d');
     // set canvas size properties
-    var width          = window.innerWidth*2;
-    var height         = window.innerHeight;
+    var width          = 2000;
+    var height         = 1500;
     canvas.width       = width;
     canvas.height      = height;
     var boundRect      = canvas.getBoundingClientRect();
@@ -135,8 +135,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
     tmp_canvas.height   = canvas.height;
     tmp_ctx.lineCap     = context.lineCap;
     tmp_ctx.lineJoin    = context.lineJoin;
-    // Default mouse cursor
-    $('#tmp_canvas').css({'cursor':"url('../img/cursor/marker_white_sm.png'), auto"});
+    // $('#tmp_canvas').css({'cursor':"url('../img/cursor/marker_white_sm.png'), auto"});
+    $('#tmp_canvas').css('cursor', 'cell');
 
 
     //////////////////////////////////////////
@@ -145,8 +145,14 @@ app.controller('LobbyController', function($scope, $location, socket) {
     tmp_canvas.onmousedown = function(e) {
         e.preventDefault();
         // Drawing or dragging
-        if (!e.shiftKey) { mouse.click  = true; }
-        else             { mouse.dragging = true; }
+        if (!e.shiftKey && e.button == 0) {
+            mouse.click  = true;
+        }
+        else if (e.shiftKey || e.button == 2) {
+            mouse.dragging = true;
+            $('#tmp_canvas').css('cursor', '-webkit-grabbing');
+            $('#tmp_canvas').css('cursor', '-moz-grabbing');
+        }
         // Grab current mouse pos
         var pos = mouseCoords(e);
         context.moveTo(pos.x, pos.y);
@@ -175,12 +181,12 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $scope.shape.width  = coords.x - $scope.shape.startX;
             $scope.shape.height = coords.y - $scope.shape.startY;
             tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
-            drawShape(tmp_ctx, $scope.shape.type, $scope.strokeStyle, $scope.fillStyle, $scope.lineWidth, $scope.shape.startX, $scope.shape.startY, $scope.shape.width, $scope.shape.height, 0);
+            drawShape(tmp_ctx, $scope.shape.type, $scope.strokeStyle, $scope.fillStyle, $scope.lineWidth, $scope.shape.startX, $scope.shape.startY, $scope.shape.width, $scope.shape.height, 0, 0);
         }
         else {
             mouse.pos = mouseCoords(e);
             // Drawing
-            if (mouse.click) {
+            if (mouse.click && !mouse.dragging) {
                 pts.push(mouse.pos);
                 // Offline
                 if (!$scope.currentLobby) {
@@ -204,10 +210,12 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 // Fade out tutorial msg
                 if ($scope.scrollMsg) { hideScrollMsg(); }
                 // Scroll screen by mouse movement
-                var scrollDist = mouse.pos_prev.x - mouse.pos.x;
+                var scrollX = mouse.pos_prev.x - mouse.pos.x;
+                var scrollY = mouse.pos_prev.y - mouse.pos.y;
                 // Ignore huge scroll changes caused by desyncs/miscalcs
-                if (Math.abs(scrollDist) < 200) {
-                    document.getElementById('lobbyDiv').scrollLeft += scrollDist;
+                if (Math.abs(scrollX) < 100 && Math.abs(scrollY) < 100) {
+                    document.getElementById('lobbyDiv').scrollLeft += scrollX;
+                    document.getElementById('lobbyDiv').scrollTop  += scrollY;
                 }
             }
             mouse.pos_prev = mouse.pos;
@@ -219,13 +227,62 @@ app.controller('LobbyController', function($scope, $location, socket) {
         onPaint(data.line.pts, data.line.strokeStyle, data.line.lineWidth, 'on');
     });
     socket.on('draw_shape', function(shape) {
-        drawShape(context, shape.type, shape.strokeStyle, shape.fillStyle, shape.lineWidth, shape.startX, shape.startY, shape.width, shape.height, shape.dist);
+        drawShape(context, shape.type, shape.strokeStyle, shape.fillStyle, shape.lineWidth, shape.startX, shape.startY, shape.width, shape.height, shape.distX, shape.distY);
     })
     socket.on('board_clear', function() {
         context.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
         tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
     })
 
+    //////////////////////////////////////////
+    ///            Mouseup Events          ///
+    //////////////////////////////////////////
+    $(document).on('mouseup', function(e) {
+        var distX = document.getElementById('lobbyDiv').scrollLeft;
+        var distY = document.getElementById('lobbyDiv').scrollTop;
+        // Dragging
+        if (mouse.dragging) {
+            if (e.button == 2) {
+                if ($scope.shape.type) {
+                    $('#tmp_canvas').css('cursor', 'crosshair');
+                }
+                else {
+                    $('#tmp_canvas').css('cursor', 'cell');
+                }
+            }
+            else {
+                $('#tmp_canvas').css('cursor', '-webkit-grab');
+                $('#tmp_canvas').css('cursor', '-moz-grab');
+            }
+        }
+        // Offline
+        if (!$scope.currentLobby) {
+            // Drawing shape
+            if ($scope.shape.type && $scope.shape.drawing && !mouse.dragging) {
+                drawShape(context, $scope.shape.type, $scope.strokeStyle, $scope.fillStyle, $scope.lineWidth, $scope.shape.startX, $scope.shape.startY, $scope.shape.width, $scope.shape.height, distX, distY);
+                $scope.shape.drawing = false;
+            }
+            context.drawImage(tmp_canvas, distX, distY);
+        }
+        // Connected
+        else{
+            // Drawing Shape
+            if ($scope.shape.type && $scope.shape.drawing && !mouse.dragging) {
+                socket.emit('draw_shape', {
+                    lobby: $scope.currentLobby, type: $scope.shape.type, strokeStyle: $scope.strokeStyle, fillStyle: $scope.fillStyle, lineWidth: $scope.lineWidth, startX: $scope.shape.startX, startY: $scope.shape.startY, width: $scope.shape.width, height: $scope.shape.height, distX: distX, distY: distY
+                })
+                $scope.shape.drawing = false;
+            }
+            var boardState = canvas.toDataURL();
+            socket.emit('savestate', { canvas: boardState, lobby: $scope.currentLobby});
+        }
+        tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
+        // Resetting variables
+        $scope.clicked  = false;
+        mouse.click     = false;
+        mouse.dragging  = false;
+        pts = [];
+    })
 
     //////////////////////////////////////////
     ///         Keyboard Keypresses        ///
@@ -243,11 +300,13 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $(document).on('keydown', function(e) {
         if (e.shiftKey && !mouse.click) {
             // Shift
-            $('#tmp_canvas').css('cursor', 'ew-resize');
+            // $('#tmp_canvas').css('cursor', 'ew-resize');
+            $('#tmp_canvas').css('cursor', '-webkit-grab');
+            $('#tmp_canvas').css('cursor', '-moz-grab');
         }
         if (e.keyCode == 27) {
             // Escape
-            $('#tmp_canvas').css({'cursor':"url('../img/cursor/marker_white_sm.png'), auto"});
+            $('#tmp_canvas').css('cursor', 'cell');
             $scope.strokeStyle = 'white';
             $scope.fillStyle   = 'white';
             $scope.lineWidth   = 3;
@@ -261,12 +320,16 @@ app.controller('LobbyController', function($scope, $location, socket) {
 
     $(document).on('keyup', function(e) {
         if (e.keyCode == 16) {
+            if (mouse.dragging) {
+                mouse.dragging  = false;
+                mouse.click     = false;
+            }
             // Reset cursor on Shift lift
             if ($scope.shape.type) {
                 $('#tmp_canvas').css('cursor', 'crosshair');
             }
             else {
-                $('#tmp_canvas').css({'cursor':"url('../img/cursor/marker_"+$scope.strokeStyle+"_sm.png'), auto"});
+                $('#tmp_canvas').css('cursor', 'cell');
             }
         }
     })
@@ -326,41 +389,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
     })
 
     //////////////////////////////////////////
-    ///            Mouseup Events          ///
-    //////////////////////////////////////////
-    $(document).on('mouseup', function(e) {
-        var dist = document.getElementById('lobbyDiv').scrollLeft;
-        // Offline
-        if (!$scope.currentLobby) {
-            // Drawing shape
-            if ($scope.shape.type && $scope.shape.drawing && !mouse.dragging) {
-                drawShape(context, $scope.shape.type, $scope.strokeStyle, $scope.fillStyle, $scope.lineWidth, $scope.shape.startX, $scope.shape.startY, $scope.shape.width, $scope.shape.height, dist);
-                $scope.shape.drawing = false;
-            }
-    		context.drawImage(tmp_canvas, dist, 0);
-        }
-        // Connected
-        else{
-            // Drawing Shape
-            if ($scope.shape.type && $scope.shape.drawing && !mouse.dragging) {
-                socket.emit('draw_shape', {
-                    lobby: $scope.currentLobby, type: $scope.shape.type, strokeStyle: $scope.strokeStyle, fillStyle: $scope.fillStyle, lineWidth: $scope.lineWidth, startX: $scope.shape.startX, startY: $scope.shape.startY, width: $scope.shape.width, height: $scope.shape.height, dist: dist
-                })
-                $scope.shape.drawing = false;
-            }
-            var boardState = canvas.toDataURL();
-            socket.emit('savestate', { canvas: boardState, lobby: $scope.currentLobby});
-        }
-        tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
-        // Resetting variables
-        $scope.clicked  = false;
-        mouse.click     = false;
-        mouse.dragging  = false;
-        pts = [];
-    })
-
-
-    //////////////////////////////////////////
     ///           Helper Functions         ///
     //////////////////////////////////////////
     // Controller functions
@@ -402,17 +430,18 @@ app.controller('LobbyController', function($scope, $location, socket) {
     		t_ctx.quadraticCurveTo( ptsArr[i].x, ptsArr[i].y, ptsArr[i + 1].x, ptsArr[i + 1].y );
     		t_ctx.stroke();
     	},
-        drawShape = function(con, type, strCol, filCol, lineWidth, startX, startY, width, height, scrLeft) {
-            var dist                = scrLeft,
+        drawShape = function(con, type, strCol, filCol, lineWidth, startX, startY, width, height, scrLeft, scrTop) {
+            var distX               = scrLeft,
+                distY               = scrTop,
                 shapeContext        = con;
             shapeContext.lineWidth  = lineWidth;
             if (type == 'rectF') {
                 shapeContext.fillStyle = filCol;
-                shapeContext.fillRect(startX + dist, startY, width, height);
+                shapeContext.fillRect(startX + distX, startY + distY, width, height);
             }
             if (type == 'rectH') {
                 shapeContext.strokeStyle = strCol;
-                shapeContext.strokeRect(startX + dist, startY, width, height);
+                shapeContext.strokeRect(startX + distX, startY + distY, width, height);
             }
             if (type == 'circF' || type == 'circH' ) {
                 var w2            = width * width,
@@ -421,7 +450,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                     startAngle    = 0,
                     endAngle      = Math.PI*2;
                 shapeContext.beginPath();
-            	shapeContext.arc(startX + dist, startY, radius, startAngle, endAngle, true);
+            	shapeContext.arc(startX + distX, startY + distY, radius, startAngle, endAngle, true);
             	shapeContext.closePath();
                 if (type == 'circF') {
                     shapeContext.fillStyle = filCol;
@@ -436,13 +465,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
         };
 
         // Scope functions
-        $scope.changeColor = function(color) {
-            $scope.strokeStyle = color;
-            $scope.fillStyle   = color;
-            if (!$scope.shape.type) {
-                $('#tmp_canvas').css({'cursor':"url('../img/cursor/marker_"+$scope.strokeStyle+"_sm.png'), auto"});
-            }
-        }
         $scope.changeWidth = function(width) {
             $scope.lineWidth = width;
         }
@@ -452,7 +474,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 $scope.shape.type = shape;
             }
             else {
-                $('#tmp_canvas').css({'cursor':"url('../img/cursor/marker_"+$scope.strokeStyle+"_sm.png'), auto"});
+                $('#tmp_canvas').css('cursor', 'cell');
                 $scope.shape.type = null;
             }
         }

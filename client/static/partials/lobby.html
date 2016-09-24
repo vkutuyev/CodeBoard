@@ -2,34 +2,33 @@
 
     <!-- Whiteboard canvases -->
     <canvas id='drawBoard' />
-    <canvas id='tmp_canvas' />
+    <canvas id='tmp_canvas' oncontextmenu="return false"/>
 
     <!-- Menu hamburger -->
     <i id=menuHam class="fa fa-2x fa-bars" aria-hidden="true"/>
 
     <!-- Tutorial pop-ups -->
-    <div id="scrollPop">Hold Shift and drag screen to extend canvas to the right <i class="fa fa-arrow-right" aria-hidden="true"></i></div>
+    <div id="scrollPop">Hold Shift or right-click, then drag to extend canvas <i class="fa fa-arrows-alt" aria-hidden="true"></i></div>
 
     <!-- Sidebar -->
     <div id="sidebar">
         <div id="sideBorder"></div>
         <h1 ng-if="!currentLobby">Offline</h1>
         <h1 ng-bind="currentLobby"></h1>
-
         <p ng-bind='join_lobby_error'></p>
-
 
         <input type="text" ng-model="lobby_name" placeholder='Create Lobby'><br>
         <button id="saveLobbyTest" style="width: 50px; height: 50px; background: steelblue; top: 200px; left: 500px;" ng-click="createLobby('save')">Save</button>
         <button id="createLobbyTest" style="width: 50px; height: 50px; background: red; top: 200px; left: 450px;" ng-click="createLobby()">Create</button><br><br>
         <input type="text" ng-model="join_lobby" placeholder='Join Lobby'><br>
         <button id="joinLobbyTest" style="width: 50px; height: 50px; background: green; top: 250px; left: 450px;" ng-click="joinLobby()">Join</button>
-
     </div>
+
 
     <div id="pickerDiv">
         <div id="colorPicker"></div>
     </div>
+
     <!-- Temp toolbar -->
     <div id="tools" style="position: absolute; top: 200px; left: 90%;">
         <form><input type="text" id="color" name="color" ng-model='strokeStyle' /></form>
@@ -48,6 +47,5 @@
         <button ng-click=changeColor('black')>Eraser</button><br>
         <button ng-click=clearCanvas()>Clear</button><br>
     </div>
-
 
 </div>
