@@ -11,7 +11,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.menuOpen     = false;
     $scope.clicked      = false;
     // Lobby
-    $scope.currentLobby;  // Being used to check for on/offline status
+    $scope.currentLobby;
     $scope.lobby_name;
     $scope.join_lobby;
     // Random UI
@@ -25,6 +25,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
         height: '',
         drawing: false
     }
+    // Browser checks
+    var isFirefox = typeof InstallTrigger !== 'undefined';
+    var isChrome = !!window.chrome && !!window.chrome.webstore;
 
     //////////////////////////////////////////
     ///           Document Ready           ///
@@ -37,6 +40,19 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $('#color').val(color);
             $('#color').css('background', color);
         });
+        // File dropper
+        $('#fileDrop').on('dragover', function(e) {
+            // e.stopPropagation();
+            e.preventDefault();
+            // e.dropEffect = 'copy';
+        })
+        $('#fileDrop').on('drop', function(e) {
+            // e.stopPropagation();
+            e.preventDefault();
+            console.log('=========e.dataTransfer=========');
+            console.log(e.dataTransfer);
+            console.log('=========e.dataTransfer=========');
+        })
     })
 
     //////////////////////////////////////////
@@ -485,6 +501,59 @@ app.controller('LobbyController', function($scope, $location, socket) {
             else {
                 tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
                 context.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+        $scope.saveCanvas = function() {
+            // Draw black background 'under' canvas
+            var oldCanv = context.getImageData(0, 0, width, height);
+            var compositeOperation = context.globalCompositeOperation;
+            context.globalCompositeOperation = "destination-over";
+            context.fillStyle = 'black';
+            context.fillRect(0, 0, width, height);
+            // Save canvas
+            var board    = canvas.toDataURL('image/png'),
+                fileName = 'whiteboard.png',
+                link     = document.createElement('a');
+            link.setAttribute('download', fileName);
+            link.setAttribute('id', 'canvLink');
+            link.setAttribute('href', board);
+            if(isFirefox){
+                document.body.appendChild(link);
+            }
+            link.click();
+            // Reset canvas and remove black background
+            context.clearRect(0, 0, width, height);
+            context.putImageData(oldCanv, 0, 0);
+            context.globalCompositeOperation = compositeOperation;
+        }
+        $scope.loadCanvas = function() {
+            var loadedCanv = document.getElementById('canvFile'),
+                file       = loadedCanv.files[0];
+            // Check for image file
+            if (file.type.split('/')[0] != 'image') {
+                alert('File must be an image.');
+            }
+            else {
+                var fr = new FileReader();
+                fr.readAsDataURL(file);
+                fr.onload = createImage;
+            }
+            function createImage() {
+                context.clearRect(0, 0, width, height);
+                img         = new Image();
+                img.src     = fr.result;
+                // Check image and scale down if it's too big
+                var scale = 1;
+                if (img.width > 2000 && img.height < 1500) {
+                    scale = 2000 / img.width;
+                }
+                else if (img.width < 2000 && img.height > 1500 ) {
+                    scale = 1500 / img.height;
+                }
+                else if (img.width > 2000 && img.height > 1500) {
+                    scale = Math.min(2000/img.width, 1500/img.height);
+                }
+                img.onload = context.drawImage(img, 0, 0, img.width*scale, img.height*scale);
             }
         }
 
