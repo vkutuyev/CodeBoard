@@ -468,18 +468,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
         };
 
         // Scope functions
-        $scope.changeWidth = function(width) {
-            $scope.lineWidth = width;
-        }
         $scope.setShape = function(shape) {
-            if (shape) {
-                $('#tmp_canvas').css('cursor', 'crosshair');
-                $scope.shape.type = shape;
-            }
-            else {
-                $('#tmp_canvas').css('cursor', 'cell');
-                $scope.shape.type = null;
-            }
+            $('#tmp_canvas').css('cursor', 'crosshair');
+            $scope.shape.type = shape;
         }
         $scope.clearCanvas = function() {
             if ($scope.currentLobby) {
