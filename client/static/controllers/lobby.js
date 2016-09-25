@@ -40,19 +40,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $('#color').val(color);
             $('#color').css('background', color);
         });
-        // File dropper
-        $('#fileDrop').on('dragover', function(e) {
-            // e.stopPropagation();
-            e.preventDefault();
-            // e.dropEffect = 'copy';
-        })
-        $('#fileDrop').on('drop', function(e) {
-            // e.stopPropagation();
-            e.preventDefault();
-            console.log('=========e.dataTransfer=========');
-            console.log(e.dataTransfer);
-            console.log('=========e.dataTransfer=========');
-        })
     })
 
     //////////////////////////////////////////
