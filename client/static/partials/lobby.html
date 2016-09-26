@@ -33,7 +33,6 @@
                 <h4 class="col-sm-12">Menu</h4>
             </div>
             <hr>
-            <p ng-bind='join_lobby_error'></p>
 
             <input type="text" ng-model="lobby_name" placeholder='Create Lobby'><br>
             <button id="saveLobbyTest" style="width: 50px; height: 50px; background: steelblue; top: 200px; left: 500px;" ng-click="createLobby('save')">Save</button>
@@ -113,11 +112,7 @@
         <span style='color: white; font-size 16px; text-decoration: underline;'>Misc</span><br>
         <button ng-click="strokeStyle='#000000'">Eraser</button><br>
         <button ng-click=clearCanvas()>Clear</button><br>
-        <br>
-        <input type="text" ng-model=notifMsg style='width: 100px;'/><br>
-        <button ng-click="showNotification(notifMsg, 'good')">Good</button><br>
-        <button ng-click="showNotification(notifMsg)" >Neut</button><br>
-        <button ng-click="showNotification(notifMsg, 'bad')" >Bad</button><br>
+        
     </div>
 
 </div>

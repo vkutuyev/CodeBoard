@@ -31,8 +31,6 @@ module.exports = function(io) {
         })
 
         socket.on('join_lobby', function(data) {
-            console.log(data);
-            console.log(Lobbies[data.path].users)
             if (Lobbies[data.path]) {
                 if (Users[socket.id].lobby) {
                     delete Lobbies[Users[socket.id].lobby].users[socket.id];
@@ -42,11 +40,8 @@ module.exports = function(io) {
                 socket.join(data.path);
                 Lobbies[data.path].users[socket.id] = Users[socket.id];
                 Users[socket.id].lobby = data.path;
-                // console.log('___________________________');
-                // console.log("Lobbies", Lobbies);
-                // console.log("Users", Users);
             } else {
-                socket.emit('join_lobby_status', {success: false, lobby_data: ''})
+                socket.emit('join_lobby_status', {success: false, lobby_data: data.path})
             }
         })
 

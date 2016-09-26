@@ -3,7 +3,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     ///           Scope Variables          ///
     //////////////////////////////////////////
     // Tabulations
-    $scope.menu_tab     = 1;       //menu == 0, chat == 1, code == 2
+    $scope.menu_tab     = 0;       //menu == 0, chat == 1, code == 2
     //Chat
     $scope.chat_name    = undefined;
     $scope.messages     = [];
@@ -36,6 +36,167 @@ app.controller('LobbyController', function($scope, $location, socket) {
     var isFirefox = typeof InstallTrigger !== 'undefined';
     var isChrome = !!window.chrome && !!window.chrome.webstore;
 
+
+    //////////////////////////////////////////
+    ///           Helper Functions         ///
+    //////////////////////////////////////////
+    // Controller functions
+    var mouseCoords = function(e) {
+            var posx = e.clientX - boundRect.left;
+            var posy = e.clientY - boundRect.top;
+            return { x: posx, y: posy };
+        },
+        hideScrollMsg = function() {
+            $('#scrollPop').animate({ opacity: 0 }, 2000);
+            $scope.scrollMsg = false;
+        },
+        onPaint = function(ptsArr, color, penWidth, status) {
+            if (status == 'off') {
+                t_ctx = tmp_ctx;
+                t_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
+            }
+            else if (status == 'on') {
+                t_ctx = context;
+            }
+            t_ctx.strokeStyle = color;
+            t_ctx.lineWidth   = penWidth;
+    		if (ptsArr.length < 3) {
+    			var b = ptsArr[0];
+    			t_ctx.beginPath();
+    			t_ctx.arc(b.x, b.y, t_ctx.lineWidth / 2, 0, Math.PI * 2, !0);
+    			t_ctx.fill();
+    			t_ctx.closePath();
+    			return;
+    		}
+            t_ctx.beginPath();
+            t_ctx.moveTo(ptsArr[0].x, ptsArr[0].y);
+    		for (var i = 1; i < ptsArr.length - 2; i++) {
+    			var c = (ptsArr[i].x + ptsArr[i + 1].x) / 2;
+    			var d = (ptsArr[i].y + ptsArr[i + 1].y) / 2;
+    			t_ctx.quadraticCurveTo(ptsArr[i].x, ptsArr[i].y, c, d);
+    		}
+    		// For the last 2 points
+    		t_ctx.quadraticCurveTo( ptsArr[i].x, ptsArr[i].y, ptsArr[i + 1].x, ptsArr[i + 1].y );
+    		t_ctx.stroke();
+    	},
+        drawShape = function(con, type, strCol, filCol, lineWidth, startX, startY, width, height, scrLeft, scrTop) {
+            var distX               = scrLeft,
+                distY               = scrTop,
+                shapeContext        = con;
+            shapeContext.lineWidth  = lineWidth;
+            if (type == 'rectF') {
+                shapeContext.fillStyle = filCol;
+                shapeContext.fillRect(startX + distX, startY + distY, width, height);
+            }
+            if (type == 'rectH') {
+                shapeContext.strokeStyle = strCol;
+                shapeContext.strokeRect(startX + distX, startY + distY, width, height);
+            }
+            if (type == 'circF' || type == 'circH' ) {
+                var w2            = width * width,
+                    h2            = height * height,
+                    radius        = Math.sqrt(w2+h2),
+                    startAngle    = 0,
+                    endAngle      = Math.PI*2;
+                shapeContext.beginPath();
+            	shapeContext.arc(startX + distX, startY + distY, radius, startAngle, endAngle, true);
+            	shapeContext.closePath();
+                if (type == 'circF') {
+                    shapeContext.fillStyle = filCol;
+                    shapeContext.fill();
+                }
+                else {
+                    shapeContext.strokeStyle = strCol;
+                    shapeContext.stroke();
+                }
+            }
+            shapeContext.fillStyle = 'black';
+        };
+
+    // Scope functions
+    $scope.setShape = function(shape) {
+        $('#tmp_canvas').css('cursor', 'crosshair');
+        $scope.shape.type = shape;
+    }
+    $scope.clearCanvas = function() {
+        if ($scope.currentLobby) {
+            socket.emit('board_clear', $scope.currentLobby);
+        }
+        else {
+            tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    }
+    $scope.saveCanvas = function() {
+        // Draw black background 'under' canvas
+        var oldCanv = context.getImageData(0, 0, width, height);
+        var compositeOperation = context.globalCompositeOperation;
+        context.globalCompositeOperation = "destination-over";
+        context.fillStyle = 'black';
+        context.fillRect(0, 0, width, height);
+        // Save canvas
+        var board    = canvas.toDataURL('image/png'),
+            fileName = 'whiteboard.png',
+            link     = document.createElement('a');
+        link.setAttribute('download', fileName);
+        link.setAttribute('id', 'canvLink');
+        link.setAttribute('href', board);
+        if(isFirefox){
+            document.body.appendChild(link);
+        }
+        link.click();
+        // Reset canvas and remove black background
+        context.clearRect(0, 0, width, height);
+        context.putImageData(oldCanv, 0, 0);
+        context.globalCompositeOperation = compositeOperation;
+    }
+    $scope.loadCanvas = function() {
+        var loadedCanv = document.getElementById('canvFile'),
+            file       = loadedCanv.files[0];
+        // Check for image file
+        if (file.type.split('/')[0] != 'image') {
+            alert('File must be an image.');
+        }
+        else {
+            $scope.createImage(file);
+        }
+    }
+    $scope.createImage = function(image) {
+        var fr = new FileReader();
+        fr.readAsDataURL(image);
+        fr.onload = function() {
+            context.clearRect(0, 0, width, height);
+            var source  = fr.result,
+                img     = new Image();
+                img.src = source;
+            // Check image and scale down if it's too big
+            var scale = 1;
+            if (img.width > 2000 && img.height < 1500) {
+                scale = 2000 / img.width;
+            }
+            else if (img.width < 2000 && img.height > 1500 ) {
+                scale = 1500 / img.height;
+            }
+            else if (img.width > 2000 && img.height > 1500) {
+                scale = Math.min(2000/img.width, 1500/img.height);
+            }
+            img.onload = context.drawImage(img, 0, 0, img.width*scale, img.height*scale);
+            $scope.showNotification('Image Loaded');
+        }
+    }
+    $scope.showNotification = function(msg, type) {
+        $('#notifDiv').css('top', -35);
+        $('#notifDiv').stop();
+        $scope.notification = msg;
+        switch (type) {
+            case 'good': $('#notifDiv').css('background', 'rgb(127, 224, 42)'); break;
+            case 'bad': $('#notifDiv').css('background', 'rgb(198, 49, 16)'); break;
+            default: $('#notifDiv').css('background', 'rgb(60, 134, 232)'); break;
+        }
+        $('#notifDiv').animate({'top': 0}, 500).delay(2000).animate({'top': -35}, 400);
+    }
+
+
     //////////////////////////////////////////
     ///           Document Ready           ///
     //////////////////////////////////////////
@@ -64,28 +225,26 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
     })
 
+
     //////////////////////////////////////////
     ///            Lobby System            ///
     //////////////////////////////////////////
     //Checks the lobby
     if ($location.url() != '/') {
         var path = $location.url().split('/')[1];
-        console.log(path);
         socket.emit('join_lobby', {path: path});
     }
     socket.on('create_lobby_status', function(data) {
         if (data.success) {
+            context.fillRect(0, 0, canvas.width, canvas.height);
             socket.emit('join_lobby', {path: data.path})
         } else {
-            // console.log('Creating lobby failure');
+            $scope.showNotification('Lobby Already Exists', 'bad');
         }
     })
     socket.on('join_lobby_status', function(data) {
-        $scope.join_lobby_error = '';
         if (data.success) {
-            // console.log('Success');
-            // console.log(data);
-            $location.url('/');
+            // $location.url('/');
             $scope.currentLobby = data.lobby_data.id;
             // Clear canvas and load savestate
             context.fillRect(0,0,canvas.width,canvas.height);
@@ -96,21 +255,20 @@ app.controller('LobbyController', function($scope, $location, socket) {
                     context.drawImage(board, 0, 0);
                 }
             }
+            var msg = 'Joined lobby: ' + data.lobby_data.id;
+            $scope.showNotification(msg, 'good');
         } else {
-            $scope.join_lobby_error = 'Could not find the specified lobby';
-            // console.log('Failure');
-            // console.log(data);
+            var msg = 'Lobby not found: ' + data.lobby_data;
+            $scope.showNotification(msg, 'bad');
         }
     })
     $scope.createLobby = function(save) {
         var path  = $scope.lobby_name;
         var board = canvas.toDataURL();
         $scope.lobby_name = '';
-        // console.log('Creating lobby', path);
         // Save current board as savestate or clear canvas if joining new lobby
         if (save) {
             if (!$scope.currentLobby) {
-                context.fillRect(0,0,canvas.width,canvas.height);
                 socket.emit('create_lobby', {path: path, canvas: board});
             }
             else {
@@ -118,16 +276,13 @@ app.controller('LobbyController', function($scope, $location, socket) {
             }
         }
         else {
-            context.fillRect(0,0,canvas.width,canvas.height);
             socket.emit('create_lobby', {path: path});
         }
     }
     $scope.joinLobby = function() {
         var path = $scope.join_lobby;
-        // console.log('Joining lobby', path);
         socket.emit('join_lobby', {path: path});
     }
-     //socket emit (checklobby)
 
     //////////////////////////////////////////
     ///             Chat System            ///
@@ -435,161 +590,4 @@ app.controller('LobbyController', function($scope, $location, socket) {
         hideScrollMsg();
     })
 
-    //////////////////////////////////////////
-    ///           Helper Functions         ///
-    //////////////////////////////////////////
-    // Controller functions
-    var mouseCoords = function(e) {
-            var posx = e.clientX - boundRect.left;
-            var posy = e.clientY - boundRect.top;
-            return { x: posx, y: posy };
-        },
-        hideScrollMsg = function() {
-            $('#scrollPop').animate({ opacity: 0 }, 2000);
-            $scope.scrollMsg = false;
-        },
-        onPaint = function(ptsArr, color, penWidth, status) {
-            if (status == 'off') {
-                t_ctx = tmp_ctx;
-                t_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
-            }
-            else if (status == 'on') {
-                t_ctx = context;
-            }
-            t_ctx.strokeStyle = color;
-            t_ctx.lineWidth   = penWidth;
-    		if (ptsArr.length < 3) {
-    			var b = ptsArr[0];
-    			t_ctx.beginPath();
-    			t_ctx.arc(b.x, b.y, t_ctx.lineWidth / 2, 0, Math.PI * 2, !0);
-    			t_ctx.fill();
-    			t_ctx.closePath();
-    			return;
-    		}
-            t_ctx.beginPath();
-            t_ctx.moveTo(ptsArr[0].x, ptsArr[0].y);
-    		for (var i = 1; i < ptsArr.length - 2; i++) {
-    			var c = (ptsArr[i].x + ptsArr[i + 1].x) / 2;
-    			var d = (ptsArr[i].y + ptsArr[i + 1].y) / 2;
-    			t_ctx.quadraticCurveTo(ptsArr[i].x, ptsArr[i].y, c, d);
-    		}
-    		// For the last 2 points
-    		t_ctx.quadraticCurveTo( ptsArr[i].x, ptsArr[i].y, ptsArr[i + 1].x, ptsArr[i + 1].y );
-    		t_ctx.stroke();
-    	},
-        drawShape = function(con, type, strCol, filCol, lineWidth, startX, startY, width, height, scrLeft, scrTop) {
-            var distX               = scrLeft,
-                distY               = scrTop,
-                shapeContext        = con;
-            shapeContext.lineWidth  = lineWidth;
-            if (type == 'rectF') {
-                shapeContext.fillStyle = filCol;
-                shapeContext.fillRect(startX + distX, startY + distY, width, height);
-            }
-            if (type == 'rectH') {
-                shapeContext.strokeStyle = strCol;
-                shapeContext.strokeRect(startX + distX, startY + distY, width, height);
-            }
-            if (type == 'circF' || type == 'circH' ) {
-                var w2            = width * width,
-                    h2            = height * height,
-                    radius        = Math.sqrt(w2+h2),
-                    startAngle    = 0,
-                    endAngle      = Math.PI*2;
-                shapeContext.beginPath();
-            	shapeContext.arc(startX + distX, startY + distY, radius, startAngle, endAngle, true);
-            	shapeContext.closePath();
-                if (type == 'circF') {
-                    shapeContext.fillStyle = filCol;
-                    shapeContext.fill();
-                }
-                else {
-                    shapeContext.strokeStyle = strCol;
-                    shapeContext.stroke();
-                }
-            }
-            shapeContext.fillStyle = 'black';
-        };
-
-    // Scope functions
-    $scope.setShape = function(shape) {
-        $('#tmp_canvas').css('cursor', 'crosshair');
-        $scope.shape.type = shape;
-    }
-    $scope.clearCanvas = function() {
-        if ($scope.currentLobby) {
-            socket.emit('board_clear', $scope.currentLobby);
-        }
-        else {
-            tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
-            context.clearRect(0, 0, canvas.width, canvas.height);
-        }
-    }
-    $scope.saveCanvas = function() {
-        // Draw black background 'under' canvas
-        var oldCanv = context.getImageData(0, 0, width, height);
-        var compositeOperation = context.globalCompositeOperation;
-        context.globalCompositeOperation = "destination-over";
-        context.fillStyle = 'black';
-        context.fillRect(0, 0, width, height);
-        // Save canvas
-        var board    = canvas.toDataURL('image/png'),
-            fileName = 'whiteboard.png',
-            link     = document.createElement('a');
-        link.setAttribute('download', fileName);
-        link.setAttribute('id', 'canvLink');
-        link.setAttribute('href', board);
-        if(isFirefox){
-            document.body.appendChild(link);
-        }
-        link.click();
-        // Reset canvas and remove black background
-        context.clearRect(0, 0, width, height);
-        context.putImageData(oldCanv, 0, 0);
-        context.globalCompositeOperation = compositeOperation;
-    }
-    $scope.loadCanvas = function() {
-        var loadedCanv = document.getElementById('canvFile'),
-            file       = loadedCanv.files[0];
-        // Check for image file
-        if (file.type.split('/')[0] != 'image') {
-            alert('File must be an image.');
-        }
-        else {
-            $scope.createImage(file);
-        }
-    }
-    $scope.createImage = function(image) {
-        var fr = new FileReader();
-        fr.readAsDataURL(image);
-        fr.onload = function() {
-            context.clearRect(0, 0, width, height);
-            var source  = fr.result,
-                img     = new Image();
-                img.src = source;
-            // Check image and scale down if it's too big
-            var scale = 1;
-            if (img.width > 2000 && img.height < 1500) {
-                scale = 2000 / img.width;
-            }
-            else if (img.width < 2000 && img.height > 1500 ) {
-                scale = 1500 / img.height;
-            }
-            else if (img.width > 2000 && img.height > 1500) {
-                scale = Math.min(2000/img.width, 1500/img.height);
-            }
-            img.onload = context.drawImage(img, 0, 0, img.width*scale, img.height*scale);
-        }
-    }
-    $scope.showNotification = function(msg, type) {
-        $('#notifDiv').css('top', -35);
-        $('#notifDiv').stop();
-        $scope.notification = msg;
-        switch (type) {
-            case 'good': $('#notifDiv').css('background', 'rgb(127, 224, 42)'); break;
-            case 'bad': $('#notifDiv').css('background', 'rgb(199, 72, 44)'); break;
-            default: $('#notifDiv').css('background', 'rgb(190, 196, 184)'); break;
-        }
-        $('#notifDiv').animate({'top': 0}, 500).delay(2000).animate({'top': -35}, 400);
-    }
 })
