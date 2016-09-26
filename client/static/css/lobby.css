@@ -45,3 +45,18 @@
     color: white;
     text-shadow: -1px -1px 0px black, 1px 1px 0px black, 1px -1px 0px black, -1px 1px 0px black;
 }
+
+#notifDiv {
+    position: absolute;
+    z-index: 25;
+    top: -35;
+    width: 100vw;
+    height: 35px;
+    text-align: center;
+    padding-top: 4px;
+}
+    #notifSpan {
+        color: white;
+        font-size: 20px;
+        text-shadow: -1px -1px 2px black, 1px 1px 2px black, 1px -1px 2px black, -1px 1px 2px black;
+    }

@@ -10,6 +10,9 @@
     <!-- Tutorial pop-ups -->
     <div id="scrollPop">Hold Shift or right-click, then drag to extend canvas <i class="fa fa-arrows-alt" aria-hidden="true"></i></div>
 
+    <!-- Notifications -->
+    <div id=notifDiv><span id=notifSpan>{{notification}}<span></div>
+
     <!-- Sidebar -->
     <div id="sidebar" style='padding-left: 15px;' class="container-fluid">
         <div id="sideBorder"></div>
@@ -110,6 +113,11 @@
         <span style='color: white; font-size 16px; text-decoration: underline;'>Misc</span><br>
         <button ng-click="strokeStyle='#000000'">Eraser</button><br>
         <button ng-click=clearCanvas()>Clear</button><br>
+        <br>
+        <input type="text" ng-model=notifMsg style='width: 100px;'/><br>
+        <button ng-click="showNotification(notifMsg, 'good')">Good</button><br>
+        <button ng-click="showNotification(notifMsg)" >Neut</button><br>
+        <button ng-click="showNotification(notifMsg, 'bad')" >Bad</button><br>
     </div>
 
 </div>

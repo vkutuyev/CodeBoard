@@ -22,6 +22,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.join_lobby;
     // Random UI
     $scope.scrollMsg    = true;
+    $scope.notification = '';
     // Shapes
     $scope.shape        = {
         type: '',
@@ -176,13 +177,12 @@ app.controller('LobbyController', function($scope, $location, socket) {
     context.lineCap    = 'round';
     context.lineJoin   = 'round';
     // Creating a temp canvas
-    var tmp_canvas      = document.getElementById('tmp_canvas');
-    var tmp_ctx         = tmp_canvas.getContext('2d');
-    tmp_canvas.width    = canvas.width;
-    tmp_canvas.height   = canvas.height;
-    tmp_ctx.lineCap     = context.lineCap;
-    tmp_ctx.lineJoin    = context.lineJoin;
-    // $('#tmp_canvas').css({'cursor':"url('../img/cursor/marker_white_sm.png'), auto"});
+    var tmp_canvas     = document.getElementById('tmp_canvas');
+    var tmp_ctx        = tmp_canvas.getContext('2d');
+    tmp_canvas.width   = canvas.width;
+    tmp_canvas.height  = canvas.height;
+    tmp_ctx.lineCap    = context.lineCap;
+    tmp_ctx.lineJoin   = context.lineJoin;
     $('#tmp_canvas').css('cursor', 'cell');
 
 
@@ -416,7 +416,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
         else{
             $('#sidebar').animate({ left: -300, width: 300}, 600);
-            $('#sideBorder').animate({ left: 290 }, 800);
+            $('#sideBorder').animate({ left: 290 }, 600);
             $('#menuHam').animate({
                 left: 10, top: 10, borderTopLeftRadius: 15, borderBottomLeftRadius: 15, borderTopRightRadius: 15
             }, 600);
@@ -511,74 +511,85 @@ app.controller('LobbyController', function($scope, $location, socket) {
             shapeContext.fillStyle = 'black';
         };
 
-        // Scope functions
-        $scope.setShape = function(shape) {
-            $('#tmp_canvas').css('cursor', 'crosshair');
-            $scope.shape.type = shape;
+    // Scope functions
+    $scope.setShape = function(shape) {
+        $('#tmp_canvas').css('cursor', 'crosshair');
+        $scope.shape.type = shape;
+    }
+    $scope.clearCanvas = function() {
+        if ($scope.currentLobby) {
+            socket.emit('board_clear', $scope.currentLobby);
         }
-        $scope.clearCanvas = function() {
-            if ($scope.currentLobby) {
-                socket.emit('board_clear', $scope.currentLobby);
-            }
-            else {
-                tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
-                context.clearRect(0, 0, canvas.width, canvas.height);
-            }
+        else {
+            tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
+            context.clearRect(0, 0, canvas.width, canvas.height);
         }
-        $scope.saveCanvas = function() {
-            // Draw black background 'under' canvas
-            var oldCanv = context.getImageData(0, 0, width, height);
-            var compositeOperation = context.globalCompositeOperation;
-            context.globalCompositeOperation = "destination-over";
-            context.fillStyle = 'black';
-            context.fillRect(0, 0, width, height);
-            // Save canvas
-            var board    = canvas.toDataURL('image/png'),
-                fileName = 'whiteboard.png',
-                link     = document.createElement('a');
-            link.setAttribute('download', fileName);
-            link.setAttribute('id', 'canvLink');
-            link.setAttribute('href', board);
-            if(isFirefox){
-                document.body.appendChild(link);
-            }
-            link.click();
-            // Reset canvas and remove black background
+    }
+    $scope.saveCanvas = function() {
+        // Draw black background 'under' canvas
+        var oldCanv = context.getImageData(0, 0, width, height);
+        var compositeOperation = context.globalCompositeOperation;
+        context.globalCompositeOperation = "destination-over";
+        context.fillStyle = 'black';
+        context.fillRect(0, 0, width, height);
+        // Save canvas
+        var board    = canvas.toDataURL('image/png'),
+            fileName = 'whiteboard.png',
+            link     = document.createElement('a');
+        link.setAttribute('download', fileName);
+        link.setAttribute('id', 'canvLink');
+        link.setAttribute('href', board);
+        if(isFirefox){
+            document.body.appendChild(link);
+        }
+        link.click();
+        // Reset canvas and remove black background
+        context.clearRect(0, 0, width, height);
+        context.putImageData(oldCanv, 0, 0);
+        context.globalCompositeOperation = compositeOperation;
+    }
+    $scope.loadCanvas = function() {
+        var loadedCanv = document.getElementById('canvFile'),
+            file       = loadedCanv.files[0];
+        // Check for image file
+        if (file.type.split('/')[0] != 'image') {
+            alert('File must be an image.');
+        }
+        else {
+            $scope.createImage(file);
+        }
+    }
+    $scope.createImage = function(image) {
+        var fr = new FileReader();
+        fr.readAsDataURL(image);
+        fr.onload = function() {
             context.clearRect(0, 0, width, height);
-            context.putImageData(oldCanv, 0, 0);
-            context.globalCompositeOperation = compositeOperation;
-        }
-        $scope.loadCanvas = function() {
-            var loadedCanv = document.getElementById('canvFile'),
-                file       = loadedCanv.files[0];
-            // Check for image file
-            if (file.type.split('/')[0] != 'image') {
-                alert('File must be an image.');
+            var source  = fr.result,
+                img     = new Image();
+                img.src = source;
+            // Check image and scale down if it's too big
+            var scale = 1;
+            if (img.width > 2000 && img.height < 1500) {
+                scale = 2000 / img.width;
             }
-            else {
-                $scope.createImage(file);
+            else if (img.width < 2000 && img.height > 1500 ) {
+                scale = 1500 / img.height;
             }
-        }
-        $scope.createImage = function(image) {
-            var fr = new FileReader();
-            fr.readAsDataURL(image);
-            fr.onload = function() {
-                context.clearRect(0, 0, width, height);
-                var source  = fr.result,
-                    img     = new Image();
-                    img.src = source;
-                // Check image and scale down if it's too big
-                var scale = 1;
-                if (img.width > 2000 && img.height < 1500) {
-                    scale = 2000 / img.width;
-                }
-                else if (img.width < 2000 && img.height > 1500 ) {
-                    scale = 1500 / img.height;
-                }
-                else if (img.width > 2000 && img.height > 1500) {
-                    scale = Math.min(2000/img.width, 1500/img.height);
-                }
-                img.onload = context.drawImage(img, 0, 0, img.width*scale, img.height*scale);
+            else if (img.width > 2000 && img.height > 1500) {
+                scale = Math.min(2000/img.width, 1500/img.height);
             }
+            img.onload = context.drawImage(img, 0, 0, img.width*scale, img.height*scale);
         }
+    }
+    $scope.showNotification = function(msg, type) {
+        $('#notifDiv').css('top', -35);
+        $('#notifDiv').stop();
+        $scope.notification = msg;
+        switch (type) {
+            case 'good': $('#notifDiv').css('background', 'rgb(127, 224, 42)'); break;
+            case 'bad': $('#notifDiv').css('background', 'rgb(199, 72, 44)'); break;
+            default: $('#notifDiv').css('background', 'rgb(190, 196, 184)'); break;
+        }
+        $('#notifDiv').animate({'top': 0}, 500).delay(2000).animate({'top': -35}, 400);
+    }
 })

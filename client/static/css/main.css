@@ -1,6 +1,7 @@
 body {
     background: black;
     overflow: hidden;
+    font-family: 'Raleway', sans-serif;
 }
 .container {
     margin: 0;
