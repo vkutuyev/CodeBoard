@@ -40,6 +40,21 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $('#color').val(color);
             $('#color').css('background', color);
         });
+
+        // File drop
+        var fileDrop = document.getElementById('fileDrop');
+        fileDrop.addEventListener('dragover', fileDragOver, false);
+        fileDrop.addEventListener('drop', fileDropHandler, false);
+        function fileDragOver(e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        function fileDropHandler(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var image = e.dataTransfer.files[0];
+            $scope.createImage(image);
+        }
     })
 
     //////////////////////////////////////////
@@ -512,14 +527,17 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 alert('File must be an image.');
             }
             else {
-                var fr = new FileReader();
-                fr.readAsDataURL(file);
-                fr.onload = createImage;
+                $scope.createImage(file);
             }
-            function createImage() {
+        }
+        $scope.createImage = function(image) {
+            var fr = new FileReader();
+            fr.readAsDataURL(image);
+            fr.onload = function() {
                 context.clearRect(0, 0, width, height);
-                img         = new Image();
-                img.src     = fr.result;
+                var source  = fr.result,
+                    img     = new Image();
+                    img.src = source;
                 // Check image and scale down if it's too big
                 var scale = 1;
                 if (img.width > 2000 && img.height < 1500) {
