@@ -16,6 +16,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.join_lobby;
     // Random UI
     $scope.scrollMsg    = true;
+    $scope.notification = '';
     // Shapes
     $scope.shape        = {
         type: '',
@@ -147,13 +148,12 @@ app.controller('LobbyController', function($scope, $location, socket) {
     context.lineCap    = 'round';
     context.lineJoin   = 'round';
     // Creating a temp canvas
-    var tmp_canvas      = document.getElementById('tmp_canvas');
-    var tmp_ctx         = tmp_canvas.getContext('2d');
-    tmp_canvas.width    = canvas.width;
-    tmp_canvas.height   = canvas.height;
-    tmp_ctx.lineCap     = context.lineCap;
-    tmp_ctx.lineJoin    = context.lineJoin;
-    // $('#tmp_canvas').css({'cursor':"url('../img/cursor/marker_white_sm.png'), auto"});
+    var tmp_canvas     = document.getElementById('tmp_canvas');
+    var tmp_ctx        = tmp_canvas.getContext('2d');
+    tmp_canvas.width   = canvas.width;
+    tmp_canvas.height  = canvas.height;
+    tmp_ctx.lineCap    = context.lineCap;
+    tmp_ctx.lineJoin   = context.lineJoin;
     $('#tmp_canvas').css('cursor', 'cell');
 
 
@@ -551,6 +551,15 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 }
                 img.onload = context.drawImage(img, 0, 0, img.width*scale, img.height*scale);
             }
+        }
+        $scope.showNotification = function(msg, type) {
+            $scope.notification = msg;
+            switch (type) {
+                case 'good': $('#notifDiv').css('background', 'rgb(127, 224, 42)'); break;
+                case 'neut': $('#notifDiv').css('background', 'rgb(190, 196, 184)'); break;
+                case 'bad': $('#notifDiv').css('background', 'rgb(199, 72, 44)'); break;
+            }
+            $('#notifDiv').animate({'top': 0}, 600).delay(3000).animate({'top': -35}, 600);
         }
 
 })
