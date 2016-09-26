@@ -387,7 +387,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
         else{
             $('#sidebar').animate({ left: -300, width: 300}, 600);
-            $('#sideBorder').animate({ left: 290 }, 800);
+            $('#sideBorder').animate({ left: 290 }, 600);
             $('#menuHam').animate({
                 left: 10, top: 10, borderTopLeftRadius: 15, borderBottomLeftRadius: 15, borderTopRightRadius: 15
             }, 600);
@@ -553,13 +553,15 @@ app.controller('LobbyController', function($scope, $location, socket) {
             }
         }
         $scope.showNotification = function(msg, type) {
+            $('#notifDiv').css('top', -35);
+            $('#notifDiv').stop();
             $scope.notification = msg;
             switch (type) {
                 case 'good': $('#notifDiv').css('background', 'rgb(127, 224, 42)'); break;
-                case 'neut': $('#notifDiv').css('background', 'rgb(190, 196, 184)'); break;
                 case 'bad': $('#notifDiv').css('background', 'rgb(199, 72, 44)'); break;
+                default: $('#notifDiv').css('background', 'rgb(190, 196, 184)'); break;
             }
-            $('#notifDiv').animate({'top': 0}, 600).delay(3000).animate({'top': -35}, 600);
+            $('#notifDiv').animate({'top': 0}, 500).delay(2000).animate({'top': -35}, 400);
         }
 
 })
