@@ -11,7 +11,7 @@
     <div id="scrollPop">Hold Shift or right-click, then drag to extend canvas <i class="fa fa-arrows-alt" aria-hidden="true"></i></div>
 
     <!-- Sidebar -->
-    <div id="sidebar">
+    <div id="sidebar" style='padding-left: 15px;'>
         <div id="sideBorder"></div>
         <h1 ng-if="!currentLobby">Offline</h1>
         <h1 ng-bind="currentLobby"></h1>
@@ -22,6 +22,17 @@
         <button id="createLobbyTest" style="width: 50px; height: 50px; background: red; top: 200px; left: 450px;" ng-click="createLobby()">Create</button><br><br>
         <input type="text" ng-model="join_lobby" placeholder='Join Lobby'><br>
         <button id="joinLobbyTest" style="width: 50px; height: 50px; background: green; top: 250px; left: 450px;" ng-click="joinLobby()">Join</button>
+        <br>
+        <br>
+        <br>
+        <br>
+        <button ng-click=saveCanvas()>SAVE</button>
+        <br>
+        <br>
+        <input id=canvFile type="file" />
+        <div id=fileDrop style='height: 100px; width: 100px; background: blue; color: white;'>Drop Here</div>
+        <button ng-click=loadCanvas()>LOAD</button>
+
     </div>
 
 
@@ -45,13 +56,6 @@
         <span style='color: white; font-size 16px; text-decoration: underline;'>Misc</span><br>
         <button ng-click="strokeStyle='#000000'">Eraser</button><br>
         <button ng-click=clearCanvas()>Clear</button><br>
-        <br>
-        <button ng-click=saveCanvas()>SAVE</button>
-        <br>
-        <br>
-        <input id=canvFile type="file" />
-        <div id=fileDrop style='height: 100px; width: 100px; background: blue; color: white;'>Drop Here</div>
-        <button ng-click=loadCanvas()>LOAD</button>
     </div>
 
 </div>
