@@ -31,6 +31,8 @@ module.exports = function(io) {
         })
 
         socket.on('join_lobby', function(data) {
+            console.log(data);
+            console.log(Lobbies[data.path].users)
             if (Lobbies[data.path]) {
                 if (Users[socket.id].lobby) {
                     delete Lobbies[Users[socket.id].lobby].users[socket.id];
@@ -65,6 +67,28 @@ module.exports = function(io) {
             // console.log("Lobbies", Lobbies);
             // console.log("Users", Users);
         })
+        //////////////////////////////////////////
+        ///           Chat System              ///
+        //////////////////////////////////////////
+        socket.on('user_send', function(data) {
+            Users[socket.id].name = data.name;
+            console.log(Users[socket.id]);
+        })
+        socket.on('message_send', function(data) {
+            console.log(data);
+            if (Users[socket.id].name) {
+                var formatted = {name: Users[socket.id].name, message: data.message};
+
+            }
+            if (Users[socket.id].lobby) {
+                Lobbies[Users[socket.id].lobby].chatlog.push(formatted);
+                console.log(Lobbies[Users[socket.id].lobby].chatlog);
+                console.log('-----------------');
+                io.to(Users[socket.id].lobby).emit('users_receive', {users: Lobbies[Users[socket.id].lobby].users})
+                io.to(Users[socket.id].lobby).emit('messages_receive', {messages: Lobbies[Users[socket.id].lobby].chatlog});
+            }
+        })
+
         //////////////////////////////////////////
         ///          Canvas Drawing            ///
         //////////////////////////////////////////

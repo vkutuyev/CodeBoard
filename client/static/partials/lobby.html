@@ -11,28 +11,82 @@
     <div id="scrollPop">Hold Shift or right-click, then drag to extend canvas <i class="fa fa-arrows-alt" aria-hidden="true"></i></div>
 
     <!-- Sidebar -->
-    <div id="sidebar" style='padding-left: 15px;'>
+    <div id="sidebar" style='padding-left: 15px;' class="container-fluid">
         <div id="sideBorder"></div>
         <h1 ng-if="!currentLobby">Offline</h1>
         <h1 ng-bind="currentLobby"></h1>
-        <p ng-bind='join_lobby_error'></p>
+        <div class="row menu_tabs_row">
+            <div ng-hide="menu_tab==0" ng-click="menu_tab=0" class="menu_tabs col-sm-4"><i class="fa fa-cog" aria-hidden="true"></i></div>
+            <div ng-if="menu_tab==0" class="col-sm-4 selected_menu_tab"><i class="fa fa-cog" aria-hidden="true"></i></div>
 
-        <input type="text" ng-model="lobby_name" placeholder='Create Lobby'><br>
-        <button id="saveLobbyTest" style="width: 50px; height: 50px; background: steelblue; top: 200px; left: 500px;" ng-click="createLobby('save')">Save</button>
-        <button id="createLobbyTest" style="width: 50px; height: 50px; background: red; top: 200px; left: 450px;" ng-click="createLobby()">Create</button><br><br>
-        <input type="text" ng-model="join_lobby" placeholder='Join Lobby'><br>
-        <button id="joinLobbyTest" style="width: 50px; height: 50px; background: green; top: 250px; left: 450px;" ng-click="joinLobby()">Join</button>
-        <br>
-        <br>
-        <br>
-        <br>
-        <button ng-click=saveCanvas()>SAVE</button>
-        <br>
-        <br>
-        <input id=canvFile type="file" />
-        <div id=fileDrop style='height: 100px; width: 100px; background: blue; color: white;'>Drop Here</div>
-        <button ng-click=loadCanvas()>LOAD</button>
+            <div ng-hide="menu_tab==1" ng-click="menu_tab=1" class="menu_tabs col-sm-4"><i class="fa fa-comment-o" aria-hidden="true"></i></div>
+            <div ng-if="menu_tab==1" class="col-sm-4 selected_menu_tab"><i class="fa fa-comment-o" aria-hidden="true"></i></div>
 
+            <div ng-hide="menu_tab==2" ng-click="menu_tab=2" class="menu_tabs col-sm-4"><i class="fa fa-code" aria-hidden="true"></i></div>
+            <div ng-if="menu_tab==2" class="col-sm-4 selected_menu_tab"><i class="fa fa-code" aria-hidden="true"></i></div>
+        </div>
+        <div ng-show="menu_tab==0">
+            <div class="row">
+                <h4 class="col-sm-12">Menu</h4>
+            </div>
+            <hr>
+            <p ng-bind='join_lobby_error'></p>
+
+            <input type="text" ng-model="lobby_name" placeholder='Create Lobby'><br>
+            <button id="saveLobbyTest" style="width: 50px; height: 50px; background: steelblue; top: 200px; left: 500px;" ng-click="createLobby('save')">Save</button>
+            <button id="createLobbyTest" style="width: 50px; height: 50px; background: red; top: 200px; left: 450px;" ng-click="createLobby()">Create</button><br><br>
+            <input type="text" ng-model="join_lobby" placeholder='Join Lobby'><br>
+            <button id="joinLobbyTest" style="width: 50px; height: 50px; background: green; top: 250px; left: 450px;" ng-click="joinLobby()">Join</button>
+            <br>
+            <br>
+            <br>
+            <br>
+            <button ng-click=saveCanvas()>SAVE</button>
+            <br>
+            <br>
+            <input id=canvFile type="file" />
+            <div id=fileDrop style='height: 100px; width: 100px; background: blue; color: white;'>Drop Here</div>
+            <button ng-click=loadCanvas()>LOAD</button>
+        </div>
+        <div ng-show="menu_tab==1">
+            <div class="row">
+                <h4 class="col-sm-9">Chat</h4>
+                <h4 ng-if="chat_name" class="col-sm-3 chat_people"><i class="fa fa-users" aria-hidden="true"></i></h4>
+            </div>
+            <hr>
+            <div ng-show="currentLobby">
+                <div ng-hide="chat_name">
+                    <h5>Please enter a name</h5>
+                    <input type="text" placeholder="name" ng-model="enter_chat_name">
+                    <input type="submit" class="btn-lrg" ng-click="enterChat()">
+                </div>
+                <div ng-show="chat_name">
+                    <div class="row" style="padding: 0 2em 1em;">
+                        <div class="col-sm-12 chat_messages">
+                            <div class="row" ng-repeat="message in messages">
+                                <div class="col-sm-4" ng-bind="message.name"></div>
+                                <div class="col-sm-8" ng-bind="message.message"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row chat_send_row" >
+                        <form ng-submit="chat_send_message()">
+                            <div class="chat_input col-sm-9"><textarea ng-model="chat_message"></textarea></div>
+                            <div class="chat_send col-sm-3"><input class="btn btn-primary btn-sm" type="submit" value="Send"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- <h1 ng-if="!currentLobby">Offline</h1> -->
+            <div ng-show="!currentLobby">Please go into online mode to use chat.</div>
+        </div>
+        <div ng-show="menu_tab==2">
+            <div class="row">
+                <h4 class="col-sm-12">Code Editor</h4>
+            </div>
+            <hr>
+
+        </div>
     </div>
 
 

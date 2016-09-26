@@ -2,6 +2,12 @@ app.controller('LobbyController', function($scope, $location, socket) {
     //////////////////////////////////////////
     ///           Scope Variables          ///
     //////////////////////////////////////////
+    // Tabulations
+    $scope.menu_tab     = 1;       //menu == 0, chat == 1, code == 2
+    //Chat
+    $scope.chat_name    = undefined;
+    $scope.messages     = [];
+    $scope.users        = {};
     // Canvas
     $scope.fillStyle    = '#ffffff';
     $scope.strokeStyle  = '#ffffff';
@@ -63,7 +69,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     //Checks the lobby
     if ($location.url() != '/') {
         var path = $location.url().split('/')[1];
-        // console.log(path);
+        console.log(path);
         socket.emit('join_lobby', {path: path});
     }
     socket.on('create_lobby_status', function(data) {
@@ -121,6 +127,29 @@ app.controller('LobbyController', function($scope, $location, socket) {
         socket.emit('join_lobby', {path: path});
     }
      //socket emit (checklobby)
+
+    //////////////////////////////////////////
+    ///             Chat System            ///
+    //////////////////////////////////////////
+    $scope.enterChat = function() {
+        $scope.chat_name = $scope.enter_chat_name;
+        var name = $scope.chat_name;
+        socket.emit('user_send', {name: name});
+        $scope.enter_chat_name = '';
+    }
+    $scope.chat_send_message = function() {
+        var message = $scope.chat_message;
+        socket.emit('message_send', {message: message});
+        $scope.chat_message = '';
+    }
+    socket.on('messages_receive', function(data) {
+        //Data must be an array of messages
+        $scope.messages = data.messages;
+    })
+    socket.on('users_receive', function(data) {
+        //Data must be an array of users
+        $scope.users = data.users;
+    })
 
     //////////////////////////////////////////
     ///        Initial Canvas Setup        ///
@@ -552,5 +581,4 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 img.onload = context.drawImage(img, 0, 0, img.width*scale, img.height*scale);
             }
         }
-
 })

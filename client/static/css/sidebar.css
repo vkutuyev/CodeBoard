@@ -20,7 +20,44 @@
     min-width: 300px;
     height: 100vh;
 }
-
+#sidebar div.row.menu_tabs_row {
+    border-bottom: 1px solid black;
+    margin-bottom: 1em;
+}
+#sidebar div.row div.menu_tabs {
+    padding: 0em 0em 0.5em;
+    cursor: pointer;
+    font-size: 2em;
+    text-align: center;
+}
+#sidebar div.row div.menu_tabs:hover {
+    color: rgb(152, 152, 152);
+    border-bottom: 1em;
+}
+    #sidebar div.row div.selected_menu_tab {
+        padding: 0em 0em 0.5em;
+        cursor: pointer;
+        font-size: 2em;
+        text-align: center;
+        color: rgb(5, 187, 160);
+    }
+    #sidebar div.row div.selected_menu_tab:hover {
+        color: rgb(147, 241, 238);
+        border-bottom: 1em;
+    }
+    #sidebar div.row div.chat_people {
+        text-align: right;
+    }
+    #sidebar textarea {
+        width: 100%;
+    }
+    #sidebar input {
+        /*width: 100%;*/
+    }
+    #sidebar div.chat_messages {
+        border: 1px solid rgb(166, 166, 166);
+        border-radius: 5px;
+    }
     #sideBorder {
         height: 100vh;
         width: 10px;
