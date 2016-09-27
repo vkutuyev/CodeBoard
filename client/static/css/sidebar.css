@@ -65,3 +65,9 @@
         left: 290px;
         background: rgb(13, 66, 96);
     }
+
+
+#editor {
+    width: 100px;
+    height: 300px;
+}

@@ -363,6 +363,14 @@ app.controller('LobbyController', function($scope, $location, socket) {
     })
 
     //////////////////////////////////////////
+    ///            Code Editor             ///
+    //////////////////////////////////////////
+    var editor = ace.edit('editor');
+    editor.setTheme('ace/theme/monokai');
+    editor.getSession().setMode('ace/mode/javascript');
+
+
+    //////////////////////////////////////////
     ///        Initial Canvas Setup        ///
     //////////////////////////////////////////
     // Create mouse object and pos array to track mouse clicks/position
