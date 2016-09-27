@@ -693,7 +693,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     })
     $(document).on('mousemove', function(e) {
         if ($scope.menuOpen && $scope.clicked) {
-            if (e.pageX > 300) {
+            if (e.pageX > 289) {
                 $('#menuHam').css('left', e.pageX);
                 $('#sidebar').css('width', e.pageX);
                 $('#sideBorder').css('left', e.pageX);
