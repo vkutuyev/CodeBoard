@@ -132,7 +132,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         drawCode = function(codeArr, mouseX, mouseY, scrLeft, scrTop, color, font) {
             var lineOffset       = 0;
             context.fillStyle    = color;
-            context.font         = font + 'px Raleway';
+            context.font         = font + 'px Source Code Pro';
             context.textBaseline = 'middle';
             for (line of codeArr) {
                 context.fillText(line, mouseX + scrLeft, mouseY + scrTop + lineOffset);
@@ -455,8 +455,10 @@ app.controller('LobbyController', function($scope, $location, socket) {
             }
             if ($scope.codeType) {
                 // Place coding textarea
-                $('#codeInput').css('width', 200);
-                $('#codeInput').css('height', 100);
+                if ($('#codeInput').val() == '') {
+                    $('#codeInput').css('width', 200);
+                    $('#codeInput').css('height', 100);
+                }
                 $('#codeDiv').attr('hidden', false);
                 $('#codeDiv').css('left', mouse.pos.x-2);
                 $('#codeDiv').css('top', mouse.pos.y-$scope.textSize*2/3-2);
@@ -699,7 +701,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     })
     $(document).on('mousemove', function(e) {
         if ($scope.menuOpen && $scope.clicked) {
-            if (e.pageX > 300) {
+            if (e.pageX > 289) {
                 $('#menuHam').css('left', e.pageX);
                 $('#sidebar').css('width', e.pageX);
                 $('#sideBorder').css('left', e.pageX);
