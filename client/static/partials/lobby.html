@@ -13,6 +13,14 @@
     <!-- Notifications -->
     <div id=notifDiv><span id=notifSpan>{{notification}}<span></div>
 
+    <!--- Coding/text areas --->
+    <div id="textDiv" hidden=true>
+        <input id='textInput' type="text" placeholder='Enter text...' autocomplete='off' spellcheck='false' autocorrect='off'>
+    </div>
+    <div id="codeDiv" hidden=true>
+        <textarea id='codeInput' placeholder='Enter code...' autocomplete='off' spellcheck='false' autocorrect='off'></textarea>
+    </div>
+
     <!-- Sidebar -->
     <div id="sidebar" style='padding-left: 15px;' class="container-fluid">
         <div id="sideBorder"></div>
@@ -99,20 +107,25 @@
     <!-- Temp toolbar -->
     <div id="tools" style="position: absolute; top: 200px; left: 90%;">
         <form><input type="text" id="color" name="color" ng-model='strokeStyle' /></form>
-        <span style='color: white; font-size 16px; text-decoration: underline;'>Size</span><br><br>
-        <input id=sizeSlide type="range" min=1 max=20 ng-model=lineWidth style='width: 50%;'/><br>
+        <span style='color: white; font-size 16px; text-decoration: underline;'>Brush Size</span><br>
+        <input id=sizeSlide type="range" min=1 max=20 ng-model=lineWidth style='width: 50%; margin-bottom: 5px;'/>
         <input id=sizeBox type='text' ng-model=lineWidth value=lineWidth style='font-size: 16px; width: 35px;' />
         <br><br>
         <span style='color: white; font-size 16px; text-decoration: underline;'>Shapes</span><br>
-        <button ng-click="setShape('rectF')">Filled Rect.</button><br>
-        <button ng-click="setShape('rectH')">Hollow Rect.</button><br>
-        <button ng-click="setShape('circF')">Filled Circ.</button><br>
-        <button ng-click="setShape('circH')">Hollow Circ.</button><br>
+        <button ng-click="changeInput('rectF')">Filled Rect.</button><br>
+        <button ng-click="changeInput('rectH')">Hollow Rect.</button><br>
+        <button ng-click="changeInput('circF')">Filled Circ.</button><br>
+        <button ng-click="changeInput('circH')">Hollow Circ.</button><br>
         <br>
         <span style='color: white; font-size 16px; text-decoration: underline;'>Misc</span><br>
-        <button ng-click="strokeStyle='#000000'">Eraser</button><br>
+        <button ng-click="strokeStyle='#000000'; lineWidth=5*lineWidth; shape.type=null;">Eraser</button><br>
         <button ng-click=clearCanvas()>Clear</button><br>
-        
+        <br>
+        <button ng-click="changeInput('text')">Text</button><br>
+        <button ng-click="changeInput('code')">Code</button><br>
+        <span style='color: white; font-size 16px; text-decoration: underline;'>Text Size</span><br>
+        <input type="range" min=8 max=30 ng-model=textSize style='width: 50px; margin-bottom: 5px;'>
+        <input type="text" ng-model=textSize style="width: 50px; ">
     </div>
 
 </div>

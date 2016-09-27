@@ -97,6 +97,15 @@ module.exports = function(io) {
             io.to(lobby).emit('board_clear');
         })
         //////////////////////////////////////////
+        ///           Canvas Typing            ///
+        //////////////////////////////////////////
+        socket.on('draw_text', function(data) {
+            io.to(data.lobby).emit('draw_text', data);
+        })
+        socket.on('draw_code', function(data) {
+            io.to(data.lobby).emit('dra_code', data);
+        })
+        //////////////////////////////////////////
         ///           Canvas Saving            ///
         //////////////////////////////////////////
         socket.on('savestate', function(data) {

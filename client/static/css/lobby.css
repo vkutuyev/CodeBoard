@@ -15,19 +15,23 @@
     text-align: center;
     vertical-align: middle;
     /* Slide/fade Animation */
-    animation-name: slideAndFade;
+    animation-name: slideLeft;
     animation-duration: 1s;
     animation-fill-mode: forwards;
 }
 
+#canvas {
+    z-index: -25;
+}
 #tmp_canvas {
 	position: absolute;
 	left: 0px; right: 0;
 	bottom: 0; top: 0;
+    z-index: 0;
 }
 
 /* Animation Keyframes */
-@keyframes slideAndFade {
+@keyframes slideLeft {
     0%     { left: 100%; }
     100%    { left: calc(100% - 210px); }
 }
@@ -59,4 +63,32 @@
         color: white;
         font-size: 20px;
         text-shadow: -1px -1px 2px black, 1px 1px 2px black, 1px -1px 2px black, -1px 1px 2px black;
+    }
+
+#textDiv {
+    position: absolute;
+    color: white;
+    z-index: 50;
+}
+    #textInput {
+        background-color: transparent;
+        border: none;
+        width: 500px;
+    }
+    #textInput:focus {
+        outline: none;
+    }
+#codeDiv {
+    position: absolute;
+    color: white;
+    z-index: 50;
+}
+    #codeInput {
+        background-color: transparent;
+        border: none;
+        min-width: 200px;
+        min-height: 100px;
+    }
+    #codeInput:focus {
+        outline: none;
     }
