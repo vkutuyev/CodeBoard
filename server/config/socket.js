@@ -22,9 +22,10 @@ module.exports = function(io) {
         ///            Lobby System            ///
         //////////////////////////////////////////
         socket.on('create_lobby', function(data) {
-            if (!Lobbies[data.path]) {
+            if (data.path && !Lobbies[data.path]) {
                 Lobbies[data.path] = new Lobby(data.path);
                 Lobbies[data.path].savestate = data.canvas;
+                console.log(data.path, 'Lobby Created');
                 socket.emit('create_lobby_status', {success: true, path: data.path})
             } else {
                 socket.emit('create_lobby_status', {success: false, path: data.path})
@@ -32,11 +33,12 @@ module.exports = function(io) {
         })
 
         socket.on('join_lobby', function(data) {
-            if (Lobbies[data.path]) {
+            if (data.path && Lobbies[data.path]) {
                 if (Users[socket.id].lobby) {
                     delete Lobbies[Users[socket.id].lobby].users[socket.id];
                     Users[socket.id].lobby = null;
                 }
+                console.log(socket.id, 'joined lobby', data.path);
                 socket.emit('join_lobby_status', {success: true, lobby_data: Lobbies[data.path]})
                 socket.join(data.path);
                 Lobbies[data.path].users[socket.id] = Users[socket.id];

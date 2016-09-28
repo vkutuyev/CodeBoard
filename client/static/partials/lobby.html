@@ -41,12 +41,32 @@
                 <h4 class="col-sm-12">Menu</h4>
             </div>
             <hr>
+            <div class="row">
+                <div class="col-md-12">
+                    <button ng-hide="menu_new_active==1" class="menu_buttons" ng-click="menu_new_active=1; menu_create_active=0; menu_join_active=0">Create New Online</button>
+                    <input type="text" ng-show="menu_new_active==1" class="menu_inputs" ng-keydown="menu_new_send($event)" ng-model="lobby_name" placeholder="Lobby Name: (Enter: Go, Esc: Cancel)">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button ng-hide="menu_create_active==1" class="menu_buttons" ng-click="menu_new_active=0; menu_create_active=1; menu_join_active=0">Go Online</button>
+                    <input type="text" ng-show="menu_create_active==1" class="menu_inputs" ng-keydown="menu_create_send($event)" ng-model="lobby_name" placeholder="Lobby Name: (Enter: Go, Esc: Cancel)">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button ng-hide="menu_join_active==1" class="menu_buttons" ng-click="menu_new_active=0; menu_create_active=0; menu_join_active=1">Join a Lobby</button>
+                    <input type="text" ng-show="menu_join_active==1" class="menu_inputs" ng-keydown="menu_join_send($event)" ng-model="join_lobby" placeholder="Lobby Name: (Enter: Go, Esc: Cancel)">
+                </div>
+            </div>
 
-            <input type="text" ng-model="lobby_name" placeholder='Create Lobby'><br>
+            <!-- <input type="text" ng-model="lobby_name" placeholder='Create Lobby'><br>
             <button id="saveLobbyTest" style="width: 50px; height: 50px; background: steelblue; top: 200px; left: 500px;" ng-click="createLobby('save')">Save</button>
-            <button id="createLobbyTest" style="width: 50px; height: 50px; background: red; top: 200px; left: 450px;" ng-click="createLobby()">Create</button><br><br>
-            <input type="text" ng-model="join_lobby" placeholder='Join Lobby'><br>
-            <button id="joinLobbyTest" style="width: 50px; height: 50px; background: green; top: 250px; left: 450px;" ng-click="joinLobby()">Join</button>
+            <button id="createLobbyTest" style="width: 50px; height: 50px; background: red; top: 200px; left: 450px;" ng-click="createLobby()">Create</button><br><br> -->
+            <!-- <input type="text" ng-model="join_lobby" placeholder='Join Lobby'><br>
+            <button id="joinLobbyTest" style="width: 50px; height: 50px; background: green; top: 250px; left: 450px;" ng-click="joinLobby()">Join</button> -->
+
+            <!-- To Vadim: DELETE SAVE/LOAD FROM HERE IF YOU DONT NEED -->
             <br>
             <br>
             <br>
@@ -57,6 +77,8 @@
             <input id=canvFile type="file" />
             <div id=fileDrop style='height: 100px; width: 100px; background: blue; color: white;'>Drop Here</div>
             <button ng-click=loadCanvas()>LOAD</button>
+            <!-- END OF SAVE/LOAD -->
+
         </div>
         <div ng-show="menu_tab==1">
             <div class="row">

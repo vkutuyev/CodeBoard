@@ -4,6 +4,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
     //////////////////////////////////////////
     // Tabulations
     $scope.menu_tab     = 0;       //menu == 0, chat == 1, code == 2
+    //menu
+    $scope.menu_create_active = 0;
     //Chat
     $scope.chat_name    = undefined;
     $scope.messages     = [];
@@ -146,6 +148,39 @@ app.controller('LobbyController', function($scope, $location, socket) {
         };
 
     // Scope functions
+    $scope.menu_new_send = function(event) {
+        switch (event.keyCode) {
+            case 13:
+                $scope.createLobby();
+                $scope.menu_new_active = 0;
+                break;
+            case 27:
+                $scope.menu_new_active = 0;
+                break;
+        }
+    }
+    $scope.menu_create_send = function(event) {
+        switch (event.keyCode) {
+            case 13:
+                $scope.createLobby('save');
+                $scope.menu_create_active = 0;
+                break;
+            case 27:
+                $scope.menu_create_active = 0;
+                break;
+        }
+    }
+    $scope.menu_join_send = function(event) {
+        switch (event.keyCode) {
+            case 13:
+                $scope.joinLobby();
+                $scope.menu_join_active = 0;
+                break;
+            case 27:
+                $scope.menu_join_active = 0;
+                break;
+        }
+    }
     $scope.clearCanvas = function() {
         if ($scope.currentLobby) {
             socket.emit('board_clear', $scope.currentLobby);
