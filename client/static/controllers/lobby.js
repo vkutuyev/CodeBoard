@@ -230,7 +230,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
         context.globalCompositeOperation = compositeOperation;
     }
     $scope.loadCanvas = function() {
-        console.log('in loadcanvas');
         var loadedCanv = document.getElementById('canvFile'),
             file       = loadedCanv.files[0];
         // PUT IN REAL FILE CHECKS LATER
@@ -240,7 +239,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
         // }
         var image = $scope.filePicked || file;
         $scope.createImage(image);
-        //here
         $scope.filePicked = null;
         $scope.toggleLoad(true);
     }
@@ -392,6 +390,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
             e.preventDefault();
             var image = e.dataTransfer.files[0];
             $scope.filePicked = image;
+            var canvFile = $("#canvFile");
+            canvFile.replaceWith( canvFile = canvFile.clone( true ) );
         }
     })
 
