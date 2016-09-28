@@ -151,6 +151,26 @@ app.controller('LobbyController', function($scope, $location, socket) {
         };
 
     // Scope functions
+    $scope.menu_active = function(item) {
+        switch (item) {
+            case 0:
+            $('#menu_new_send').focus();
+                $scope.menu_new_active=1;
+                $scope.menu_create_active=0;
+                $scope.menu_join_active=0;
+                break;
+            case 1:
+                $scope.menu_new_active=0;
+                $scope.menu_create_active=1;
+                $scope.menu_join_active=0;
+                break;
+            case 2:
+                $scope.menu_new_active=0;
+                $scope.menu_create_active=0;
+                $scope.menu_join_active=1;
+                break;
+        }
+    }
     $scope.menu_new_send = function(event) {
         switch (event.keyCode) {
             case 13:
@@ -378,7 +398,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     ///            Code Editor             ///
     //////////////////////////////////////////
     var editor = ace.edit('editor');
-    // editor.setTheme('ace/theme/monokai');
+    editor.setTheme('ace/theme/sqlserver');
     editor.getSession().setMode('ace/mode/javascript');
     editor.getSession().setUseWrapMode(false);
     editor.$blockScrolling = Infinity;
@@ -840,7 +860,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 $('#tmp_canvas').css('cursor', 'cell');
             }
         }
-        if (e.shiftKey && e.keyCode == 27) {    // Shift + Esc
+        if (e.shiftKey && e.keyCode == 27 && !$scope.menuOpen) {    // Shift + Esc
             $('#sidebar').animate({ left: 0}, 800);
             $('#sideBorder').animate({ left: 290 }, 800);
             $('#menuHam').animate({

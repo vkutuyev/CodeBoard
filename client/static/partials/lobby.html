@@ -43,20 +43,20 @@
             <hr>
             <div class="row">
                 <div class="col-md-12">
-                    <button ng-hide="menu_new_active==1" class="menu_buttons" ng-click="menu_new_active=1; menu_create_active=0; menu_join_active=0">Create New Online</button>
-                    <input type="text" ng-show="menu_new_active==1" class="menu_inputs" ng-keydown="menu_new_send($event)" ng-model="lobby_name" placeholder="Lobby Name: (Enter: Go, Esc: Cancel)">
+                    <button ng-hide="menu_new_active==1" class="menu_buttons" ng-click="menu_active(0)">Create New Online</button>
+                    <input id="menu_new_send" type="text" ng-show="menu_new_active==1" class="menu_inputs" ng-keydown="menu_new_send($event)" ng-model="lobby_name" placeholder="Lobby: (Enter: Go, Shift+Esc: Cancel)">
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <button ng-hide="menu_create_active==1" class="menu_buttons" ng-click="menu_new_active=0; menu_create_active=1; menu_join_active=0">Go Online</button>
-                    <input type="text" ng-show="menu_create_active==1" class="menu_inputs" ng-keydown="menu_create_send($event)" ng-model="lobby_name" placeholder="Lobby Name: (Enter: Go, Esc: Cancel)">
+                    <button ng-hide="menu_create_active==1" class="menu_buttons" ng-click="menu_active(1)">Go Online</button>
+                    <input id="menu_create_send" type="text" ng-show="menu_create_active==1" class="menu_inputs" ng-keydown="menu_create_send($event)" ng-model="lobby_name" placeholder="Lobby: (Enter: Go, Shift+Esc: Cancel)">
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <button ng-hide="menu_join_active==1" class="menu_buttons" ng-click="menu_new_active=0; menu_create_active=0; menu_join_active=1">Join a Lobby</button>
-                    <input type="text" ng-show="menu_join_active==1" class="menu_inputs" ng-keydown="menu_join_send($event)" ng-model="join_lobby" placeholder="Lobby Name: (Enter: Go, Esc: Cancel)">
+                    <button ng-hide="menu_join_active==1" class="menu_buttons" ng-click="menu_active(2)">Join a Lobby</button>
+                    <input id="menu_join_send" type="text" ng-show="menu_join_active==1" class="menu_inputs" ng-keydown="menu_join_send($event)" ng-model="join_lobby" placeholder="Lobby: (Enter: Go, Shift+Esc: Cancel)">
                 </div>
             </div>
 
