@@ -1,0 +1,163 @@
+#canvToolbar {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 500px;
+    width: 80px;
+    background: rgb(50, 50, 50);
+    border-left: 2px solid rgb(13, 66, 96);
+    border-bottom: 2px solid rgb(13, 66, 96);
+    border-bottom-left-radius: 25px;
+    /* Slide Animation */
+    animation-name: toolSlide;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+/* Animation Keyframes */
+@keyframes toolSlide {
+    0%     { right: -100px; }
+    100%    { right: 0; }
+}
+/***********************/
+    #toolSep {
+        width: 40%;
+        margin: 6px auto;
+    }
+    #toolLobby {
+        color: white;
+        text-shadow: -1px -1px 0px black, 1px 1px 0px black, 1px -1px 0px black, -1px 1px 0px black;
+        text-align: center;
+    }
+        #toolLobby h4, h6 {
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+    #toolBtns {
+        margin-top: 10px;
+    }
+        .toolRow {
+            display: block;
+            width: 80px;
+            padding-left: 5px;
+            margin-bottom: 4px;
+        }
+            .toolBtn {
+                color: white;
+                background: rgb(33, 33, 33);
+                text-align: center;
+                display: inline-block;
+                width: 32px;
+                height: 32px;
+                border: 2px solid white;
+                border-radius: 8px;
+            }
+                .toolBtn i {
+                    line-height: 28px;
+                    vertical-align: middle;
+                }
+
+        .activeBtn {
+            background: rgb(13, 66, 96);
+            color: rgb(241, 235, 72);
+            border-color: black;
+            box-shadow: 0px 0px 4px rgb(241, 235, 72);
+        }
+    #toolColor {
+        display: block;
+        width: 80px;
+        margin-top: 5px;
+    }
+        #toolColorBox {
+            height: 40px;
+            width: 40px;
+            margin-left: 19px;
+            background: white;
+            border: 2px solid white;
+        }
+        #color {
+            font-family: 'Source Code Pro', monospace;
+            width: 60px;
+            font-size: 12px;
+            text-align: center;
+            color: white;
+            text-shadow: -1px -1px 0px black, 1px 1px 0px black, 1px -1px 0px black, -1px 1px 0px black;
+            margin-top: 5px;
+            margin-left: 8px;
+        }
+    #pickerDiv {
+        position: absolute;
+        right: 90;
+        bottom: 150;
+        background: rgb(50, 50, 50);
+        border: 2px solid rgb(13, 66, 96);
+        border-radius: 15px;
+        width: 200px;
+    }
+    #toolSize {
+        width: 80px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        padding-left: 5px;
+    }
+    #textSize {
+        width: 80px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        padding-left: 5px;
+    }
+        .toolSizeLabel {
+            display: block;
+            text-align: center;
+            width: 60px;
+            margin-left: 4px;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: white;
+            text-shadow: -1px -1px 0px black, 1px 1px 0px black, 1px -1px 0px black, -1px 1px 0px black;
+        }
+        .toolSizeBox {
+            width: 30px;
+            display: inline-block;
+            text-align: center;
+        }
+        input.toolSizeSlide {
+            width: 35px;
+            display: inline-block;
+        }
+    .toolBotBtn {
+        margin-top: 15px;
+        font-weight: bold;
+    }
+        #clearBtn {
+            width: 50px;
+            margin-left: 14px;
+            background: rgb(230, 83, 21);
+            border-radius: 25px;
+            color: white;
+            text-shadow: -1px -1px 0px black, 1px 1px 0px black, 1px -1px 0px black, -1px 1px 0px black;
+        }
+            #clearBtn:focus {
+                outline: 0;
+            }
+        #saveBtn {
+            width: 50px;
+            margin-left: 14px;
+            background: rgb(20, 195, 37);
+            border-radius: 25px;
+            color: white;
+            text-shadow: -1px -1px 0px black, 1px 1px 0px black, 1px -1px 0px black, -1px 1px 0px black;
+        }
+            #saveBtn:focus {
+                outline: 0;
+            }
+        #loadBtn {
+            width: 50px;
+            margin-left: 14px;
+            background: rgb(29, 198, 193);
+            border-radius: 25px;
+            color: white;
+            text-shadow: -1px -1px 0px black, 1px 1px 0px black, 1px -1px 0px black, -1px 1px 0px black;
+        }
+            #loadBtn:focus {
+                outline: 0;
+            }
