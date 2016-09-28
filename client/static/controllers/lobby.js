@@ -428,7 +428,20 @@ app.controller('LobbyController', function($scope, $location, socket) {
     var editor = ace.edit('editor');
     editor.setTheme('ace/theme/monokai');
     editor.getSession().setMode('ace/mode/javascript');
+    editor.getSession().setUseWrapMode(false);
+    editor.$blockScrolling = Infinity;
+    $('#editor').on('keyup', function(e) {
+        editor.resize();
+        if ($scope.currentLobby) {
+            socket.emit('code_edit', { lobby: $scope.currentLobby, id: socket.currentId(), code: editor.getValue()});
+        }
+    })
 
+    socket.on('code_edit', function(data) {
+        if (socket.currentId() != data.id) {
+            editor.setValue(data.code);
+        }
+    });
 
     //////////////////////////////////////////
     ///        Initial Canvas Setup        ///
