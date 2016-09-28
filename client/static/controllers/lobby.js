@@ -24,10 +24,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.join_lobby;
     // Random UI
     $scope.scrollMsg    = true;
-    $scope.notification = '';
     $scope.showColor    = false;
-    $scope.slideMin     = 1;
-    $scope.slideMax     = 20;
+    $scope.showLoad     = false;
+    $scope.filePicked   = null;
     // Shapes
     $scope.shape        = {
         type: '',
@@ -153,12 +152,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
     // Scope functions
     $scope.menu_active = function(item) {
         switch (item) {
-            case 0:
-                $('#menu_new_send').focus();
-                $scope.menu_new_active=1;
-                $scope.menu_create_active=0;
-                $scope.menu_join_active=0;
-                break;
             case 1:
                 $scope.menu_new_active=0;
                 $scope.menu_create_active=1;
@@ -237,15 +230,19 @@ app.controller('LobbyController', function($scope, $location, socket) {
         context.globalCompositeOperation = compositeOperation;
     }
     $scope.loadCanvas = function() {
+        console.log('in loadcanvas');
         var loadedCanv = document.getElementById('canvFile'),
             file       = loadedCanv.files[0];
+        // PUT IN REAL FILE CHECKS LATER
         // Check for image file
-        if (file.type.split('/')[0] != 'image') {
-            alert('File must be an image.');
-        }
-        else {
-            $scope.createImage(file);
-        }
+        // if (file.type.split('/')[0] != 'image') {
+        //     alert('File must be an image.');
+        // }
+        var image = $scope.filePicked || file;
+        $scope.createImage(image);
+        //here
+        $scope.filePicked = null;
+        $scope.toggleLoad(true);
     }
     $scope.createImage = function(image) {
         var fr = new FileReader();
@@ -273,12 +270,12 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.showNotification = function(msg, type) {
         $('#notifDiv').css('top', -35);
         $('#notifDiv').stop();
-        $scope.notification = msg;
         switch (type) {
             case 'good': $('#notifDiv').css('background', 'rgb(127, 224, 42)'); break;
             case 'bad': $('#notifDiv').css('background', 'rgb(198, 49, 16)'); break;
             default: $('#notifDiv').css('background', 'rgb(60, 134, 232)'); break;
         }
+        $('#notifSpan').text(msg);
         $('#notifDiv').animate({'top': 0}, 500).delay(2000).animate({'top': -35}, 400);
     }
     $scope.changeInput = function(input) {
@@ -363,6 +360,10 @@ app.controller('LobbyController', function($scope, $location, socket) {
         $('#pickerDiv').attr('hidden', show);
         $scope.showColor = !show;
     }
+    $scope.toggleLoad = function(load) {
+        $('#fileInput').attr('hidden', load);
+        $scope.showLoad = !load;
+    }
 
 
     //////////////////////////////////////////
@@ -390,7 +391,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
             e.stopPropagation();
             e.preventDefault();
             var image = e.dataTransfer.files[0];
-            $scope.createImage(image);
+            $scope.filePicked = image;
         }
     })
 
@@ -401,8 +402,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     editor.setTheme('ace/theme/sqlserver');
     editor.getSession().setMode('ace/mode/javascript');
     editor.getSession().setUseWrapMode(false);
-    editor.$blockScrolling = Infinity;
-    editor.focus();
+    // editor.$blockScrolling = Infinity;       // This causes the missing 'top' error
     $('#editor').on('keyup', function(e) {
         editor.resize();
         if ($scope.currentLobby) {

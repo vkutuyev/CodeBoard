@@ -5,7 +5,7 @@ function Lobby (id) {
     this.id          = id;
     this.users       = {};
     this.chatlog     = [];
-    this.textCode    = [];
+    this.textCode    = '';
     this.savestate   = '';
     this.screenshots = [];
 }
