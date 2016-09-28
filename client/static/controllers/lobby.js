@@ -339,6 +339,27 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
     })
 
+    //////////////////////////////////////////
+    ///            Code Editor             ///
+    //////////////////////////////////////////
+    var editor = ace.edit('editor');
+    // editor.setTheme('ace/theme/monokai');
+    editor.getSession().setMode('ace/mode/javascript');
+    editor.getSession().setUseWrapMode(false);
+    editor.$blockScrolling = Infinity;
+    editor.focus();
+    $('#editor').on('keyup', function(e) {
+        editor.resize();
+        if ($scope.currentLobby) {
+            socket.emit('code_edit', { lobby: $scope.currentLobby, id: socket.currentId(), code: editor.getValue()});
+        }
+    })
+
+    socket.on('code_edit', function(data) {
+        if (socket.currentId() != data.id) {
+            editor.setValue(data.code);
+        }
+    });
 
     //////////////////////////////////////////
     ///            Lobby System            ///
@@ -369,6 +390,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                     context.drawImage(board, 0, 0);
                 }
             }
+            editor.setValue(data.lobby_data.textCode);
             var msg = 'Joined lobby: ' + data.lobby_data.id;
             $scope.showNotification(msg, 'good');
         } else {
@@ -422,26 +444,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
     })
 
 
-    //////////////////////////////////////////
-    ///            Code Editor             ///
-    //////////////////////////////////////////
-    var editor = ace.edit('editor');
-    editor.setTheme('ace/theme/monokai');
-    editor.getSession().setMode('ace/mode/javascript');
-    editor.getSession().setUseWrapMode(false);
-    editor.$blockScrolling = Infinity;
-    $('#editor').on('keyup', function(e) {
-        editor.resize();
-        if ($scope.currentLobby) {
-            socket.emit('code_edit', { lobby: $scope.currentLobby, id: socket.currentId(), code: editor.getValue()});
-        }
-    })
-
-    socket.on('code_edit', function(data) {
-        if (socket.currentId() != data.id) {
-            editor.setValue(data.code);
-        }
-    });
 
     //////////////////////////////////////////
     ///        Initial Canvas Setup        ///
