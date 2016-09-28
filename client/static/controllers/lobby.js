@@ -131,7 +131,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
             context.fillStyle    = 'black';
             if ($scope.currentLobby) {
                 var boardState = canvas.toDataURL();
-                socket.emit('savestate', { canvas: boardState, lobby: $scope.currentLobby});
+                socket.emit('savestate', boardState);
             }
         },
         drawCode = function(codeArr, mouseX, mouseY, scrLeft, scrTop, color, font) {
@@ -146,7 +146,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
             context.fillStyle    = 'black';
             if ($scope.currentLobby) {
                 var boardState = canvas.toDataURL();
-                socket.emit('savestate', { canvas: boardState, lobby: $scope.currentLobby});
+                socket.emit('savestate', boardState);
             }
         };
 
@@ -154,7 +154,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.menu_active = function(item) {
         switch (item) {
             case 0:
-            $('#menu_new_send').focus();
+                $('#menu_new_send').focus();
                 $scope.menu_new_active=1;
                 $scope.menu_create_active=0;
                 $scope.menu_join_active=0;
@@ -206,7 +206,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     }
     $scope.clearCanvas = function() {
         if ($scope.currentLobby) {
-            socket.emit('board_clear', $scope.currentLobby);
+            socket.emit('board_clear');
         }
         else {
             tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
@@ -406,7 +406,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $('#editor').on('keyup', function(e) {
         editor.resize();
         if ($scope.currentLobby) {
-            socket.emit('code_edit', { lobby: $scope.currentLobby, id: socket.currentId(), code: editor.getValue()});
+            socket.emit('code_edit', { id: socket.currentId(), code: editor.getValue()});
         }
     })
 
@@ -632,8 +632,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                     // Send coords every X mousemoves to help with socket lag/overload
                     if ($scope.buffer == 2) {
                         socket.emit('draw_line', {
-                            line: { pts: pts, strokeStyle: $scope.strokeStyle, lineWidth: $scope.lineWidth},
-                            lobby: $scope.currentLobby
+                            line: { pts: pts, strokeStyle: $scope.strokeStyle, lineWidth: $scope.lineWidth}
                         });
                         $scope.buffer = 0;
                     }
@@ -709,12 +708,12 @@ app.controller('LobbyController', function($scope, $location, socket) {
             // Drawing Shape
             if ($scope.shape.type && $scope.shape.drawing && !mouse.dragging) {
                 socket.emit('draw_shape', {
-                    lobby: $scope.currentLobby, type: $scope.shape.type, strokeStyle: $scope.strokeStyle, fillStyle: $scope.fillStyle, lineWidth: $scope.lineWidth, startX: $scope.shape.startX, startY: $scope.shape.startY, width: $scope.shape.width, height: $scope.shape.height, distX: distX, distY: distY
+                    type: $scope.shape.type, strokeStyle: $scope.strokeStyle, fillStyle: $scope.fillStyle, lineWidth: $scope.lineWidth, startX: $scope.shape.startX, startY: $scope.shape.startY, width: $scope.shape.width, height: $scope.shape.height, distX: distX, distY: distY
                 })
                 $scope.shape.drawing = false;
             }
             var boardState = canvas.toDataURL();
-            socket.emit('savestate', { canvas: boardState, lobby: $scope.currentLobby});
+            socket.emit('savestate', boardState);
         }
         tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
         // Resetting variables
@@ -763,7 +762,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 if (e.target.id == 'textInput') {
                     e.preventDefault();
                     if ($scope.currentLobby) {
-                        socket.emit('draw_text', { lobby: $scope.currentLobby, val: e.target.value, mX: mouse.typeX, mY: mouse.typeY, sL: scrLeft, sT: scrTop, color: $scope.fillStyle, font: $scope.textSize });
+                        socket.emit('draw_text', { val: e.target.value, mX: mouse.typeX, mY: mouse.typeY, sL: scrLeft, sT: scrTop, color: $scope.fillStyle, font: $scope.textSize });
                     }
                     else {
                         drawText(e.target.value, mouse.typeX, mouse.typeY, scrLeft, scrTop, $scope.fillStyle, $scope.textSize);
@@ -774,8 +773,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 if (e.target.id == 'codeInput' && !e.shiftKey) {
                     e.preventDefault();
                     var codeArr = $('#codeInput').val().split('\n');
-                    if ($scope.currentLoby) {
-                        socket.emit('draw_code', { lobby: $scope.currentLoby, arr: codeArr, mX: mouse.typeX, mY: mouse.typeY, sL: scrLeft, sT: scrTop, color: $scope.fillStyle, font: $scope.textSize });
+                    if ($scope.currentLobby) {
+                        socket.emit('draw_code', { arr: codeArr, mX: mouse.typeX, mY: mouse.typeY, sL: scrLeft, sT: scrTop, color: $scope.fillStyle, font: $scope.textSize });
                     }
                     else {
                         drawCode(codeArr, mouse.typeX, mouse.typeY, scrLeft, scrTop, $scope.fillStyle, $scope.textSize);
