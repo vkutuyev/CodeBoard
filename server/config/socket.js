@@ -114,5 +114,10 @@ module.exports = function(io) {
         socket.on('savestate', function(data) {
             Lobbies[data.lobby].savestate = data.canvas;
         })
+
+        socket.on('code_edit', function(data) {
+            Lobbies[Users[socket.id].lobby].textCode = data.code;
+            io.to(data.lobby).emit('code_edit', { code: data.code, id: data.id })
+        })
     })
 }

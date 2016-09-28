@@ -122,32 +122,75 @@
     </div>
 
 
-    <div id="pickerDiv">
-        <div id="colorPicker"></div>
-    </div>
-
-    <!-- Temp toolbar -->
-    <div id="tools" style="position: absolute; top: 200px; left: 90%;">
-        <form><input type="text" id="color" name="color" ng-model='strokeStyle' /></form>
-        <span style='color: white; font-size 16px; text-decoration: underline;'>Brush Size</span><br>
-        <input id=sizeSlide type="range" min=1 max=20 ng-model=lineWidth style='width: 50%; margin-bottom: 5px;'/>
-        <input id=sizeBox type='text' ng-model=lineWidth value=lineWidth style='font-size: 16px; width: 35px;' />
-        <br><br>
-        <span style='color: white; font-size 16px; text-decoration: underline;'>Shapes</span><br>
-        <button ng-click="changeInput('rectF')">Filled Rect.</button><br>
-        <button ng-click="changeInput('rectH')">Hollow Rect.</button><br>
-        <button ng-click="changeInput('circF')">Filled Circ.</button><br>
-        <button ng-click="changeInput('circH')">Hollow Circ.</button><br>
-        <br>
-        <span style='color: white; font-size 16px; text-decoration: underline;'>Misc</span><br>
-        <button ng-click="strokeStyle='#000000'; lineWidth=5*lineWidth; shape.type=null;">Eraser</button><br>
-        <button ng-click=clearCanvas()>Clear</button><br>
-        <br>
-        <button ng-click="changeInput('text')">Text</button><br>
-        <button ng-click="changeInput('code')">Code</button><br>
-        <span style='color: white; font-size 16px; text-decoration: underline;'>Text Size</span><br>
-        <input type="range" min=8 max=30 ng-model=textSize style='width: 50px; margin-bottom: 5px;'>
-        <input type="text" ng-model=textSize style="width: 50px; ">
+    <!-- Canvas toolbar -->
+    <div id=canvToolbar>
+        <div id="toolLobby">
+            <h4 style='text-decoration: underline;'>Lobby</h4>
+            <h6>{{ currentLobby || 'Offline' }}</h6>
+        </div>
+        <div id="toolBtns">
+            <div class="toolRow">
+                <div class="toolBtn" name=brush ng-click=changeInput('brush')>
+                    <i class="fa fa-paint-brush" aria-hidden="true"></i>
+                </div>
+                <div class="toolBtn" ng-click=changeInput('eraser')>
+                    <i class="fa fa-eraser" aria-hidden="true"></i>
+                </div>
+            </div>
+            <div class="toolRow">
+                <div class="toolBtn" ng-click=changeInput('text')>
+                    <i class="fa fa-font" aria-hidden="true"></i>
+                </div>
+                <div class="toolBtn" ng-click=changeInput('code')>
+                    <i class="fa fa-code" aria-hidden="true"></i>
+                </div>
+            </div>
+            <hr id=toolSep>
+            <div class="toolRow">
+                <div class="toolBtn" name=brush ng-click=changeInput('rectF')>
+                    <i class="fa fa-square" aria-hidden="true"></i>
+                </div>
+                <div class="toolBtn" ng-click=changeInput('rectH')>
+                    <i class="fa fa-square-o" aria-hidden="true"></i>
+                </div>
+            </div>
+            <div class="toolRow">
+                <div class="toolBtn" ng-click=changeInput('circF')>
+                    <i class="fa fa-circle" aria-hidden="true"></i>
+                </div>
+                <div class="toolBtn" ng-click=changeInput('circH')>
+                    <i class="fa fa-circle-o" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+        <hr id=toolSep>
+        <div id="toolColor">
+            <div id="toolColorBox" ng-click=toggleColor(showColor)/>
+            <input type="text" id=color ng-model=strokeStyle />
+            <div id="pickerDiv" hidden>
+                <div id="colorPicker"></div>
+            </div>
+        </div>
+        <div id="toolSize">
+            <span class=toolSizeLabel>Brush Size</span>
+            <input class=toolSizeBox id=toolSizeBoxValue type="text" ng-model=lineWidth />
+            <input class=toolSizeSlide id=toolSizeSlideValue type="range" min=1 max=20 ng-model=lineWidth />
+        </div>
+        <div id="textSize" hidden>
+            <span class=toolSizeLabel>Text Size</span>
+            <input class=toolSizeBox id=textSizeBoxValue type="text" ng-model=textSize />
+            <input class=toolSizeSlide id=textSizeSlideValue type="range" min=10 max=40 ng-model=textSize />
+        </div>
+        <hr id=toolSep>
+        <div class=toolBotBtn>
+            <button id=clearBtn ng-click=clearCanvas()>Clear</button>
+        </div>
+        <div class=toolBotBtn>
+            <button id=saveBtn ng-click=saveCanvas()>Save</button>
+        </div>
+        <div class=toolBotBtn>
+            <button id=loadBtn ng-click=clearCanvas()>Load</button>
+        </div>
     </div>
 
 </div>

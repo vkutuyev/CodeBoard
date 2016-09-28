@@ -25,6 +25,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
     // Random UI
     $scope.scrollMsg    = true;
     $scope.notification = '';
+    $scope.showColor    = false;
+    $scope.slideMin     = 1;
+    $scope.slideMax     = 20;
     // Shapes
     $scope.shape        = {
         type: '',
@@ -259,31 +262,86 @@ app.controller('LobbyController', function($scope, $location, socket) {
         $('#notifDiv').animate({'top': 0}, 500).delay(2000).animate({'top': -35}, 400);
     }
     $scope.changeInput = function(input) {
+        $('.toolBtn').stop();
+        $('.toolBtn').css('opacity', 1);
+        $('.toolBtn').removeClass('activeBtn');
+        // Reset/clear text and code divs
         $('#textDiv').attr('hidden', true);
         $('#codeDiv').attr('hidden', true);
         $('#textInput').val('');
         $('#codeInput').val('');
         $('#textInput').blur();
         $('#codeInput').blur();
-        if (input != 'text' && input != 'code') {
-            $('#tmp_canvas').css('cursor', 'crosshair');
-            $scope.shape.type  = input;
-            $scope.typing      = false;
-            $scope.typeClicked = false;
+        // Reset color from eraser
+        if ($scope.strokeStyle == '#000000') {
+            $scope.strokeStyle = '#ffffff';
         }
+        // Drawing
+        if (input != 'text' && input != 'code') {
+            $('#toolSize').attr('hidden', false);
+            $('#textSize').attr('hidden', true);
+            if (input == 'brush') {
+                $($('.toolBtn')[0]).css('opacity', 0);
+                $($('.toolBtn')[0]).animate({ opacity: 1}, 500);
+                $($('.toolBtn')[0]).addClass('activeBtn');
+                $('#tmp_canvas').css('cursor', 'cell');
+                $scope.shape.type  = null;
+                $scope.typing      = false;
+                $scope.typeClicked = false;
+            }
+            else if (input == 'eraser') {
+                $($('.toolBtn')[1]).css('opacity', 0);
+                $($('.toolBtn')[1]).animate({ opacity: 1}, 500);
+                $($('.toolBtn')[1]).addClass('activeBtn');
+                $('#tmp_canvas').css('cursor', 'cell');
+                $scope.shape.type  = null;
+                $scope.typing      = false;
+                $scope.typeClicked = false;
+                $scope.strokeStyle = '#000000';
+            }
+            else {
+                var ind;
+                switch (input) {
+                    case 'rectF': ind = 4; break;
+                    case 'rectH': ind = 5; break;
+                    case 'circF': ind = 6; break;
+                    case 'circH': ind = 7; break;
+                }
+                $($('.toolBtn')[ind]).css('opacity', 0);
+                $($('.toolBtn')[ind]).animate({ opacity: 1}, 500);
+                $($('.toolBtn')[ind]).addClass('activeBtn');
+                $('#tmp_canvas').css('cursor', 'crosshair');
+                $scope.shape.type  = input;
+                $scope.typing      = false;
+                $scope.typeClicked = false;
+            }
+        }
+        // Typing
         else {
+            $('#toolSize').attr('hidden', true);
+            $('#textSize').attr('hidden', false);
             $scope.typing     = true;
             $scope.shape.type = null;
             $('#tmp_canvas').css('cursor', 'text');
             if (input == 'text') {
+                $($('.toolBtn')[2]).css('opacity', 0);
+                $($('.toolBtn')[2]).animate({ opacity: 1}, 500);
+                $($('.toolBtn')[2]).addClass('activeBtn');
                 $scope.textType = true;
                 $scope.codeType = false;
             }
             if (input == 'code') {
+                $($('.toolBtn')[3]).css('opacity', 0);
+                $($('.toolBtn')[3]).animate({ opacity: 1}, 500);
+                $($('.toolBtn')[3]).addClass('activeBtn');
                 $scope.textType = false;
                 $scope.codeType = true;
             }
         }
+    }
+    $scope.toggleColor = function(show) {
+        $('#pickerDiv').attr('hidden', show);
+        $scope.showColor = !show;
     }
 
 
@@ -297,6 +355,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $scope.strokeStyle = color;
             $('#color').val(color);
             $('#color').css('background', color);
+            $('#toolColorBox').css('background', color);
         });
 
         // File drop
@@ -315,6 +374,27 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
     })
 
+    //////////////////////////////////////////
+    ///            Code Editor             ///
+    //////////////////////////////////////////
+    var editor = ace.edit('editor');
+    // editor.setTheme('ace/theme/monokai');
+    editor.getSession().setMode('ace/mode/javascript');
+    editor.getSession().setUseWrapMode(false);
+    editor.$blockScrolling = Infinity;
+    editor.focus();
+    $('#editor').on('keyup', function(e) {
+        editor.resize();
+        if ($scope.currentLobby) {
+            socket.emit('code_edit', { lobby: $scope.currentLobby, id: socket.currentId(), code: editor.getValue()});
+        }
+    })
+
+    socket.on('code_edit', function(data) {
+        if (socket.currentId() != data.id) {
+            editor.setValue(data.code);
+        }
+    });
 
     //////////////////////////////////////////
     ///            Lobby System            ///
@@ -345,6 +425,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                     context.drawImage(board, 0, 0);
                 }
             }
+            editor.setValue(data.lobby_data.textCode);
             var msg = 'Joined lobby: ' + data.lobby_data.id;
             $scope.showNotification(msg, 'good');
         } else {
@@ -397,12 +478,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
         $scope.users = data.users;
     })
 
-    //////////////////////////////////////////
-    ///            Code Editor             ///
-    //////////////////////////////////////////
-    var editor = ace.edit('editor');
-    editor.setTheme('ace/theme/monokai');
-    editor.getSession().setMode('ace/mode/javascript');
 
 
     //////////////////////////////////////////
@@ -418,6 +493,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         typeY: 0
     };
     var pts = [];
+    $scope.changeInput('brush');
     // get canvas element and create context
     var canvas         = document.getElementById('drawBoard');
     var context        = canvas.getContext('2d');
@@ -446,6 +522,12 @@ app.controller('LobbyController', function($scope, $location, socket) {
     //////////////////////////////////////////
     tmp_canvas.onmousedown = function(e) {
         e.preventDefault();
+        // Removing focus from any input fields
+        $('#color').blur();
+        $('#toolSizeBoxValue').blur();
+        $('#toolSizeSlideValue').blur();
+        $('#textSizeBoxValue').blur();
+        $('#textSizeSlideValue').blur();
         // Drawing or dragging
         if (!e.shiftKey && e.button == 0) {
             mouse.click  = true;
@@ -491,8 +573,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
             if ($scope.codeType) {
                 // Place coding textarea
                 if ($('#codeInput').val() == '') {
-                    $('#codeInput').css('width', 200);
-                    $('#codeInput').css('height', 100);
+                    $('#codeInput').css('width', 250);
+                    $('#codeInput').css('height', 150);
                 }
                 $('#codeDiv').attr('hidden', false);
                 $('#codeDiv').css('left', mouse.pos.x-2);
@@ -619,6 +701,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         pts = [];
     })
 
+
     //////////////////////////////////////////
     ///         Keyboard Keypresses        ///
     //////////////////////////////////////////
@@ -632,8 +715,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
     alt         : 91
     shift       : 16
     */
+    // Automatically expand code textarea
     $('#codeInput').on('keyup', function(e) {
-        // Automatically expand code textarea
         var input = $('#codeInput').val().split('\n');
         var max = 0;
         for (line of input) {
@@ -641,7 +724,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 max = line.length
             }
         }
-        $('#codeInput').css('width', max*$scope.textSize/1.5);
+        $('#codeInput').css('width', max*$scope.textSize/1.2);
         $('#codeInput').css('height', input.length*$scope.textSize*2);
     })
     $(document).on('keydown', function(e) {
@@ -649,7 +732,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $('#tmp_canvas').css('cursor', '-webkit-grab');
             $('#tmp_canvas').css('cursor', '-moz-grab');
         }
-        if (e.keyCode == 13) {              // Enter
+        if (e.keyCode == 13 && !e.shiftKey) {              // Enter
             // Typing
             if ($scope.typeClicked) {
                 var scrLeft = document.getElementById('lobbyDiv').scrollLeft;
@@ -677,31 +760,71 @@ app.controller('LobbyController', function($scope, $location, socket) {
                     $('#codeDiv').attr('hidden', true);
                     $('#codeInput').val('');
                 }
+                $scope.typeClicked = false;
             }
         }
-        if (e.keyCode == 27) {              // Escape
-            // Drawing reset
-            $('#tmp_canvas').css('cursor', 'cell');
-            $scope.strokeStyle = '#ffffff';
-            $scope.fillStyle   = '#ffffff';
-            $scope.lineWidth   = 3;
-            // Temp values for toolbar   //
-            $('#sizeBox').val(3);        //
-            $('#sizeSlide').val(3);      //
-            ///////////////////////////////
-            $scope.shape.type = null;
-            // Typing reset
-            $scope.typing      = false;
-            $scope.typeClicked = false;
-            $('#textInput').blur();
-            $('#codeInput').blur();
-            $('#textDiv').attr('hidden', true);
-            $('#codeDiv').attr('hidden', true);
+        if (e.keyCode == 27 && !e.shiftKey) {              // Escape
+            // Close sidebar menu if open
+            if ($scope.menuOpen) {
+                $('#sidebar').animate({ left: -300, width: 300}, 600);
+                $('#sideBorder').animate({ left: 290 }, 600);
+                $('#menuHam').animate({
+                    left: 10, top: 10, borderTopLeftRadius: 15, borderBottomLeftRadius: 15, borderTopRightRadius: 15
+                }, 600);
+                $scope.menuOpen = false;
+            }
+            else if ($scope.showColor) {
+                $('#pickerDiv').attr('hidden', true);
+                $scope.showColor = false;
+            }
+            else {
+                // Drawing reset
+                $('#tmp_canvas').css('cursor', 'cell');
+                $scope.strokeStyle = '#ffffff';
+                $scope.fillStyle   = '#ffffff';
+                $scope.lineWidth   = 3;
+                $scope.shape.type = null;
+                // Typing reset
+                $scope.typing      = false;
+                $scope.typeClicked = false;
+                $('#textInput').blur();
+                $('#codeInput').blur();
+                $('#textDiv').attr('hidden', true);
+                $('#codeDiv').attr('hidden', true);
+                $scope.changeInput('brush');
+                // Toolbar values/focus reset
+                $('#clearBtn').blur();
+                $('#color').blur();
+                $('#color').val('#ffffff');
+                $('#color').css('background', '#ffffff');
+                $('#toolColorBox').css('background', '#ffffff');
+                $('#toolSizeBoxValue').blur();
+                $('#toolSizeSlideValue').blur();
+                $('#toolSizeBoxValue').val(3);
+                $('#toolSizeSlideValue').val(3);
+                $('#textSizeBoxValue').blur();
+                $('#textSizeSlideValue').blur();
+                $('#textSizeBoxValue').val(12);
+                $('#textSizeSlideValue').val(12);
+            }
         }
     })
 
     $(document).on('keyup', function(e) {
-        if (e.keyCode == 16) {
+        // Keyboard shortcuts
+        if (!$scope.typeClicked && !$scope.menuOpen && !e.shiftKey) {
+            switch (e.key) {
+                case 'b': $scope.changeInput('brush'); break;
+                case 'e': $scope.changeInput('eraser');break;
+                case 't': $scope.changeInput('text');  break;
+                case 'c': $scope.changeInput('code');  break;
+                case 'q': $scope.changeInput('rectF'); break;
+                case 'w': $scope.changeInput('rectH'); break;
+                case 'a': $scope.changeInput('circF'); break;
+                case 's': $scope.changeInput('circH'); break;
+            }
+        }
+        if (e.keyCode == 16) {      // Shift
             if (mouse.dragging) {
                 mouse.dragging  = false;
                 mouse.click     = false;
@@ -716,6 +839,14 @@ app.controller('LobbyController', function($scope, $location, socket) {
             else {
                 $('#tmp_canvas').css('cursor', 'cell');
             }
+        }
+        if (e.shiftKey && e.keyCode == 27) {    // Shift + Esc
+            $('#sidebar').animate({ left: 0}, 800);
+            $('#sideBorder').animate({ left: 290 }, 800);
+            $('#menuHam').animate({
+                left: 295, top: 0, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0
+            }, 800);
+            $scope.menuOpen = true;
         }
     })
 
@@ -761,6 +892,62 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $scope.menuOpen = false;
         }
     })
+
+    // Handling focus/shortcuts in toolbar
+    // Color picker
+    $('#color').on('focus', function(e) {
+        $scope.typeClicked = true;
+    })
+    $('#color').on('focusout', function(e) {
+        $scope.typeClicked = false;
+    })
+    $('#color').on('keydown', function(e) {
+        // Set color and lose focus on Enter
+        if (e.keyCode == 13) {
+            var color = $('#color').val();
+            $scope.fillStyle = color;
+            $scope.strokeStyle = color;
+            $('#color').val(color);
+            $('#color').css('background', color);
+            $('#toolColorBox').css('background', color);
+            $('#color').blur();
+        }
+    })
+    // Brush size input/slider
+    $('#toolSizeBoxValue').on('focus', function(e) {
+        $scope.typeClicked = true;
+    })
+    $('#toolSizeBoxValue').on('focusout', function(e) {
+        $scope.typeClicked = false;
+    })
+    $('#toolSizeBoxValue').on('keydown', function(e) {
+        // Set size and lose focus on Enter
+        if (e.keyCode == 13) {
+            var size = $('#toolSizeBoxValue').val();
+            $scope.lineWidth = size;
+            $('#toolSizeBoxValue').val(size);
+            $('#toolSizeSliderValue').val(size);
+            $('#toolSizeBoxValue').blur();
+        }
+    })
+    // Text size input/slider
+    $('#textSizeBoxValue').on('focus', function(e) {
+        $scope.typeClicked = true;
+    })
+    $('#textSizeBoxValue').on('focusout', function(e) {
+        $scope.typeClicked = false;
+    })
+    $('#textSizeBoxValue').on('keydown', function(e) {
+        // Set size and lose focus on Enter
+        if (e.keyCode == 13) {
+            var size = $('#textSizeBoxValue').val();
+            $scope.lineWidth = size;
+            $('#textSizeBoxValue').val(size);
+            $('#textSizeSliderValue').val(size);
+            $('#textSizeBoxValue').blur();
+        }
+    })
+
     // Cursor change
     $('#sideBorder').on('mouseover', function(e) {
         $('#sideBorder').css('cursor', 'ew-resize');
@@ -771,6 +958,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
     // Detecting scroll to hide message
     $('.lobby').on('scroll', function() {
         hideScrollMsg();
+    })
+    $('.toolBtn').on('mouseover', function(e) {
+        $('.toolBtn').css('cursor', 'pointer');
     })
 
 })
