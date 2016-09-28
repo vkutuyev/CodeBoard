@@ -5,7 +5,7 @@ function Lobby (id) {
     this.id          = id;
     this.users       = {};
     this.chatlog     = [];
-    this.textCode    = [];
+    this.textCode    = '';
     this.savestate   = '';
     this.screenshots = [];
 }
@@ -92,33 +92,35 @@ module.exports = function(io) {
         ///          Canvas Drawing            ///
         //////////////////////////////////////////
         socket.on('draw_line', function(data) {
-            io.to(data.lobby).emit('draw_line', data);
+            io.to(Users[socket.id].lobby).emit('draw_line', data);
         })
         socket.on('draw_shape', function(data) {
-            io.to(data.lobby).emit('draw_shape', data);
+            io.to(Users[socket.id].lobby).emit('draw_shape', data);
         })
-        socket.on('board_clear', function(lobby) {
-            io.to(lobby).emit('board_clear');
+        socket.on('board_clear', function() {
+            io.to(Users[socket.id].lobby).emit('board_clear');
         })
         //////////////////////////////////////////
         ///           Canvas Typing            ///
         //////////////////////////////////////////
         socket.on('draw_text', function(data) {
-            io.to(data.lobby).emit('draw_text', data);
+            io.to(Users[socket.id].lobby).emit('draw_text', data);
         })
         socket.on('draw_code', function(data) {
-            io.to(data.lobby).emit('dra_code', data);
+            io.to(Users[socket.id].lobby).emit('draw_code', data);
         })
         //////////////////////////////////////////
         ///           Canvas Saving            ///
         //////////////////////////////////////////
-        socket.on('savestate', function(data) {
-            Lobbies[data.lobby].savestate = data.canvas;
+        socket.on('savestate', function(canvas) {
+            Lobbies[Users[socket.id].lobby].savestate = canvas;
         })
-
+        //////////////////////////////////////////
+        ///             Code Editor            ///
+        //////////////////////////////////////////
         socket.on('code_edit', function(data) {
             Lobbies[Users[socket.id].lobby].textCode = data.code;
-            io.to(data.lobby).emit('code_edit', { code: data.code, id: data.id })
+            io.to(Users[socket.id].lobby).emit('code_edit', { code: data.code, id: data.id })
         })
     })
 }

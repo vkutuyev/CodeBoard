@@ -161,3 +161,27 @@
             #loadBtn:focus {
                 outline: 0;
             }
+
+#fileInput {
+    position: absolute;
+    right: 90;
+    top: 200;
+    background: rgb(50, 50, 50);
+    border: 2px solid rgb(13, 66, 96);
+    border-radius: 15px;
+}
+    #canvFile {
+        color: white;
+    }
+    #fileDrop {
+        height: 100px;
+        width: 100px;
+        background: blue;
+        color: white;
+    }
+    #fileSubBtn {
+        height: 50px;
+        width: 100px;
+        background: red;
+        color: white;
+    }

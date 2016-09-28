@@ -11,7 +11,7 @@
     <div id="scrollPop">Hold Shift or right-click, then drag to extend canvas <i class="fa fa-arrows-alt" aria-hidden="true"></i></div>
 
     <!-- Notifications -->
-    <div id=notifDiv><span id=notifSpan>{{notification}}<span></div>
+    <div id=notifDiv><span id=notifSpan><span></div>
 
     <!--- Coding/text areas --->
     <div id="textDiv" hidden=true>
@@ -41,12 +41,6 @@
                 <h4 class="col-sm-12">Menu</h4>
             </div>
             <hr>
-            <!-- <div class="row">
-                <div class="col-md-12">
-                    <button ng-hide="menu_new_active==1" class="menu_buttons" ng-click="menu_active(0)">Create New Online</button>
-                    <input id="menu_new_send" type="text" ng-show="menu_new_active==1" class="menu_inputs" ng-keydown="menu_new_send($event)" ng-model="lobby_name" placeholder="Lobby: (Enter: Go, Shift+Esc: Cancel)">
-                </div>
-            </div> -->
             <div class="row">
                 <div class="col-md-12">
                     <button ng-hide="menu_create_active==1" class="menu_buttons" ng-click="menu_active(1)">Create a Lobby</button>
@@ -59,26 +53,6 @@
                     <input id="menu_join_send" type="text" ng-show="menu_join_active==1" class="menu_inputs" ng-keydown="menu_join_send($event)" ng-model="join_lobby" placeholder="Lobby: (Enter: Go, Shift+Esc: Cancel)">
                 </div>
             </div>
-
-            <!-- <input type="text" ng-model="lobby_name" placeholder='Create Lobby'><br>
-            <button id="saveLobbyTest" style="width: 50px; height: 50px; background: steelblue; top: 200px; left: 500px;" ng-click="createLobby('save')">Save</button>
-            <button id="createLobbyTest" style="width: 50px; height: 50px; background: red; top: 200px; left: 450px;" ng-click="createLobby()">Create</button><br><br> -->
-            <!-- <input type="text" ng-model="join_lobby" placeholder='Join Lobby'><br>
-            <button id="joinLobbyTest" style="width: 50px; height: 50px; background: green; top: 250px; left: 450px;" ng-click="joinLobby()">Join</button> -->
-
-            <!-- To Vadim: DELETE SAVE/LOAD FROM HERE IF YOU DONT NEED -->
-            <br>
-            <br>
-            <br>
-            <br>
-            <button ng-click=saveCanvas()>SAVE</button>
-            <br>
-            <br>
-            <input id=canvFile type="file" />
-            <div id=fileDrop style='height: 100px; width: 100px; background: blue; color: white;'>Drop Here</div>
-            <button ng-click=loadCanvas()>LOAD</button>
-            <!-- END OF SAVE/LOAD -->
-
         </div>
         <div ng-show="menu_tab==1">
             <div class="row">
@@ -114,14 +88,9 @@
                     </div>
                 </div>
             </div>
-            <!-- <h1 ng-if="!currentLobby">Offline</h1> -->
             <div ng-show="!currentLobby">Please go into online mode to use chat.</div>
         </div>
         <div ng-show="menu_tab==2">
-            <!-- <div class="row">
-                <h4 class="col-sm-12">Code Editor</h4>
-            </div>
-            <hr> -->
             <div id="editor"></div>
         </div>
     </div>
@@ -194,7 +163,12 @@
             <button id=saveBtn ng-click=saveCanvas()>Save</button>
         </div>
         <div class=toolBotBtn>
-            <button id=loadBtn ng-click=clearCanvas()>Load</button>
+            <button id=loadBtn ng-click=toggleLoad(showLoad)>Load</button>
+        </div>
+        <div id=fileInput hidden>
+            <input id=canvFile type="file" />
+            <div id=fileDrop>Drop Here</div>
+            <div id="fileSubBtn" ng-disabled="!filePicked" ng-click=loadCanvas()>Load</div>
         </div>
     </div>
 
