@@ -445,6 +445,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
                     context.drawImage(board, 0, 0);
                 }
             }
+            //Setting the new stuff
+            $scope.users    = data.lobby_data.users;
+            $scope.messages = data.lobby_data.chatlog;
             editor.setValue(data.lobby_data.textCode);
             var msg = 'Joined lobby: ' + data.lobby_data.id;
             $scope.showNotification(msg, 'good');

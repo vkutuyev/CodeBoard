@@ -69,14 +69,15 @@ module.exports = function(io) {
         ///           Chat System              ///
         //////////////////////////////////////////
         socket.on('user_send', function(data) {
-            Users[socket.id].name = data.name;
-            console.log(Users[socket.id]);
+            if (Users[socket.id]) {
+                Users[socket.id].name = data.name;
+                console.log(Users[socket.id]);
+            }
         })
         socket.on('message_send', function(data) {
             console.log(data);
             if (Users[socket.id].name) {
                 var formatted = {name: Users[socket.id].name, message: data.message};
-
             }
             if (Users[socket.id].lobby) {
                 Lobbies[Users[socket.id].lobby].chatlog.push(formatted);
