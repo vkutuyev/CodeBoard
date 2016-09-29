@@ -12,3 +12,7 @@
     color: white;
     border-color: white;
 }
+
+.menu_buttons:focus, .menu_inputs:focus {
+    outline: none;
+}
