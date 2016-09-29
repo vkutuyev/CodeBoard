@@ -148,8 +148,10 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 socket.emit('savestate', boardState);
             }
         };
-
     // Scope functions
+    $scope.menu_tab_change = function(menu) {
+        $scope.menu_tab = menu;
+    }
     $scope.menu_active = function(item) {
         switch (item) {
             case 1:
@@ -445,11 +447,14 @@ app.controller('LobbyController', function($scope, $location, socket) {
     //////////////////////////////////////////
     ///            Code Editor             ///
     //////////////////////////////////////////
-    var editor = ace.edit('editor');
-    editor.setTheme('ace/theme/sqlserver');
-    editor.getSession().setMode('ace/mode/javascript');
-    editor.getSession().setUseWrapMode(false);
-    editor.$blockScrolling = Infinity;
+    var editor;
+    setTimeout(function () {
+        editor = ace.edit('editor');
+        editor.setTheme('ace/theme/sqlserver');
+        editor.getSession().setMode('ace/mode/javascript');
+        editor.getSession().setUseWrapMode(false);
+        editor.$blockScrolling = Infinity;
+    }, 0);
     $('#editor').on('keyup', function(e) {
         editor.resize();
         if ($scope.currentLobby) {
