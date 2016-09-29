@@ -169,10 +169,24 @@
             <button id=loadBtn class=toolBotBtn ng-click=toggleLoad(showLoad)>Load</button>
         </div>
         <div id=fileInput hidden>
-            <span id=fileLabel>Select or drop image</span>
+            <button id=fileLabel>Select Image</button>
             <input id=canvFile type="file" />
-            <div id=fileDrop>Drop Here</div>
-            <button id="fileSubBtn" ng-disabled="!filePicked" ng-click=loadCanvas()>Load</button>
+            <span>OR</span>
+            <div id=fileDropBack></div>
+            <h4 id=fileDrop>Drop Image Here</h4>
+            <div id=fileSubDiv hidden>
+                <div id="fileSubInfo">
+                    <div id="fileSubName">
+                        <h5>Name</h5>
+                        <span id=fileName></span>
+                    </div>
+                    <div id="fileSubSize">
+                        <h5>Size</h5>
+                        <span id=fileSize></span>
+                    </div>
+                </div>
+                <button id=fileSubBtn ng-click=loadCanvas(filePicked)>Load</button>
+            </div>
         </div>
     </div>
 

@@ -86,14 +86,17 @@
             margin-top: 5px;
             margin-left: 10%;
         }
+        div.overlay {
+            border: 1px solid black;
+        }
     #pickerDiv {
         position: absolute;
         right: 90;
         bottom: 150;
-        background: rgb(198, 198, 198);
+        width: 200px;
+        background: white;
         border: 2px solid rgb(13, 66, 96);
         border-radius: 15px;
-        width: 200px;
     }
     #toolSize {
         width: 80px;
@@ -153,30 +156,94 @@
     position: absolute;
     right: 90;
     top: 350;
-    background: rgb(50, 50, 50);
+    width: 300px;
+    height: 180px;
+    background: white;
     border: 2px solid rgb(13, 66, 96);
     border-radius: 15px;
     text-align: center;
 }
     #fileLabel {
-        color: white;
-        text-shadow: -1px -1px 0px black, 1px 1px 0px black, 1px -1px 0px black, -1px 1px 0px black;
-        margin-bottom: 10px;
-        display: block;
+        color: black;
+        width: 200px;
+        height: 25px;
+        position: absolute;
+        left: 50px;
+        top: 10px;
+        border-radius: 3px;
+        background: white;
+        border: 1px solid rgb(198, 198, 198);
     }
     #canvFile {
-        color: white;
+        color: black;
+        width: 200px;
+        height: 25px;
+        opacity: 0;
+        z-index: 52;
+        position: relative;
+        left: 50px;
+        top: 10px;
     }
-    #fileDrop {
+    #fileInput span {
+        position: relative;
+        top: 15px;
+    }
+    #fileDropBack {
+        position: relative;
+        top: 20px;
+        left: 15px;
         height: 100px;
-        width: 100px;
-        background: blue;
-        color: white;
+        width: 90%;
+        background: rgb(168, 168, 168);
+        border-radius: 3px;
+        border: 1px solid rgb(198, 198, 198);
     }
-    #fileSubBtn {
-        height: 50px;
-        width: 100px;
-        background: rgb(33, 33, 33);
-        color: white;
-        border-radius: 25px;
+        #fileDrop {
+            color: white;
+            border: 4px dashed white;
+            border-radius: 3px;
+            width: 85%;
+            height: 90px;
+            position: absolute;
+            top: 60px;
+            left: 22.5px;
+            vertical-align: middle;
+            line-height: 90px;
+        }
+    #fileSubDiv {
+        opacity: 0;
     }
+        #fileSubInfo {
+            color: black;
+            position: relative;
+            top: 15px;
+        }
+        #fileSubInfo h5 {
+            display: block;
+            text-decoration: underline;
+        }
+        #fileSubName {
+            display: inline-block;
+            width: 60%;
+        }
+        #fileSubSize {
+            display: inline-block;
+            width: 30%;
+        }
+            #fileSubInfo span {
+                position: relative;
+                top: -5px;
+            }
+        #fileSubBtn {
+            width: 50%;
+            background: white;
+            color: black;
+            border: 1px solid rgb(198, 198, 198);
+            border-radius: 3px;
+            position: relative;
+            top: 12px;
+        }
+            #fileSubBtn:hover {
+                color: white;
+                background: rgb(168, 168, 168);
+            }

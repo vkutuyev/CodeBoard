@@ -235,20 +235,10 @@ app.controller('LobbyController', function($scope, $location, socket) {
         context.putImageData(oldCanv, 0, 0);
         context.globalCompositeOperation = compositeOperation;
     }
-    $scope.loadCanvas = function() {
-        var loadedCanv = document.getElementById('canvFile'),
-            file       = loadedCanv.files[0];
-        // PUT IN REAL FILE CHECKS LATER
-        // Check for image file
-        // if (file.type.split('/')[0] != 'image') {
-        //     alert('File must be an image.');
-        // }
-        var image = $scope.filePicked || file;
-        $scope.createImage(image);
-        $scope.filePicked = null;
+    $scope.loadCanvas = function(image) { //here
         $scope.toggleLoad(true);
-    }
-    $scope.createImage = function(image) {
+        // $scope.loadReset();
+        // Process image data
         var fr = new FileReader();
         fr.readAsDataURL(image);
         fr.onload = function() {
@@ -270,6 +260,15 @@ app.controller('LobbyController', function($scope, $location, socket) {
             img.onload = context.drawImage(img, 0, 0, img.width*scale, img.height*scale);
             $scope.showNotification('Image Loaded');
         }
+    }
+    $scope.loadReset = function() {
+        $scope.filePicked = null;
+        $('#fileInput').css('height', 180);
+        $('#fileSubDiv').attr('hidden', true).css('opacity', 0);
+        var canvFile = $("#canvFile");
+        canvFile.replaceWith( canvFile = canvFile.clone( true ) );
+        canvFile = document.getElementById('canvFile');
+        canvFile.addEventListener('change', $scope.fileSelect, false);
     }
     $scope.showNotification = function(msg, type) {
         $('#notifDiv').css('top', -35);
@@ -367,6 +366,48 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.toggleLoad = function(load) {
         $('#fileInput').attr('hidden', load);
         $scope.showLoad = !load;
+        if (load) {
+            $scope.loadReset();
+        }
+    }
+    $scope.fileSelect = function(e) {
+        if (e.target.files[0]) {
+            $scope.fileCheck(e.target.files[0]);
+        }
+    }
+    $scope.fileCheck = function(image) {    //here
+        var type = image.type;
+        if (type == 'image/gif' || type == 'image/png' || type == 'image/jpg' || type == 'image/jpeg') {
+            $scope.filePicked = image;
+            // Format name for display
+            var name = image.name;
+            if (image.name.length > 20) {
+                var nameArr = image.name.split('.');
+                name = '';
+                for (var i = 0; i < nameArr.length-1; i++) { name += nameArr[i]; }
+                name = name.substring(0,15);
+                name += '...' + nameArr[nameArr.length-1];
+            }
+            // Format size for display
+            var size = '' + image.size;
+            var formSize = '';
+            if (size.length > 6) {
+                formSize  = size.substring(0, size.length-6) + '.';
+                formSize += size.substring(size.length-6, size.length-5) + ' MB';
+            }
+            else {
+                formSize  = size.substring(0, size.length-3) + ' KB';
+            }
+            // Set upload display
+            $('#fileName').text(name);
+            $('#fileSize').text(formSize);
+            // Show bottom section
+            $('#fileInput').animate({height: 250}, 500);
+            $('#fileSubDiv').attr('hidden', false).delay(500).animate({opacity: 1}, 500);
+        }
+        else {
+            $scope.showNotification('Must select an image file (png, jpg, gif)', 'bad');
+        }
     }
 
 
@@ -383,10 +424,13 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $('#toolColorBox').css('background', color);
         });
 
-        // File drop
-        var fileDrop = document.getElementById('fileDrop');
+        // File check/drop
+        var fileDrop = document.getElementById('fileDrop'),
+            canvFile = document.getElementById('canvFile');
+        canvFile.addEventListener('change', $scope.fileSelect, false);
         fileDrop.addEventListener('dragover', fileDragOver, false);
         fileDrop.addEventListener('drop', fileDropHandler, false);
+        //here
         function fileDragOver(e) {
             e.stopPropagation();
             e.preventDefault();
@@ -394,10 +438,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         function fileDropHandler(e) {
             e.stopPropagation();
             e.preventDefault();
-            var image = e.dataTransfer.files[0];
-            $scope.filePicked = image;
-            var canvFile = $("#canvFile");
-            canvFile.replaceWith( canvFile = canvFile.clone( true ) );
+            $scope.fileCheck(e.dataTransfer.files[0]);
         }
     })
 
@@ -979,7 +1020,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
     })
 
-    // Cursor change
+    // Sidebar cursor changes
     $('#sideBorder').on('mouseover', function(e) {
         $('#sideBorder').css('cursor', 'ew-resize');
     })
@@ -992,6 +1033,13 @@ app.controller('LobbyController', function($scope, $location, socket) {
     })
     $('.toolBtn').on('mouseover', function(e) {
         $('.toolBtn').css('cursor', 'pointer');
+    })
+    // Toolbar canvas load elements
+    $('#canvFile').on('mouseover', function(e) {
+        $('#fileLabel').css({ color: 'white', background: 'rgb(198, 198, 198)'});
+    })
+    $('#canvFile').on('mouseout', function(e) {
+        $('#fileLabel').css({ color: 'black', background: 'white'});
     })
 
 })
