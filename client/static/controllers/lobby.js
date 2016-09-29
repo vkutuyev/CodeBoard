@@ -57,7 +57,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
             return { x: posx, y: posy };
         },
         hideScrollMsg = function() {
-            $('#scrollPop').animate({ opacity: 0 }, 2000);
+            $('#scrollPop').fadeOut(2000);
             $scope.scrollMsg = false;
         },
         onPaint = function(ptsArr, color, penWidth, status) {
@@ -358,14 +358,20 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
     }
     $scope.toggleColor = function(show) {
-        $('#pickerDiv').attr('hidden', show);
+        if (!show) { $('#pickerDiv').fadeIn(500);  }
+        else       { $('#pickerDiv').fadeOut(500); }
         $scope.showColor = !show;
     }
     $scope.toggleLoad = function(load) {
-        $('#fileInput').attr('hidden', load);
         $scope.showLoad = !load;
         if (load) {
-            $scope.loadReset();
+            $('#fileInput').fadeOut(300);
+            setTimeout(function() {
+                $scope.loadReset();
+            }, 400);
+        }
+        else {
+            $('#fileInput').fadeIn(500);
         }
     }
     $scope.fileSelect = function(e) {
@@ -847,7 +853,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 $scope.toggleLoad(true);
             }
             else if ($scope.showColor) {
-                $('#pickerDiv').attr('hidden', true);
+                $('#pickerDiv').fadeOut(300);
                 $scope.showColor = false;
             }
             else {
