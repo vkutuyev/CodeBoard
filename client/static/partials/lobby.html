@@ -27,13 +27,13 @@
         <h1 ng-if="!currentLobby">Offline</h1>
         <h1 ng-bind="currentLobby"></h1>
         <div class="row menu_tabs_row">
-            <div ng-hide="menu_tab==0" ng-click="menu_tab_change(0)" class="menu_tabs col-sm-4"><i class="fa fa-cog" aria-hidden="true"></i></div>
+            <div ng-hide="menu_tab==0" ng-click="menu_tab=0" class="menu_tabs col-sm-4"><i class="fa fa-cog" aria-hidden="true"></i></div>
             <div ng-if="menu_tab==0" class="col-sm-4 selected_menu_tab"><i class="fa fa-cog" aria-hidden="true"></i></div>
 
-            <div ng-hide="menu_tab==1" ng-click="menu_tab_change(1)" class="menu_tabs col-sm-4"><i class="fa fa-comment-o" aria-hidden="true"></i></div>
+            <div ng-hide="menu_tab==1" ng-click="menu_tab=1" class="menu_tabs col-sm-4"><i class="fa fa-comment-o" aria-hidden="true"></i></div>
             <div ng-if="menu_tab==1" class="col-sm-4 selected_menu_tab"><i class="fa fa-comment-o" aria-hidden="true"></i></div>
 
-            <div ng-hide="menu_tab==2" ng-click="menu_tab_change(2)" class="menu_tabs col-sm-4"><i class="fa fa-code" aria-hidden="true"></i></div>
+            <div ng-hide="menu_tab==2" ng-click="menu_tab=2" class="menu_tabs col-sm-4"><i class="fa fa-code" aria-hidden="true"></i></div>
             <div ng-if="menu_tab==2" class="col-sm-4 selected_menu_tab"><i class="fa fa-code" aria-hidden="true"></i></div>
         </div>
         <div ng-show="menu_tab==0">

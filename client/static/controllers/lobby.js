@@ -149,9 +149,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
             }
         };
     // Scope functions
-    $scope.menu_tab_change = function(menu) {
-        $scope.menu_tab = menu;
-    }
     $scope.menu_active = function(item) {
         switch (item) {
             case 1:
@@ -237,9 +234,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
         context.putImageData(oldCanv, 0, 0);
         context.globalCompositeOperation = compositeOperation;
     }
-    $scope.loadCanvas = function(image) { //here
+    $scope.loadCanvas = function(image) {
         $scope.toggleLoad(true);
-        // $scope.loadReset();
         // Process image data
         var fr = new FileReader();
         fr.readAsDataURL(image);
@@ -377,7 +373,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $scope.fileCheck(e.target.files[0]);
         }
     }
-    $scope.fileCheck = function(image) {    //here
+    $scope.fileCheck = function(image) {
         var type = image.type;
         if (type == 'image/gif' || type == 'image/png' || type == 'image/jpg' || type == 'image/jpeg') {
             $scope.filePicked = image;
@@ -432,7 +428,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         canvFile.addEventListener('change', $scope.fileSelect, false);
         fileDrop.addEventListener('dragover', fileDragOver, false);
         fileDrop.addEventListener('drop', fileDropHandler, false);
-        //here
+
         function fileDragOver(e) {
             e.stopPropagation();
             e.preventDefault();
