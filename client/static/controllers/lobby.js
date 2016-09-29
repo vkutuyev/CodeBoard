@@ -406,7 +406,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
     //////////////////////////////////////////
     ///            Code Editor             ///
     //////////////////////////////////////////
-
     var editor;
     setTimeout(function () {
         editor = ace.edit('editor');
@@ -414,7 +413,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         editor.getSession().setMode('ace/mode/javascript');
         editor.getSession().setUseWrapMode(false);
         editor.$blockScrolling = Infinity;
-    }, 10);
+    }, 0);
     $('#editor').on('keyup', function(e) {
         editor.resize();
         if ($scope.currentLobby) {
