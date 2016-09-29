@@ -153,14 +153,20 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.menu_active = function(item) {
         switch (item) {
             case 1:
-                $scope.menu_new_active=0;
-                $scope.menu_create_active=1;
-                $scope.menu_join_active=0;
+                $scope.menu_new_active    = 0;
+                $scope.menu_create_active = 1;
+                $scope.menu_join_active   = 0;
+                setTimeout(function(){
+                    $('#menu_create_send').focus();
+                }, 10);
                 break;
             case 2:
-                $scope.menu_new_active=0;
-                $scope.menu_create_active=0;
-                $scope.menu_join_active=1;
+                $scope.menu_new_active    = 0;
+                $scope.menu_create_active = 0;
+                $scope.menu_join_active   = 1;
+                setTimeout(function(){
+                    $('#menu_join_send').focus();
+                }, 10);
                 break;
         }
     }
@@ -402,7 +408,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     editor.setTheme('ace/theme/sqlserver');
     editor.getSession().setMode('ace/mode/javascript');
     editor.getSession().setUseWrapMode(false);
-    // editor.$blockScrolling = Infinity;       // This causes the missing 'top' error
+    editor.$blockScrolling = Infinity;
     $('#editor').on('keyup', function(e) {
         editor.resize();
         if ($scope.currentLobby) {
@@ -794,6 +800,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
                     left: 10, top: 10, borderTopLeftRadius: 15, borderBottomLeftRadius: 15, borderTopRightRadius: 15
                 }, 600);
                 $scope.menuOpen = false;
+            }
+            else if ($scope.showLoad) {
+                $scope.toggleLoad(true);
             }
             else if ($scope.showColor) {
                 $('#pickerDiv').attr('hidden', true);

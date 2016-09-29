@@ -156,19 +156,23 @@
             <input class=toolSizeSlide id=textSizeSlideValue type="range" min=10 max=40 ng-model=textSize />
         </div>
         <hr id=toolSep>
-        <div class=toolBotBtn>
-            <button id=clearBtn ng-click=clearCanvas()>Clear</button>
+        <div class="toolBotLabel">
+            <span>Canvas</span>
         </div>
-        <div class=toolBotBtn>
-            <button id=saveBtn ng-click=saveCanvas()>Save</button>
+        <div class=toolBotDiv>
+            <button id=clearBtn class=toolBotBtn ng-click=clearCanvas()>Clear</button>
         </div>
-        <div class=toolBotBtn>
-            <button id=loadBtn ng-click=toggleLoad(showLoad)>Load</button>
+        <div class=toolBotDiv>
+            <button id=saveBtn class=toolBotBtn ng-click=saveCanvas()>Save</button>
+        </div>
+        <div class=toolBotDiv>
+            <button id=loadBtn class=toolBotBtn ng-click=toggleLoad(showLoad)>Load</button>
         </div>
         <div id=fileInput hidden>
+            <span id=fileLabel>Select or drop image</span>
             <input id=canvFile type="file" />
             <div id=fileDrop>Drop Here</div>
-            <div id="fileSubBtn" ng-disabled="!filePicked" ng-click=loadCanvas()>Load</div>
+            <button id="fileSubBtn" ng-disabled="!filePicked" ng-click=loadCanvas()>Load</button>
         </div>
     </div>
 
