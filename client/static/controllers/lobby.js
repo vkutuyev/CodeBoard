@@ -246,16 +246,18 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 img.src = source;
             // Check image and scale down if it's too big
             var scale = 1;
-            if (img.width > 2000 && img.height < 1500) {
-                scale = 2000 / img.width;
+            if (img.width > 1950 && img.height < 1460) {
+                scale = 1950 / img.width;
             }
-            else if (img.width < 2000 && img.height > 1500 ) {
-                scale = 1500 / img.height;
+            else if (img.width < 1950 && img.height > 1460 ) {
+                scale = 1460 / img.height;
             }
-            else if (img.width > 2000 && img.height > 1500) {
-                scale = Math.min(2000/img.width, 1500/img.height);
+            else if (img.width > 1950 && img.height > 1460) {
+                scale = Math.min(1950/img.width, 1460/img.height);
             }
-            img.onload = context.drawImage(img, 0, 0, img.width*scale, img.height*scale);
+            img.onload = function() {
+                context.drawImage(img, 0, 0, img.width*scale, img.height*scale);
+            }
             $scope.showNotification('Image Loaded');
         }
     }
@@ -273,8 +275,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
         $('#notifDiv').stop();
         switch (type) {
             case 'good': $('#notifDiv').css('background', 'rgb(127, 224, 42)'); break;
-            case 'bad': $('#notifDiv').css('background', 'rgb(198, 49, 16)'); break;
-            default: $('#notifDiv').css('background', 'rgb(60, 134, 232)'); break;
+            case 'bad':  $('#notifDiv').css('background', 'rgb(198, 49, 16)');  break;
+            default:     $('#notifDiv').css('background', 'rgb(60, 134, 232)'); break;
         }
         $('#notifSpan').text(msg);
         $('#notifDiv').animate({'top': 0}, 500).delay(2000).animate({'top': -35}, 400);
@@ -517,7 +519,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         // Save current board as savestate or clear canvas if joining new lobby
         if (save) {
             if (!$scope.currentLobby) {
-                socket.emit('create_lobby', {path: path, canvas: board});
+                socket.emit('create_lobby', {path: path, canvas: board, code: editor.getValue()});
             }
             else {
                 socket.emit('save_lobby', {path: $scope.currentLobby, canvas: board});
@@ -862,7 +864,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 $scope.strokeStyle = '#ffffff';
                 $scope.fillStyle   = '#ffffff';
                 $scope.lineWidth   = 3;
-                $scope.shape.type = null;
+                $scope.shape.type  = null;
                 // Typing reset
                 $scope.typing      = false;
                 $scope.typeClicked = false;

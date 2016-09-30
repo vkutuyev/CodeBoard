@@ -25,6 +25,7 @@ module.exports = function(io) {
             if (data.path && !Lobbies[data.path]) {
                 Lobbies[data.path] = new Lobby(data.path);
                 Lobbies[data.path].savestate = data.canvas;
+                Lobbies[data.path].textCode  = data.code;
                 console.log(data.path, 'Lobby Created');
                 socket.emit('create_lobby_status', {success: true, path: data.path})
             } else {
