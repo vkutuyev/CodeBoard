@@ -256,9 +256,14 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 scale = Math.min(1950/img.width, 1460/img.height);
             }
             img.onload = function() {
-                context.drawImage(img, 0, 0, img.width*scale, img.height*scale);
+                if ($scope.currentLobby) {
+                    socket.emit('load_image', {src: img.src, scale: scale});
+                }
+                else {
+                    context.drawImage(img, 0, 0, img.width*scale, img.height*scale);
+                    $scope.showNotification('Image Loaded');
+                }
             }
-            $scope.showNotification('Image Loaded');
         }
     }
     $scope.loadReset = function() {
@@ -730,6 +735,14 @@ app.controller('LobbyController', function($scope, $location, socket) {
     socket.on('draw_code', function(data) {
         drawCode(data.arr, data.mX, data.mY, data.sL, data.sT, data.color, data.font);
     })
+    socket.on('load_image', function(data) {
+        var img = new Image();
+        img.src = data.src;
+        img.onload = function() {
+            context.drawImage(img, 0, 0, img.width*data.scale, img.height*data.scale);
+            $scope.showNotification('Image Loaded');
+        }
+    })
 
 
     //////////////////////////////////////////
@@ -844,8 +857,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
         if (e.keyCode == 27 && !e.shiftKey) {              // Escape
             // Close sidebar menu if open
             if ($scope.menuOpen) {
-                $('#sidebar').animate({ left: -300, width: 300}, 600);
-                $('#sideBorder').animate({ left: 290 }, 600);
+                $('#sidebar').animate({ left: -400, width: 400}, 600);
+                $('#sideBorder').animate({ left: 390 }, 600);
                 $('#menuHam').animate({
                     left: 10, top: 10, borderTopLeftRadius: 15, borderBottomLeftRadius: 15, borderTopRightRadius: 15
                 }, 600);
@@ -923,9 +936,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
         if (e.shiftKey && e.keyCode == 27 && !$scope.menuOpen) {    // Shift + Esc
             $('#sidebar').animate({ left: 0}, 800);
-            $('#sideBorder').animate({ left: 290 }, 800);
+            $('#sideBorder').animate({ left: 390 }, 800);
             $('#menuHam').animate({
-                left: 295, top: 0, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0
+                left: 395, top: 0, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0
             }, 800);
             $scope.menuOpen = true;
         }
@@ -958,15 +971,15 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $('#menuHam').on('mouseup', function(e) {
         if (!$scope.menuOpen) {
             $('#sidebar').animate({ left: 0}, 800);
-            $('#sideBorder').animate({ left: 290 }, 800);
+            $('#sideBorder').animate({ left: 390 }, 800);
             $('#menuHam').animate({
-                left: 295, top: 0, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0
+                left: 395, top: 0, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0
             }, 800);
             $scope.menuOpen = true;
         }
         else{
-            $('#sidebar').animate({ left: -300, width: 300}, 600);
-            $('#sideBorder').animate({ left: 290 }, 600);
+            $('#sidebar').animate({ left: -400, width: 400}, 600);
+            $('#sideBorder').animate({ left: 390 }, 600);
             $('#menuHam').animate({
                 left: 10, top: 10, borderTopLeftRadius: 15, borderBottomLeftRadius: 15, borderTopRightRadius: 15
             }, 600);

@@ -101,6 +101,9 @@ module.exports = function(io) {
         socket.on('board_clear', function() {
             io.to(Users[socket.id].lobby).emit('board_clear');
         })
+        socket.on('load_image', function(data) {
+            io.to(Users[socket.id].lobby).emit('load_image', data);
+        })
         //////////////////////////////////////////
         ///           Canvas Typing            ///
         //////////////////////////////////////////
