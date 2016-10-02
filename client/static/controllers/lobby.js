@@ -27,6 +27,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.showColor    = false;
     $scope.showLoad     = false;
     $scope.filePicked   = null;
+    // Screenshots
+    $scope.screenshots  = {};
     // Shapes
     $scope.shape        = {
         type: '',
@@ -35,7 +37,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         width: '',
         height: '',
         drawing: false
-    }
+    };
     // Typing
     $scope.typing       = false;
     $scope.textType     = false;
@@ -169,21 +171,10 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 break;
         }
     }
-    $scope.menu_new_send = function(event) {
-        switch (event.keyCode) {
-            case 13:
-                $scope.createLobby();
-                $scope.menu_new_active = 0;
-                break;
-            case 27:
-                $scope.menu_new_active = 0;
-                break;
-        }
-    }
     $scope.menu_create_send = function(event) {
         switch (event.keyCode) {
             case 13:
-                $scope.createLobby('save');
+                $scope.createLobby();
                 $scope.menu_create_active = 0;
                 break;
             case 27:
@@ -212,6 +203,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
     }
     $scope.saveCanvas = function() {
+        $('#saveBtn').blur();
         // Draw black background 'under' canvas
         var oldCanv = context.getImageData(0, 0, width, height);
         var compositeOperation = context.globalCompositeOperation;
@@ -370,6 +362,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         $scope.showColor = !show;
     }
     $scope.toggleLoad = function(load) {
+        $('#loadBtn').blur();
         $scope.showLoad = !load;
         if (load) {
             $('#fileInput').fadeOut(300);
@@ -413,11 +406,69 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $('#fileName').text(name);
             $('#fileSize').text(formSize);
             // Show bottom section
-            $('#fileInput').animate({height: 250}, 500);
-            $('#fileSubDiv').attr('hidden', false).delay(500).animate({opacity: 1}, 500);
+            $('#fileInput').animate({height: 250}, 300);
+            $('#fileSubDiv').attr('hidden', false).delay(300).animate({opacity: 1}, 300);
         }
         else {
             $scope.showNotification('Must select an image file (png, jpg, gif)', 'bad');
+        }
+    }
+    $scope.toggleScreenshots = function() {
+        $('.shotNameInput').val('');
+        for (var i = 0; i < 3; i++) {
+            $($('.shotNameInput')[i]).val($scope.screenshots[i].name);
+            if ($scope.screenshots[i].img) {
+                $($('.shotFirst')[i]).css('color', 'green');
+            }
+            else {
+                $($('.shotFirst')[i]).css('color', 'black');
+            }
+        }
+        $('.shotFirst i').on('mouseover', function(e) {
+            var screenshot = $scope.screenshots[e.target.id].img;
+            if (screenshot) {
+                $scope.showScreenshot(screenshot, e);
+            }
+        })
+        $('.shotFirst i').on('mouseout', function(e) {
+            $('#shotPreview').fadeOut(300);
+        })
+        // Canvas screenshot saving on Enter
+        $('.shotNameInput').unbind('keyup');
+        $('.shotNameInput').on('keyup', function(e) {
+            if (e.keyCode == 13) {
+                $($('.shotNameInput')[e.target.title]).blur();
+                $scope.saveScreenshot(e.target.title);
+            }
+        })
+    }
+    $scope.showScreenshot = function(screenshot, e) {
+        var mouse       = mouseCoords(e);
+        var preview     = new Image();
+        preview.src = screenshot;
+        preview.width  = 400;
+        preview.height = 300;
+        $('#shotPreview').html(preview);
+        $('#shotPreview').css({top: e.pageY-320, left: e.pageX+25});
+        $('#shotPreview').fadeIn(500);
+    }
+    $scope.saveScreenshot = function(ind) {
+        var board = canvas.toDataURL(),
+            name  = $('.shotNameInput')[ind].value,
+            time  = moment().format('M/D h:mma');
+        if (name) {
+            socket.emit('screenshot', { index: ind, name: name, canvas: board, time: time });
+            $scope.showNotification('Canvas Saved', 'good');
+        }
+        else {
+            $scope.showNotification('Must enter canvas name.', 'bad');
+            $($('.shotNameInput')[ind]).fadeTo(250, 0.2).fadeTo(250, 1).fadeTo(250, 0.2).fadeTo(250, 1);
+        }
+    }
+    $scope.loadScreenshot = function(ind) {
+        var img = $scope.screenshots[ind].img;
+        if (img) {
+            socket.emit('load_image', {src: img, scale: 1});
         }
     }
 
@@ -470,7 +521,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
             socket.emit('code_edit', { id: socket.currentId(), code: editor.getValue()});
         }
     })
-
     socket.on('code_edit', function(data) {
         if (socket.currentId() != data.id) {
             editor.setValue(data.code);
@@ -495,7 +545,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
     })
     socket.on('join_lobby_status', function(data) {
         if (data.success) {
-            // $location.url('/');
+            $('.shotNameInput').val('');
+            $scope.join_lobby = '';
             $scope.currentLobby = data.lobby_data.id;
             // Clear canvas and load savestate
             context.fillRect(0,0,canvas.width,canvas.height);
@@ -506,33 +557,29 @@ app.controller('LobbyController', function($scope, $location, socket) {
                     context.drawImage(board, 0, 0);
                 }
             }
-            //Setting the new stuff
-            $scope.users    = data.lobby_data.users;
-            $scope.messages = data.lobby_data.chatlog;
+            // Setting the new stuff
+            $scope.users       = data.lobby_data.users;
+            $scope.messages    = data.lobby_data.chatlog;
+            $scope.screenshots = data.lobby_data.screenshots;
             editor.setValue(data.lobby_data.textCode);
             var msg = 'Joined lobby: ' + data.lobby_data.id;
             $scope.showNotification(msg, 'good');
+            // Showing sidebar savestate menu
+            $('#menu_canv_options').fadeIn(600);
+            setTimeout(function(){
+                $scope.toggleScreenshots();
+            }, 100);
         } else {
             var msg = 'Lobby not found: ' + data.lobby_data;
             $scope.showNotification(msg, 'bad');
         }
     })
-    $scope.createLobby = function(save) {
+    $scope.createLobby = function() {
         var path  = $scope.lobby_name;
         var board = canvas.toDataURL();
         $scope.lobby_name = '';
-        // Save current board as savestate or clear canvas if joining new lobby
-        if (save) {
-            if (!$scope.currentLobby) {
-                socket.emit('create_lobby', {path: path, canvas: board, code: editor.getValue()});
-            }
-            else {
-                socket.emit('save_lobby', {path: $scope.currentLobby, canvas: board});
-            }
-        }
-        else {
-            socket.emit('create_lobby', {path: path});
-        }
+        // Create new lobby with existing board/code
+        socket.emit('create_lobby', {path: path, canvas: board, code: editor.getValue()});
     }
     $scope.joinLobby = function() {
         var path = $scope.join_lobby;
@@ -561,7 +608,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
         //Data must be an array of users
         $scope.users = data.users;
     })
-
 
 
     //////////////////////////////////////////
@@ -743,6 +789,10 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $scope.showNotification('Image Loaded');
         }
     })
+    socket.on('screenshot', function(screenshots) {
+        $scope.screenshots = screenshots;
+        $scope.toggleScreenshots();
+    })
 
 
     //////////////////////////////////////////
@@ -857,8 +907,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
         if (e.keyCode == 27 && !e.shiftKey) {              // Escape
             // Close sidebar menu if open
             if ($scope.menuOpen) {
-                $('#sidebar').animate({ left: -400, width: 400}, 600);
-                $('#sideBorder').animate({ left: 390 }, 600);
+                $('#sidebar').animate({ left: -380, width: 380}, 600);
+                $('#sideBorder').animate({ left: -10 }, 600);
                 $('#menuHam').animate({
                     left: 10, top: 10, borderTopLeftRadius: 15, borderBottomLeftRadius: 15, borderTopRightRadius: 15
                 }, 600);
@@ -936,9 +986,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
         if (e.shiftKey && e.keyCode == 27 && !$scope.menuOpen) {    // Shift + Esc
             $('#sidebar').animate({ left: 0}, 800);
-            $('#sideBorder').animate({ left: 390 }, 800);
+            $('#sideBorder').animate({ left: 380 }, 800);
             $('#menuHam').animate({
-                left: 395, top: 0, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0
+                left: 385, top: 0, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0
             }, 800);
             $scope.menuOpen = true;
         }
@@ -961,7 +1011,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     })
     $(document).on('mousemove', function(e) {
         if ($scope.menuOpen && $scope.clicked) {
-            if (e.pageX > 289) {
+            if (e.pageX > 380) {
                 $('#menuHam').css('left', e.pageX);
                 $('#sidebar').css('width', e.pageX);
                 $('#sideBorder').css('left', e.pageX);
@@ -971,15 +1021,15 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $('#menuHam').on('mouseup', function(e) {
         if (!$scope.menuOpen) {
             $('#sidebar').animate({ left: 0}, 800);
-            $('#sideBorder').animate({ left: 390 }, 800);
+            $('#sideBorder').animate({ left: 380 }, 800);
             $('#menuHam').animate({
-                left: 395, top: 0, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0
+                left: 390, top: 0, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0
             }, 800);
             $scope.menuOpen = true;
         }
         else{
-            $('#sidebar').animate({ left: -400, width: 400}, 600);
-            $('#sideBorder').animate({ left: 390 }, 600);
+            $('#sidebar').animate({ left: -380, width: 380}, 600);
+            $('#sideBorder').animate({ left: -10 }, 600);
             $('#menuHam').animate({
                 left: 10, top: 10, borderTopLeftRadius: 15, borderBottomLeftRadius: 15, borderTopRightRadius: 15
             }, 600);

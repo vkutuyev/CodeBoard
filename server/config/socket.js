@@ -7,7 +7,11 @@ function Lobby (id) {
     this.chatlog     = [];
     this.textCode    = '';
     this.savestate   = '';
-    this.screenshots = [];
+    this.screenshots = {
+        0: { name: '', img: '', time: '' },
+        1: { name: '', img: '', time: '' },
+        2: { name: '', img: '', time: '' }
+    };
 }
 
 ////////////////////////////////////////////////////////////
@@ -39,7 +43,7 @@ module.exports = function(io) {
                     delete Lobbies[Users[socket.id].lobby].users[socket.id];
                     Users[socket.id].lobby = null;
                 }
-                console.log(socket.id, 'joined lobby', data.path);
+                console.log(socket.id, 'joined lobby: ', data.path);
                 socket.emit('join_lobby_status', {success: true, lobby_data: Lobbies[data.path]})
                 socket.join(data.path);
                 Lobbies[data.path].users[socket.id] = Users[socket.id];
@@ -56,15 +60,11 @@ module.exports = function(io) {
         socket.on('disconnect', function() {
             if (Users[socket.id]) {
                 if (Lobbies[Users[socket.id].lobby]) {
-                    // console.log(Users[socket.id].name, 'disconnected from', Users[socket.id].lobby);
                     //Check to see that person has lobby or not
                     delete Lobbies[Users[socket.id].lobby].users[socket.id]
                 }
                 delete Users[socket.id];
             }
-            // console.log('___________________________');
-            // console.log("Lobbies", Lobbies);
-            // console.log("Users", Users);
         })
         //////////////////////////////////////////
         ///           Chat System              ///
@@ -118,6 +118,15 @@ module.exports = function(io) {
         //////////////////////////////////////////
         socket.on('savestate', function(canvas) {
             Lobbies[Users[socket.id].lobby].savestate = canvas;
+        })
+        socket.on('screenshot', function(data) {
+            var screenshot = {
+                name: data.name,
+                img: data.canvas,
+                time: data.time
+            }
+            Lobbies[Users[socket.id].lobby].screenshots[data.index] = screenshot;
+            io.to(Users[socket.id].lobby).emit('screenshot', Lobbies[Users[socket.id].lobby].screenshots);
         })
         //////////////////////////////////////////
         ///             Code Editor            ///

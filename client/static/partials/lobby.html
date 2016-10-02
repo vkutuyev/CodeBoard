@@ -22,8 +22,9 @@
     </div>
 
     <!-- Sidebar -->
+    <div id="sideBorder"></div>
+    <div id=shotPreview hidden></div>
     <div id="sidebar" style='padding-left: 15px;' class="container-fluid">
-        <div id="sideBorder"></div>
         <h1 ng-if="!currentLobby">Offline</h1>
         <h1 ng-bind="currentLobby"></h1>
         <div class="row menu_tabs_row">
@@ -43,7 +44,7 @@
             <hr>
             <div class="row">
                 <div class="col-md-12">
-                    <button ng-hide="menu_create_active==1" class="menu_buttons" ng-click="menu_active(1)">Create a Lobby</button>
+                    <button ng-hide="menu_create_active==1" class="menu_buttons tooltip-top" ng-click="menu_active(1)" data-tooltip='Create new online lobby with current canvas'>Create a Lobby</button>
                     <input id="menu_create_send" type="text" ng-show="menu_create_active==1" class="menu_inputs" ng-keydown="menu_create_send($event)" ng-model="lobby_name" placeholder="Lobby: (Enter: Go, Shift+Esc: Cancel)">
                 </div>
             </div>
@@ -52,6 +53,19 @@
                     <button ng-hide="menu_join_active==1" class="menu_buttons" ng-click="menu_active(2)">Join a Lobby</button>
                     <input id="menu_join_send" type="text" ng-show="menu_join_active==1" class="menu_inputs" ng-keydown="menu_join_send($event)" ng-model="join_lobby" placeholder="Lobby: (Enter: Go, Shift+Esc: Cancel)">
                 </div>
+            </div>
+
+            <div id=menu_canv_options hidden>
+                <hr>
+                <h4 class=screenLabel>Saved Canvases</h4>
+                <ul ng-repeat="(ind, shot) in screenshots" class=screenDiv>
+                    <li class=shotFirst><i id={{ind}} class="fa fa-picture-o" aria-hidden="true"/></li>
+                    <li class=shotName><input class=shotNameInput type="text" placeholder='No Canvas' value={{shot.name}} title={{ind}} /></li>
+                    <li class=shotTime>{{ shot.time || '00/00 00:00'}}</li>
+                    <li class=shotSave ng-click=saveScreenshot(ind)><i class="fa fa-floppy-o" aria-hidden="true"></i></li>
+                    <li class=shotLoad ng-click=loadScreenshot(ind)><i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i></li>
+                </ul>
+                <hr>
             </div>
         </div>
         <div ng-show="menu_tab==1">
@@ -163,10 +177,10 @@
             <button id=clearBtn class=toolBotBtn ng-click=clearCanvas()>Clear</button>
         </div>
         <div class=toolBotDiv>
-            <button id=saveBtn class=toolBotBtn ng-click=saveCanvas()>Save</button>
+            <button id=saveBtn class='toolBotBtn tooltip-left' ng-click=saveCanvas() data-tooltip='Save canvas as .png file'>Save</button>
         </div>
         <div class=toolBotDiv>
-            <button id=loadBtn class=toolBotBtn ng-click=toggleLoad(showLoad)>Load</button>
+            <button id=loadBtn class='toolBotBtn tooltip-left' ng-click=toggleLoad(showLoad) data-tooltip='Load image file onto canvas'>Load</button>
         </div>
         <div id=fileInput hidden>
             <button id=fileLabel>Select Image</button>
