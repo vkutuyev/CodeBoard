@@ -736,14 +736,12 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 }
                 // Connected
                 else {
-                    // Send coords every X mousemoves to help with socket lag/overload
-                    if ($scope.buffer == 2) {
+                    if (pts.length > 1) {
+                        var last = pts.length-1;
                         socket.emit('draw_line', {
-                            line: { pts: pts, strokeStyle: $scope.strokeStyle, lineWidth: $scope.lineWidth}
+                            line: [pts[last], pts[last-1]], strokeStyle: $scope.strokeStyle, lineWidth: $scope.lineWidth
                         });
-                        $scope.buffer = 0;
                     }
-                    else { $scope.buffer++; }
                 }
             }
             // Dragging
@@ -766,10 +764,21 @@ app.controller('LobbyController', function($scope, $location, socket) {
 
     // Socket functions
     socket.on('draw_line', function (data) {
-        onPaint(data.line.pts, data.line.strokeStyle, data.line.lineWidth, 'on');
+        var line = data.line;
+        context.beginPath();
+        context.moveTo(line[0].x, line[0].y);
+        context.lineTo(line[1].x, line[1].y);
+        context.strokeStyle = data.strokeStyle;
+        context.lineWidth = data.lineWidth;
+        context.lineCap = 'round';
+        context.lineJoin = 'round';
+        context.stroke();
+        context.closePath();
     });
     socket.on('draw_shape', function(shape) {
         drawShape(context, shape.type, shape.strokeStyle, shape.fillStyle, shape.lineWidth, shape.startX, shape.startY, shape.width, shape.height, shape.distX, shape.distY);
+        var boardState = canvas.toDataURL();
+        socket.emit('savestate', boardState);
     })
     socket.on('board_clear', function() {
         context.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
@@ -828,7 +837,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
             if ($scope.shape.type && $scope.shape.drawing && !mouse.dragging) {
                 socket.emit('draw_shape', {
                     type: $scope.shape.type, strokeStyle: $scope.strokeStyle, fillStyle: $scope.fillStyle, lineWidth: $scope.lineWidth, startX: $scope.shape.startX, startY: $scope.shape.startY, width: $scope.shape.width, height: $scope.shape.height, distX: distX, distY: distY
-                })
+                });
                 $scope.shape.drawing = false;
             }
             var boardState = canvas.toDataURL();
