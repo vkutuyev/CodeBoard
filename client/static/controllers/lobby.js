@@ -149,6 +149,15 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 var boardState = canvas.toDataURL();
                 socket.emit('savestate', boardState);
             }
+        },
+        updateMinimap = function() { //here
+            var boardState = canvas.toDataURL(),
+                img     = new Image();
+                img.src = boardState;
+            img.onload = function() {
+                min_ctx.drawImage(img, 0, 0);
+            }
+            console.log('updated minimap');
         };
     // Scope functions
     $scope.menu_tab_selection = function(menu_tab) {
@@ -658,7 +667,13 @@ app.controller('LobbyController', function($scope, $location, socket) {
     tmp_ctx.lineCap    = context.lineCap;
     tmp_ctx.lineJoin   = context.lineJoin;
     $('#tmp_canvas').css('cursor', 'cell');
-
+    // Setting up minimap canvas
+    var minimap        = document.getElementById('minimap');
+    var min_ctx        = minimap.getContext('2d');
+    min_ctx.width      = 200;
+    min_ctx.height     = 150;
+    min_ctx.scale(0.1, 0.1);
+    //here
 
     //////////////////////////////////////////
     ///          Canvas Drawing            ///
@@ -843,6 +858,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 $scope.shape.drawing = false;
             }
             context.drawImage(tmp_canvas, distX, distY);
+            updateMinimap();
         }
         // Connected
         else{
@@ -855,7 +871,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
             }
             var boardState = canvas.toDataURL();
             socket.emit('savestate', boardState);
+            updateMinimap();
         }
+        // Clearing temp canvas
         tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
         // Resetting variables
         $scope.clicked  = false;

@@ -79,3 +79,14 @@
     #codeInput:focus {
         outline: none;
     }
+
+#minimap {
+    position: absolute;
+    right: 15px;
+    bottom: 100px;
+    z-index: 50;
+    width: 200px;
+    height: 150px;
+    border: 1px solid white;
+    border-radius: 3px;
+}
