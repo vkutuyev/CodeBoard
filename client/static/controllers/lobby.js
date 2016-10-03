@@ -151,6 +151,18 @@ app.controller('LobbyController', function($scope, $location, socket) {
             }
         };
     // Scope functions
+    $scope.menu_tab_selection = function(menu_tab) {
+        $scope.menu_tab = menu_tab;
+        switch (menu_tab) {
+            case 2:
+                setTimeout(function () {
+                    editor.focus();
+                    var row = editor.session.getLength() - 1
+                    var column = editor.session.getLine(row).length // or simply Infinity
+                    editor.gotoLine(row + 1, column)
+                }, 11);
+        }
+    }
     $scope.menu_active = function(item) {
         switch (item) {
             case 1:
