@@ -50,7 +50,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <button ng-hide="menu_join_active==1" class="menu_buttons" ng-click="menu_active(2)">Join a Lobby</button>
+                    <button ng-hide="menu_join_active==1" class="menu_buttons" ng-click="menu_active(2)" data-tooltip='Join a pre-existing lobby and overwrite your current canvas'>Join a Lobby</button>
                     <input id="menu_join_send" type="text" ng-show="menu_join_active==1" class="menu_inputs" ng-keydown="menu_join_send($event)" ng-model="join_lobby" placeholder="Lobby: (Enter: Go, Shift+Esc: Cancel)">
                 </div>
             </div>
