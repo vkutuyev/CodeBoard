@@ -583,6 +583,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     }
     $scope.joinLobby = function() {
         var path = $scope.join_lobby;
+        $scope.join_lobby = '';
         socket.emit('join_lobby', {path: path});
     }
 
@@ -913,15 +914,23 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 $scope.typeClicked = false;
             }
         }
-        if (e.keyCode == 27 && !e.shiftKey) {              // Escape
+        if (e.keyCode == 27 && e.shiftKey) {              // Escape
             // Close sidebar menu if open
             if ($scope.menuOpen) {
-                $('#sidebar').animate({ left: -380, width: 380}, 600);
-                $('#sideBorder').animate({ left: -10 }, 600);
-                $('#menuHam').animate({
+                $('#sidebar').stop().animate({ left: -380, width: 380}, 600);
+                $('#sideBorder').stop().animate({ left: -10 }, 600);
+                $('#menuHam').stop().animate({
                     left: 10, top: 10, borderTopLeftRadius: 15, borderBottomLeftRadius: 15, borderTopRightRadius: 15
                 }, 600);
                 $scope.menuOpen = false;
+            }
+            else if (e.shiftKey && e.keyCode == 27 && !$scope.menuOpen) {    // Shift + Esc
+                $('#sidebar').stop().animate({ left: 0}, 800);
+                $('#sideBorder').stop().animate({ left: 380 }, 800);
+                $('#menuHam').stop().animate({
+                    left: 385, top: 0, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0
+                }, 800);
+                $scope.menuOpen = true;
             }
             else if ($scope.showLoad) {
                 $scope.toggleLoad(true);
@@ -992,14 +1001,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
             else {
                 $('#tmp_canvas').css('cursor', 'cell');
             }
-        }
-        if (e.shiftKey && e.keyCode == 27 && !$scope.menuOpen) {    // Shift + Esc
-            $('#sidebar').animate({ left: 0}, 800);
-            $('#sideBorder').animate({ left: 380 }, 800);
-            $('#menuHam').animate({
-                left: 385, top: 0, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0
-            }, 800);
-            $scope.menuOpen = true;
         }
     })
 

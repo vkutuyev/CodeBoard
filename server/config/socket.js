@@ -73,6 +73,9 @@ module.exports = function(io) {
             if (Users[socket.id]) {
                 Users[socket.id].name = data.name;
                 console.log(Users[socket.id]);
+                if (Users[socket.id].lobby) {
+                    io.to(Users[socket.id].lobby).emit('users_receive', {users: Lobbies[Users[socket.id].lobby].users});
+                }
             }
         })
         socket.on('message_send', function(data) {

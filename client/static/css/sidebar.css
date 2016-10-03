@@ -80,6 +80,7 @@
     visibility: visible;
 }
 .chat_people_text {
+    margin-left: -100%;
     visibility: hidden;
     width: 120px;
     background-color: black;
@@ -91,6 +92,17 @@
     /* Position the tooltip */
     position: absolute;
     z-index: 1;
+
+
+    /*visibility: hidden;
+    position: absolute;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    z-index: 1;*/
 }
 
 .screenLabel {
