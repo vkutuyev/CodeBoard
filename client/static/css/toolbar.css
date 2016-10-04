@@ -92,7 +92,7 @@
     #pickerDiv {
         position: absolute;
         right: 90;
-        bottom: 150;
+        bottom: 130;
         width: 200px;
         background: white;
         border: 2px solid rgb(13, 66, 96);
@@ -155,7 +155,7 @@
 #fileInput {
     position: absolute;
     right: 90;
-    top: 350;
+    top: 370;
     width: 300px;
     height: 180px;
     background: white;

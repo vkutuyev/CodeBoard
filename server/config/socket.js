@@ -121,6 +121,7 @@ module.exports = function(io) {
         //////////////////////////////////////////
         socket.on('savestate', function(canvas) {
             Lobbies[Users[socket.id].lobby].savestate = canvas;
+            io.to(Users[socket.id].lobby).emit('upadteMap');
         })
         socket.on('screenshot', function(data) {
             var screenshot = {

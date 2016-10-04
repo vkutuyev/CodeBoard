@@ -82,11 +82,19 @@
 
 #minimap {
     position: absolute;
-    right: 15px;
-    bottom: 100px;
+    right: 90px;
+    top: 10px;
     z-index: 50;
     width: 200px;
     height: 150px;
     border: 1px solid white;
     border-radius: 3px;
+    background: black;
+    /* Slide Animation */
+    animation-name: slideLeftMinimap;
+    animation-duration: 0.8s;
 }
+    @keyframes slideLeftMinimap {
+        0%      { right: -200px; }
+        100%    { right:   90px; }
+    }

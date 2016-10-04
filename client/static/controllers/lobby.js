@@ -150,14 +150,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 socket.emit('savestate', boardState);
             }
         },
-        updateMinimap = function() { //here
-            var boardState = canvas.toDataURL(),
-                img     = new Image();
-                img.src = boardState;
-            img.onload = function() {
-                min_ctx.drawImage(img, 0, 0);
-            }
-            console.log('updated minimap');
+        updateMinimap = function() {
+            min_ctx.clearRect(0, 0, minimap.width, minimap.height);
+            min_ctx.drawImage(canvas, 0, 0, minimap.width, minimap.height);
         };
     // Scope functions
     $scope.menu_tab_selection = function(menu_tab) {
@@ -221,6 +216,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         else {
             tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
             context.clearRect(0, 0, canvas.width, canvas.height);
+            updateMinimap();
         }
     }
     $scope.saveCanvas = function() {
@@ -576,6 +572,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 board.src    = data.lobby_data.savestate;
                 board.onload = function() {
                     context.drawImage(board, 0, 0);
+                    updateMinimap();
                 }
             }
             // Setting the new stuff
@@ -672,8 +669,6 @@ app.controller('LobbyController', function($scope, $location, socket) {
     var min_ctx        = minimap.getContext('2d');
     min_ctx.width      = 200;
     min_ctx.height     = 150;
-    min_ctx.scale(0.1, 0.1);
-    //here
 
     //////////////////////////////////////////
     ///          Canvas Drawing            ///
@@ -811,12 +806,15 @@ app.controller('LobbyController', function($scope, $location, socket) {
     socket.on('board_clear', function() {
         context.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
         tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
+        updateMinimap();
     })
     socket.on('draw_text', function(data) {
         drawText(data.val, data.mX, data.mY, data.sL, data.sT, data.color, data.font);
+        updateMinimap();
     })
     socket.on('draw_code', function(data) {
         drawCode(data.arr, data.mX, data.mY, data.sL, data.sT, data.color, data.font);
+        updateMinimap();
     })
     socket.on('load_image', function(data) {
         var img = new Image();
@@ -824,11 +822,15 @@ app.controller('LobbyController', function($scope, $location, socket) {
         img.onload = function() {
             context.drawImage(img, 0, 0, img.width*data.scale, img.height*data.scale);
             $scope.showNotification('Image Loaded');
+            updateMinimap();
         }
     })
     socket.on('screenshot', function(screenshots) {
         $scope.screenshots = screenshots;
         $scope.toggleScreenshots();
+    })
+    socket.on('upadteMap', function() {
+        updateMinimap();
     })
 
 
@@ -857,8 +859,10 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 drawShape(context, $scope.shape.type, $scope.strokeStyle, $scope.fillStyle, $scope.lineWidth, $scope.shape.startX, $scope.shape.startY, $scope.shape.width, $scope.shape.height, distX, distY);
                 $scope.shape.drawing = false;
             }
-            context.drawImage(tmp_canvas, distX, distY);
-            updateMinimap();
+            if (!mouse.dragging && !$scope.typing && mouse.click) {
+                context.drawImage(tmp_canvas, distX, distY);
+                updateMinimap();
+            }
         }
         // Connected
         else{
@@ -869,9 +873,10 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 });
                 $scope.shape.drawing = false;
             }
-            var boardState = canvas.toDataURL();
-            socket.emit('savestate', boardState);
-            updateMinimap();
+            if (!mouse.dragging && !$scope.typing && mouse.click) {
+                var boardState = canvas.toDataURL();
+                socket.emit('savestate', boardState);
+            }
         }
         // Clearing temp canvas
         tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
@@ -928,6 +933,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                     }
                     $('#textDiv').attr('hidden', true);
                     $('#textInput').val('');
+                    updateMinimap();
                 }
                 if (e.target.id == 'codeInput' && !e.shiftKey) {
                     e.preventDefault();
@@ -940,29 +946,13 @@ app.controller('LobbyController', function($scope, $location, socket) {
                     }
                     $('#codeDiv').attr('hidden', true);
                     $('#codeInput').val('');
+                    updateMinimap();
                 }
                 $scope.typeClicked = false;
             }
         }
-        if (e.keyCode == 27 && e.shiftKey) {              // Escape
-            // Close sidebar menu if open
-            if ($scope.menuOpen) {
-                $('#sidebar').stop().animate({ left: -380, width: 380}, 600);
-                $('#sideBorder').stop().animate({ left: -10 }, 600);
-                $('#menuHam').stop().animate({
-                    left: 10, top: 10, borderTopLeftRadius: 15, borderBottomLeftRadius: 15, borderTopRightRadius: 15
-                }, 600);
-                $scope.menuOpen = false;
-            }
-            else if (e.shiftKey && e.keyCode == 27 && !$scope.menuOpen) {    // Shift + Esc
-                $('#sidebar').stop().animate({ left: 0}, 800);
-                $('#sideBorder').stop().animate({ left: 380 }, 800);
-                $('#menuHam').stop().animate({
-                    left: 385, top: 0, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0
-                }, 800);
-                $scope.menuOpen = true;
-            }
-            else if ($scope.showLoad) {
+        if (e.keyCode == 27 && !e.shiftKey && !$scope.menuOpen) {  // Escape
+            if ($scope.showLoad) {
                 $scope.toggleLoad(true);
             }
             else if ($scope.showColor) {
@@ -998,6 +988,25 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 $('#textSizeSlideValue').blur();
                 $('#textSizeBoxValue').val(12);
                 $('#textSizeSlideValue').val(12);
+            }
+        }   // End of Escape
+        if (e.shiftKey && e.keyCode == 27) {    // Shift + Esc
+            // Close/open sidebar menu
+            if ($scope.menuOpen) {
+                $('#sidebar').stop().animate({ left: -380, width: 380}, 600);
+                $('#sideBorder').stop().animate({ left: -10 }, 600);
+                $('#menuHam').stop().animate({
+                    left: 10, top: 10, borderTopLeftRadius: 15, borderBottomLeftRadius: 15, borderTopRightRadius: 15
+                }, 600);
+                $scope.menuOpen = false;
+            }
+            else {
+                $('#sidebar').stop().animate({ left: 0}, 800);
+                $('#sideBorder').stop().animate({ left: 380 }, 800);
+                $('#menuHam').stop().animate({
+                    left: 385, top: 0, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0
+                }, 800);
+                $scope.menuOpen = true;
             }
         }
     })
