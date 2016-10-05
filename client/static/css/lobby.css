@@ -87,14 +87,27 @@
     z-index: 50;
     width: 200px;
     height: 150px;
-    border: 1px solid white;
+    border: 1px solid rgba(13, 66, 96, 0.8);
     border-radius: 3px;
+    box-sizing: border-box;
     background: black;
     /* Slide Animation */
     animation-name: slideLeftMinimap;
     animation-duration: 0.8s;
 }
-    @keyframes slideLeftMinimap {
-        0%      { right: -200px; }
-        100%    { right:   90px; }
-    }
+#viewbox {
+    position: absolute;
+    right: 90px;
+    top: 10px;
+    z-index: 55;
+    width: 200px;
+    height: 150px;
+    /* Slide Animation */
+    animation-name: slideLeftMinimap;
+    animation-duration: 0.8s;
+}
+
+@keyframes slideLeftMinimap {
+    0%      { right: -200px; }
+    100%    { right:   90px; }
+}

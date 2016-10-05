@@ -27,6 +27,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.showColor    = false;
     $scope.showLoad     = false;
     $scope.filePicked   = null;
+    $scope.movingView   = false;
     // Screenshots
     $scope.screenshots  = {};
     // Shapes
@@ -154,6 +155,15 @@ app.controller('LobbyController', function($scope, $location, socket) {
             min_ctx.clearRect(0, 0, minimap.width, minimap.height);
             min_ctx.drawImage(canvas, 0, 0, minimap.width, minimap.height);
         };
+        updateViewbox = function(x, y) {
+            var width  = window.innerWidth  / 10,
+                height = window.innerHeight / 10;
+            view_ctx.clearRect(0, 0, viewbox.width, viewbox.height);
+            view_ctx.strokeStyle = 'red';
+            view_ctx.lineWidth   = 1;
+            view_ctx.strokeRect(x / 10, y / 10, width, height);
+        };
+
     // Scope functions
     $scope.menu_tab_selection = function(menu_tab) {
         $scope.menu_tab = menu_tab;
@@ -667,8 +677,14 @@ app.controller('LobbyController', function($scope, $location, socket) {
     // Setting up minimap canvas
     var minimap        = document.getElementById('minimap');
     var min_ctx        = minimap.getContext('2d');
-    min_ctx.width      = 200;
-    min_ctx.height     = 150;
+    minimap.width      = 200;
+    minimap.height     = 150;
+    // Setting up viewbox canvas
+    var viewbox        = document.getElementById('viewbox');
+    var view_ctx       = viewbox.getContext('2d');
+    viewbox.width      = 200;
+    viewbox.height     = 150;
+    updateViewbox(0, 0);
 
     //////////////////////////////////////////
     ///          Canvas Drawing            ///
@@ -780,6 +796,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                     document.getElementById('lobbyDiv').scrollLeft += scrollX;
                     document.getElementById('lobbyDiv').scrollTop  += scrollY;
                 }
+                updateViewbox(document.getElementById('lobbyDiv').scrollLeft, document.getElementById('lobbyDiv').scrollTop);
             }
             mouse.pos_prev = mouse.pos;
         }
@@ -1067,6 +1084,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
             }
         }
     })
+    // Side menu closing/opening
     $('#menuHam').on('mouseup', function(e) {
         if (!$scope.menuOpen) {
             $('#sidebar').animate({ left: 0}, 800);
@@ -1084,6 +1102,37 @@ app.controller('LobbyController', function($scope, $location, socket) {
             }, 600);
             $scope.menuOpen = false;
         }
+    })
+    // Minimap view movement
+    $('#viewbox').on('mousedown', function(e) {
+        e.preventDefault();
+        var divX    = e.pageX - this.offsetLeft,
+            divY    = e.pageY - this.offsetTop;
+        document.getElementById('lobbyDiv').scrollLeft = divX * 5;
+        document.getElementById('lobbyDiv').scrollTop  = divY * 5;
+        updateViewbox(document.getElementById('lobbyDiv').scrollLeft, document.getElementById('lobbyDiv').scrollTop);
+        $scope.movingView = true;
+    })
+    $('#viewbox').on('mousemove', function(e) {
+        e.preventDefault();
+        if ($scope.movingView) {
+            $('#viewbox').css('cursor', 'move');
+            var divX    = e.pageX - this.offsetLeft,
+                divY    = e.pageY - this.offsetTop;
+            document.getElementById('lobbyDiv').scrollLeft = divX * 5;
+            document.getElementById('lobbyDiv').scrollTop  = divY * 5;
+            updateViewbox(document.getElementById('lobbyDiv').scrollLeft, document.getElementById('lobbyDiv').scrollTop);
+        }
+    })
+    $('#viewbox').on('mouseup', function(e) {
+        e.preventDefault();
+        $('#viewbox').css('cursor', 'default');
+        $scope.movingView = false;
+    })
+    $('#viewbox').on('mouseout', function(e) {
+        e.preventDefault();
+        $('#viewbox').css('cursor', 'default');
+        $scope.movingView = false;
     })
 
     // Handling focus/shortcuts in toolbar
