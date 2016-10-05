@@ -28,6 +28,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.showLoad     = false;
     $scope.filePicked   = null;
     $scope.movingView   = false;
+    $scope.minimapOpen  = true;
     // Screenshots
     $scope.screenshots  = {};
     // Shapes
@@ -496,6 +497,22 @@ app.controller('LobbyController', function($scope, $location, socket) {
         var img = $scope.screenshots[ind].img;
         if (img) {
             socket.emit('load_image', {src: img, scale: 1});
+        }
+    }
+    $scope.toggleMinimap = function(show) {
+        if (show) {
+            $('#minimap').stop().animate({right: -122}, 400);
+            $('#viewbox').stop().animate({right: -122}, 400);
+            $('#minimapBtn').stop().animate({right: 83}, 400)
+            $('#minimapBtn').removeClass('fa-angle-double-right').addClass('fa-angle-double-left');
+            $scope.minimapOpen = false;
+        }
+        else {
+            $('#minimap').stop().animate({right: 83}, 400);
+            $('#minimapBtn').stop().animate({right: 288}, 400);
+            $('#viewbox').stop().animate({right: 83}, 400);
+            $('#minimapBtn').removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
+            $scope.minimapOpen = true;
         }
     }
 
@@ -1008,6 +1025,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
             }
         }   // End of Escape
         if (e.shiftKey && e.keyCode == 27) {    // Shift + Esc
+            e.preventDefault();
             // Close/open sidebar menu
             if ($scope.menuOpen) {
                 $('#sidebar').stop().animate({ left: -380, width: 380}, 600);
@@ -1025,6 +1043,11 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 }, 800);
                 $scope.menuOpen = true;
             }
+        }
+        if (e.shiftKey && e.keyCode == 9) { // Shift + Tab
+            e.preventDefault();
+            // Close/open minimap
+            $scope.toggleMinimap($scope.minimapOpen);
         }
     })
 

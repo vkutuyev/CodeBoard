@@ -82,32 +82,52 @@
 
 #minimap {
     position: absolute;
-    right: 90px;
-    top: 10px;
-    z-index: 50;
-    width: 200px;
-    height: 150px;
-    border: 1px solid rgba(13, 66, 96, 0.8);
-    border-radius: 3px;
-    box-sizing: border-box;
+    right: 83px;
+    top: 0;
+    z-index: 40;
+    width: 205px;
+    height: 155px;
+    border-left: 5px solid rgb(13, 66, 96);
+    border-bottom: 5px solid rgb(13, 66, 96);
+    border-bottom-left-radius: 10px;
     background: black;
     /* Slide Animation */
     animation-name: slideLeftMinimap;
-    animation-duration: 0.8s;
+    animation-duration: 1s;
 }
 #viewbox {
     position: absolute;
-    right: 90px;
-    top: 10px;
-    z-index: 55;
+    right: 83px;
+    top: 0;
+    z-index: 45;
     width: 200px;
     height: 150px;
     /* Slide Animation */
     animation-name: slideLeftMinimap;
-    animation-duration: 0.8s;
+    animation-duration: 1s;
+}
+#minimapBtn {
+    position: absolute;
+    top: 0;
+    right: 288px;
+    z-index: 40;
+    color: white;
+    background: rgb(13, 66, 96);
+    border-bottom-left-radius: 15px;
+    padding: 5px 3px 6px 9px;
+    text-shadow: 0px 0px 10px black;
+    text-align: center;
+    /* Slide Animation */
+    animation-name: slideLeftMinimapBtn;
+    animation-duration: 1s;
+    cursor: pointer;
 }
 
 @keyframes slideLeftMinimap {
     0%      { right: -200px; }
-    100%    { right:   90px; }
+    100%    { right:   83px; }
+}
+@keyframes slideLeftMinimapBtn {
+    0%      { right:    0px; }
+    100%    { right:  288px; }
 }
