@@ -60,10 +60,10 @@
     #sidebar textarea {
         width: 100%;
     }
-    #sidebar div.chat_messages {
+    /*#sidebar div.chat_messages {
         border: 1px solid rgb(166, 166, 166);
         border-radius: 3px;
-    }
+    }*/
     #sideBorder {
         height: 100vh;
         width: 10px;
@@ -79,7 +79,15 @@
     width: 100%;
     height: 700px;
 }
-
+.chat_enter_name input{
+    width: 100%;
+    vertical-align: top;
+}
+div.chat_enter_name input.chat_enter_name_input {
+    padding: 1em 0;
+    padding-left: 1em;
+    border-radius: 5px;
+}
 .chat_people {
     position: relative;
 }
@@ -99,19 +107,22 @@
     /* Position the tooltip */
     position: absolute;
     z-index: 1;
-
-
-    /*visibility: hidden;
-    position: absolute;
-    width: 120px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    padding: 5px 0;
-    border-radius: 6px;
-    z-index: 1;*/
 }
-
+.chat_input {
+    position: absolute;
+    bottom: 2em;
+}
+.chat_input textarea {
+    border-color: rgb(176, 176, 176);
+    border-radius: 5px;
+    padding: 0.5em;
+}
+.chat_message_show {
+    overflow-y: scroll;
+    padding: 1em 2em 2em;
+    /*border: 1px solid rgb(99, 99, 99);
+    border-radius: 5px;*/
+}
 .screenLabel {
     text-align: center;
 }
