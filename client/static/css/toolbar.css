@@ -132,6 +132,7 @@
     .toolBotLabel {
         color: black;
         text-align: center;
+        margin-top: -5px;
     }
     .toolBotDiv {
         margin-top: 5px;
@@ -248,3 +249,17 @@
                 color: white;
                 background: rgb(168, 168, 168);
             }
+
+#helpDiv {
+    color: rgb(168, 168, 168);
+    border: 1px solid rgb(198, 198, 198);
+    border-radius: 3px;
+    text-align: center;
+    width: 25px;
+    height: 25px;
+    margin: 3px auto 0px auto;
+}
+    #helpDiv i {
+        line-height: 25px;
+        vertical-align: middle;
+    }

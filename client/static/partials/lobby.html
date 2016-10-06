@@ -54,7 +54,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <button ng-hide="menu_join_active==1" class="menu_buttons" ng-click="menu_active(2)" data-tooltip='Join a pre-existing lobby and overwrite your current canvas'>Join a Lobby</button>
+                    <button ng-hide="menu_join_active==1" class="menu_buttons tooltip-bottom" ng-click="menu_active(2)" data-tooltip='Join a pre-existing lobby and overwrite your current canvas'>Join a Lobby</button>
                     <input id="menu_join_send" type="text" ng-show="menu_join_active==1" class="menu_inputs" ng-keydown="menu_join_send($event)" ng-model="join_lobby" placeholder="Lobby: (Enter: Go, Shift+Esc: Cancel)">
                 </div>
             </div>
@@ -116,7 +116,7 @@
 */
 </div><!-- Editor defaults -->
         </div>
-    </div>
+    </div> <!-- End of sidebar -->
 
 
     <!-- Canvas toolbar -->
@@ -162,7 +162,7 @@
         </div>
         <hr id=toolSep>
         <div id="toolColor">
-            <div id="toolColorBox" ng-click=toggleColor(showColor)/>
+            <div id="toolColorBox" ng-click=toggleColor(showColor)></div>
             <input type="text" id=color ng-model=strokeStyle />
             <div id="pickerDiv" hidden>
                 <div id="colorPicker"></div>
@@ -211,6 +211,9 @@
                 <button id=fileSubBtn ng-click=loadCanvas(filePicked)>Load</button>
             </div>
         </div>
-    </div>
+        <div id="helpDiv" class="tooltip-left" data-tooltip='Show/Hide Help' ng-click=toggleHelp() >
+            <i class="fa fa-lg fa-info-circle" aria-hidden="true"></i>
+        </div>
+    </div>    <!-- End of toolbar -->
 
 </div>

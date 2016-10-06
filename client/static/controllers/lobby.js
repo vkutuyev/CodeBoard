@@ -29,6 +29,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.filePicked   = null;
     $scope.movingView   = false;
     $scope.minimapOpen  = true;
+    $scope.showHelp     = false;
     // Screenshots
     $scope.screenshots  = {};
     // Shapes
@@ -514,6 +515,19 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $('#minimapBtn').removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
             $scope.minimapOpen = true;
         }
+    }
+    $scope.toggleHelp = function() {
+        if (!$scope.showHelp) {
+            $('#helpDiv').css({
+                color: 'black', background: 'rgb(5, 187, 160)', border: '1px solid black', boxShadow: '0px 0px 2px black'
+            });
+        }
+        else {
+            $('#helpDiv').css({
+                color: 'rgb(168,168,168)', background: 'white', border: '1px solid rgb(198, 198, 198)', boxShadow: 'none'
+            });
+        }
+        $scope.showHelp = !$scope.showHelp;
     }
 
 
