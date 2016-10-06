@@ -172,6 +172,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
             case 1:
                 setTimeout(function() {
                     $('.chat_enter_name_input').focus();
+                    $('.chat_input_textarea').focus();
                 }, 0)
             case 2:
                 setTimeout(function () {
@@ -661,7 +662,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     socket.on('users_receive', function(data) {
         //Data must be an array of users
         $scope.users = data.users;
-        $('.chat_message_show').height(Math.abs(parseInt($('#menuLine').offset().top)-parseInt($('.chat_input').offset().top))-(3*parseInt($('#menuLine').css('margin-bottom').substr(0, $('#menuLine').css('margin-bottom').length-2))));
+        $('.chat_message_show').height(Math.abs(parseInt($('#menuLine').offset().top)-parseInt($('.chat_input').offset().top))-(3*parseInt($('#menuLine').css('margin-bottom'))));
     })
 
 

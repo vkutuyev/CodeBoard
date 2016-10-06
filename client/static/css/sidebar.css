@@ -110,7 +110,7 @@ div.chat_enter_name input.chat_enter_name_input {
 }
 .chat_input {
     position: absolute;
-    bottom: 1em;
+    bottom: 2em;
 }
 .chat_input textarea {
     border-color: rgb(176, 176, 176);
