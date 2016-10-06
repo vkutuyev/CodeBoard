@@ -169,13 +169,17 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.menu_tab_selection = function(menu_tab) {
         $scope.menu_tab = menu_tab;
         switch (menu_tab) {
+            case 1:
+                setTimeout(function() {
+                    $('.chat_enter_name_input').focus();
+                }, 0)
             case 2:
                 setTimeout(function () {
                     editor.focus();
                     var row = editor.session.getLength() - 1
                     var column = editor.session.getLine(row).length // or simply Infinity
                     editor.gotoLine(row + 1, column)
-                }, 11);
+                }, 0);
         }
     }
     $scope.menu_active = function(item) {
@@ -640,6 +644,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
         var name = $scope.chat_name;
         socket.emit('user_send', {name: name});
         $scope.enter_chat_name = '';
+        setTimeout(function () {
+            $('.chat_input_textarea').focus();
+        }, 0);
     }
     $scope.chat_send_message = function() {
         var message = $scope.chat_message;
@@ -649,10 +656,12 @@ app.controller('LobbyController', function($scope, $location, socket) {
     socket.on('messages_receive', function(data) {
         //Data must be an array of messages
         $scope.messages = data.messages;
+        $('.chat_message_show').scrollTop($('.chat_message_show')[0].scrollHeight);
     })
     socket.on('users_receive', function(data) {
         //Data must be an array of users
         $scope.users = data.users;
+        $('.chat_message_show').height(Math.abs(parseInt($('#menuLine').offset().top)-parseInt($('.chat_input').offset().top))-(3*parseInt($('#menuLine').css('margin-bottom').substr(0, $('#menuLine').css('margin-bottom').length-2))));
     })
 
 
@@ -946,6 +955,15 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
         $('#codeInput').css('width', max*$scope.textSize/1.2);
         $('#codeInput').css('height', input.length*$scope.textSize*2);
+    })
+    $('.chat_input').keydown(function(e) {
+        if (e.keyCode == 13 && !e.shiftKey) {
+            e.preventDefault();
+            $('.chat_send_form').submit();
+        }
+    })
+    $('.chat_send_form').submit(function(e) {
+        e.preventDefault();
     })
     $(document).on('keydown', function(e) {
         if (e.shiftKey && !mouse.click) {   // Shift

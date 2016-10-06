@@ -82,26 +82,38 @@
                     <i class="fa fa-users" aria-hidden="true"></i>
                 </h4>
             </div>
-            <hr>
+            <hr id="menuLine">
             <div ng-show="currentLobby">
-                <div ng-hide="chat_name">
-                    <h5>Please enter a name</h5>
-                    <input type="text" placeholder="name" ng-model="enter_chat_name">
-                    <input type="submit" class="btn-lrg" ng-click="enterChat()">
+                <div ng-hide="chat_name" class="chat_enter_name">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h5>Please enter a name</h5>
+                        </div>
+                    </div>
+                    <form ng-submit="enterChat()">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <input class="chat_enter_name_input" type="text" placeholder="Enter a name. Press 'Enter' when done." ng-model="enter_chat_name">
+                            </div>
+                            <!-- <div class="col-sm-4">
+                                <input type="submit" class="btn btn-lrg" ng-click="enterChat()">
+                            </div> -->
+                        </div>
+                    </form>
                 </div>
                 <div ng-show="chat_name">
-                    <div class="row" style="padding: 0 2em 1em;">
-                        <div class="col-sm-12 chat_messages">
+                    <div class="row">
+                        <div class="col-sm-12 chat_message_show" style="background: white">
                             <div class="row" ng-repeat="message in messages">
-                                <div class="col-sm-4" ng-bind="message.name"></div>
-                                <div class="col-sm-8" ng-bind="message.message"></div>
+                                <div class="col-sm-2" ng-bind="message.name"></div>
+                                <div class="col-sm-10" ng-bind="message.message"></div>
                             </div>
                         </div>
                     </div>
                     <div class="row chat_send_row" >
-                        <form ng-submit="chat_send_message()">
-                            <div class="chat_input col-sm-9"><textarea ng-model="chat_message"></textarea></div>
-                            <div class="chat_send col-sm-3"><input class="btn btn-primary btn-sm" type="submit" value="Send"></div>
+                        <form class="chat_send_form" ng-submit="chat_send_message()">
+                            <div class="chat_input col-sm-12" style="position: absolute;"><textarea class="chat_input_textarea" ng-model="chat_message" style="resize: none" placeholder="Enter to send, Shift+Enter for new line."></textarea></div>
+                            <!-- <div class="chat_send col-sm-3"><input class="btn btn-primary btn-sm" type="submit" value="Send"></div> -->
                         </form>
                     </div>
                 </div>
