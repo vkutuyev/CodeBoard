@@ -12,7 +12,7 @@
     <i id=minimapBtn class="fa fa-2x fa-angle-double-right test" aria-hidden="true" ng-click=toggleMinimap(minimapOpen)></i>
 
     <!-- Tutorial pop-ups -->
-    <div id="scrollPop">Hold Shift or right-click, then drag to extend canvas <i class="fa fa-arrows-alt" aria-hidden="true"></i></div>
+    <div id="scrollPop">Shift/right-click, then drag to pan canvas <i class="fa fa-arrows-alt" aria-hidden="true"></i></div>
 
     <!-- Notifications -->
     <div id=notifDiv><span id=notifSpan><span></div>
@@ -223,9 +223,44 @@
                 <button id=fileSubBtn ng-click=loadCanvas(filePicked)>Load</button>
             </div>
         </div>
-        <div id="helpDiv" class="tooltip-left" data-tooltip='Show/Hide Help' ng-click=toggleHelp() >
+        <div id="helpDiv" class="tooltip-left" data-tooltip='Show Keyboard Shortcuts' ng-click=toggleHelp() >
             <i class="fa fa-lg fa-info-circle" aria-hidden="true"></i>
         </div>
     </div>    <!-- End of toolbar -->
+
+    <!-- Shortcuts Help Divs -->
+    <div id=toolbarHelpDiv class=helpDiv hidden>
+        <h4 style='text-align: center;'>Canvas Shortcuts</h4>
+        <h5>Normal</h5>
+        <ul>
+            <li><strong>B</strong> &nbsp;&nbsp;-&nbsp;&nbsp; Brush</li>
+            <li><strong>E</strong> &nbsp;&nbsp;-&nbsp;&nbsp; Eraser</li>
+            <li><strong>T</strong> &nbsp;&nbsp;-&nbsp;&nbsp; Text</li>
+            <li><strong>C</strong> &nbsp;&nbsp;-&nbsp;&nbsp; Code</li>
+        </ul>
+        <h5>Shapes</h5>
+        <ul>
+            <li><strong>Q</strong> &nbsp;&nbsp;-&nbsp;&nbsp; Rectangle (filled)</li>
+            <li><strong>W</strong> &nbsp;-&nbsp;&nbsp; Rectangle (hollow)</li>
+            <li><strong>A</strong> &nbsp;&nbsp;-&nbsp;&nbsp; Circle (filled)</li>
+            <li><strong>S</strong> &nbsp;&nbsp;-&nbsp;&nbsp; Circle (hollow)</li>
+        </ul>
+    </div>
+    <div id="escapeHelpDiv" class=helpDiv hidden>
+        <h6 style='text-align: center;'><strong>Esc</strong>ape closes any open windows, or resets brush to default if no windows are open.</h6>
+    </div>
+    <div id=minimapBtnHelpDiv class=helpDiv hidden>
+        <h6><strong>Shift+Tab</strong> closes/opens the minimap.</h6>
+    </div>
+    <div id=sidembarMenuBtnHelpDiv class=helpDiv hidden>
+        <h6><strong>Shift+Esc</strong> closes/opens the side menu.</h6>
+    </div>
+    <div id=helpBtnDiv class=helpDiv hidden>
+        <h6><strong>H</strong>ide/show shortcut messages.</h6>
+    </div>
+    <div id=scrollHelpDiv class=helpDiv hidden>
+        <h6 style='text-align: center;'>Holding <strong>Shift and clicking</strong> or <strong>right-clicking</strong> then dragging moves the canvas around.</h6>
+    </div>
+    <!-- End of help divs -->
 
 </div>

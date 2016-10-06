@@ -507,6 +507,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     }
     $scope.toggleMinimap = function(show) {
         if (show) {
+            $('#minimapBtnHelpDiv').stop().animate({right: 115}, 400);
             $('#minimap').stop().animate({right: -122}, 400);
             $('#viewbox').stop().animate({right: -122}, 400);
             $('#minimapBtn').stop().animate({right: 83}, 400)
@@ -514,6 +515,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $scope.minimapOpen = false;
         }
         else {
+            $('#minimapBtnHelpDiv').stop().animate({right: 320}, 400);
             $('#minimap').stop().animate({right: 83}, 400);
             $('#minimapBtn').stop().animate({right: 288}, 400);
             $('#viewbox').stop().animate({right: 83}, 400);
@@ -526,11 +528,13 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $('#helpDiv').css({
                 color: 'black', background: 'rgb(5, 187, 160)', border: '1px solid black', boxShadow: '0px 0px 2px black'
             });
+            $('.helpDiv').fadeIn(600);
         }
         else {
             $('#helpDiv').css({
                 color: 'rgb(168,168,168)', background: 'white', border: '1px solid rgb(198, 198, 198)', boxShadow: 'none'
             });
+            $('.helpDiv').fadeOut(600);
         }
         $scope.showHelp = !$scope.showHelp;
     }
@@ -981,11 +985,11 @@ app.controller('LobbyController', function($scope, $location, socket) {
         e.preventDefault();
     })
     $(document).on('keydown', function(e) {
-        if (e.shiftKey && !mouse.click) {   // Shift
+        if (e.shiftKey && !mouse.click) {      // Shift
             $('#tmp_canvas').css('cursor', '-webkit-grab');
             $('#tmp_canvas').css('cursor', '-moz-grab');
         }
-        if (e.keyCode == 13 && !e.shiftKey) {              // Enter
+        if (e.keyCode == 13 && !e.shiftKey) {  // Enter
             // Typing
             if ($scope.typeClicked) {
                 var scrLeft = document.getElementById('lobbyDiv').scrollLeft;
@@ -1019,7 +1023,10 @@ app.controller('LobbyController', function($scope, $location, socket) {
             }
         }
         if (e.keyCode == 27 && !e.shiftKey && !$scope.menuOpen) {  // Escape
-            if ($scope.showLoad) {
+            if ($scope.showHelp) {
+                $scope.toggleHelp();
+            }
+            else if ($scope.showLoad) {
                 $scope.toggleLoad(true);
             }
             else if ($scope.showColor) {
@@ -1061,6 +1068,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
             e.preventDefault();
             // Close/open sidebar menu
             if ($scope.menuOpen) {
+                $('#sidembarMenuBtnHelpDiv').stop().animate({left: 60, top: 18}, 600);
                 $('#sidebar').stop().animate({ left: -380, width: 380}, 600);
                 $('#sideBorder').stop().animate({ left: -10 }, 600);
                 $('#menuHam').stop().animate({
@@ -1069,11 +1077,12 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 $scope.menuOpen = false;
             }
             else {
-                $('#sidebar').stop().animate({ left: 0}, 800);
-                $('#sideBorder').stop().animate({ left: 380 }, 800);
+                $('#sidembarMenuBtnHelpDiv').stop().animate({left: 394, top: 53}, 600);
+                $('#sidebar').stop().animate({ left: 0}, 600);
+                $('#sideBorder').stop().animate({ left: 380 }, 600);
                 $('#menuHam').stop().animate({
                     left: 385, top: 0, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0
-                }, 800);
+                }, 600);
                 $scope.menuOpen = true;
             }
         }
@@ -1081,6 +1090,11 @@ app.controller('LobbyController', function($scope, $location, socket) {
             e.preventDefault();
             // Close/open minimap
             $scope.toggleMinimap($scope.minimapOpen);
+        }
+        if (e.key == 'h') {
+            if (!$scope.menuOpen && !$scope.typing) {
+                $scope.toggleHelp();
+            }
         }
     })
 
@@ -1134,7 +1148,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $(document).on('mousemove', function(e) {
         if ($scope.menuOpen && $scope.clicked) {
             if (e.pageX > 380) {
-                $('#menuHam').css('left', e.pageX);
+                $('#sidembarMenuBtnHelpDiv').css('left', e.pageX + 14);
+                $('#menuHam').css('left', e.pageX + 5);
                 $('#sidebar').css('width', e.pageX);
                 $('#sideBorder').css('left', e.pageX);
             }
@@ -1143,14 +1158,16 @@ app.controller('LobbyController', function($scope, $location, socket) {
     // Side menu closing/opening
     $('#menuHam').on('mouseup', function(e) {
         if (!$scope.menuOpen) {
-            $('#sidebar').animate({ left: 0}, 800);
-            $('#sideBorder').animate({ left: 380 }, 800);
+            $('#sidembarMenuBtnHelpDiv').stop().animate({left: 394, top: 53}, 600);
+            $('#sidebar').animate({ left: 0}, 600);
+            $('#sideBorder').animate({ left: 380 }, 600);
             $('#menuHam').animate({
                 left: 390, top: 0, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0
-            }, 800);
+            }, 600);
             $scope.menuOpen = true;
         }
         else{
+            $('#sidembarMenuBtnHelpDiv').stop().animate({left: 60, top: 18}, 600);
             $('#sidebar').animate({ left: -380, width: 380}, 600);
             $('#sideBorder').animate({ left: -10 }, 600);
             $('#menuHam').animate({

@@ -1,0 +1,103 @@
+
+#helpDiv {
+    color: rgb(168, 168, 168);
+    border: 1px solid rgb(198, 198, 198);
+    border-radius: 3px;
+    text-align: center;
+    width: 25px;
+    height: 25px;
+    margin: 3px auto 0px auto;
+    cursor: help;
+}
+    #helpDiv i {
+        line-height: 25px;
+        vertical-align: middle;
+    }
+
+
+strong {
+    color: yellow;
+}
+
+#toolbarHelpDiv {
+    z-index: 75;
+    color: white;
+    background: rgba(51, 51, 51, 0.9);
+    position: absolute;
+    top: 50px;
+    right: 88px;
+    width: 190px;
+    height: 255px;
+    border: 1px solid white;
+    border-radius: 3px;
+    padding: 5px;
+}
+    #toolbarHelpDiv ul {
+        padding-left: 20px;
+    }
+    #toolbarHelpDiv li {
+        font-size: 12px;
+    }
+
+#escapeHelpDiv {
+    z-index: 75;
+    color: white;
+    background: rgba(51, 51, 51, 0.9);
+    position: absolute;
+    top: 390px;
+    right: 88px;
+    width: 190px;
+    border: 1px solid white;
+    border-radius: 3px;
+    padding: 5px;
+}
+
+#minimapBtnHelpDiv {
+    z-index: 75;
+    color: white;
+    background: rgba(51, 51, 51, 0.9);
+    position: absolute;
+    top: 5px;
+    right: 320px;
+    border: 1px solid white;
+    border-radius: 3px;
+    padding: 5px;
+}
+
+#sidembarMenuBtnHelpDiv {
+    z-index: 75;
+    color: white;
+    background: rgba(51, 51, 51, 0.9);
+    position: absolute;
+    top: 18px;
+    left: 60px;
+    border: 1px solid white;
+    border-radius: 3px;
+    padding: 5px;
+}
+
+#helpBtnDiv {
+    z-index: 75;
+    color: white;
+    background: rgba(51, 51, 51, 0.9);
+    position: absolute;
+    top: 460px;
+    right: 88px;
+    width: 190px;
+    border: 1px solid white;
+    border-radius: 3px;
+    padding: 5px;
+}
+
+#scrollHelpDiv {
+    z-index: 75;
+    color: white;
+    background: rgba(51, 51, 51, 0.9);
+    position: absolute;
+    bottom: 35px;
+    right: 20px;
+    width: 250px;
+    border: 1px solid white;
+    border-radius: 3px;
+    padding: 5px;
+}
