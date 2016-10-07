@@ -698,6 +698,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 $scope.enter_chat_name = '';
                 setTimeout(function () {
                     $('.chat_input_textarea').focus();
+                    $('.chat_message_show').scrollTop($('.chat_message_show')[0].scrollHeight);
                 }, 0);
             }
         }
@@ -722,9 +723,16 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
     }
     socket.on('messages_receive', function(messages) {
+        var scrHeight = $('.chat_message_show')[0].scrollHeight,
+            scrTop    = $('.chat_message_show')[0].scrollTop,
+            height    = parseInt($('.chat_message_show')[0].style.height);
         //Data must be an array of messages
         $scope.messages = messages;
-        $('.chat_message_show').scrollTop($('.chat_message_show')[0].scrollHeight);
+        setTimeout(function() {
+            if (scrTop + height == scrHeight) {
+                $('.chat_message_show').stop().animate({ scrollTop: scrHeight }, 800);
+            }
+        }, 0);
     })
     socket.on('users_receive', function(data) {
         //Data must be an array of users

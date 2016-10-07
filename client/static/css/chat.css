@@ -20,10 +20,12 @@ div.chat_enter_name input.chat_enter_name_input {
     margin-left: -100%;
     visibility: hidden;
     width: 120px;
-    background-color: black;
-    color: #fff;
+    background-color: rgb(198, 198, 198);
+    color: white;
     text-align: center;
-    border-radius: 6px;
+    border: 1px solid black;
+    border-radius: 3px;
+    box-shadow: 0px 0px 4px black;
     padding: 5px 0;
     /* Position the tooltip */
     position: absolute;
@@ -47,7 +49,9 @@ div.chat_enter_name input.chat_enter_name_input {
 }
 .chatName {
     text-shadow: 0.5px 0.5px 0px rgb(13, 66, 96);
+    text-align: left;
 }
 .chatMsg {
-    white-space: pre-line;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
