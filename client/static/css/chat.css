@@ -45,3 +45,9 @@ div.chat_enter_name input.chat_enter_name_input {
     overflow-y: scroll;
     padding: 1em 2em 2em;
 }
+.chatName {
+    text-shadow: 0.5px 0.5px 0px rgb(13, 66, 96);
+}
+.chatMsg {
+    white-space: pre-line;
+}

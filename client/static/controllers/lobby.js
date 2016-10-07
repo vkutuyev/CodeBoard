@@ -707,9 +707,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
     }
     $scope.chat_send_message = function() {
         if ($scope.chat_message) {
-            var message = $scope.chat_message,
-            count   = $scope.messages.length-1,
-            name    = $scope.chat_name;
+            var count   = $scope.messages.length-1,
+                name    = $scope.chat_name;
             while (count >=0) {
                 if ($scope.messages[count].name == $scope.chat_name) {
                     name = '';
@@ -718,7 +717,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 else if ($scope.messages[count].name == '') { count--; }
                 else { break; }
             }
-            socket.emit('message_send', {name: name, message: message});
+            socket.emit('message_send', {name: name, message: $scope.chat_message});
             $scope.chat_message = '';
         }
     }

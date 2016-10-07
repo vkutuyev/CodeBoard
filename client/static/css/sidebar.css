@@ -60,10 +60,6 @@
     #sidebar textarea {
         width: 100%;
     }
-    /*#sidebar div.chat_messages {
-        border: 1px solid rgb(166, 166, 166);
-        border-radius: 3px;
-    }*/
     #sideBorder {
         height: 100vh;
         width: 10px;

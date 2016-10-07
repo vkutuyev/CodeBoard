@@ -84,8 +84,8 @@ module.exports = function(io) {
             }
             if (Users[socket.id].lobby) {
                 Lobbies[Users[socket.id].lobby].chatlog.push(formatted);
-                console.log(Lobbies[Users[socket.id].lobby].chatlog);
-                console.log('-----------------');
+                // console.log(Lobbies[Users[socket.id].lobby].chatlog);
+                // console.log('-----------------');
                 io.to(Users[socket.id].lobby).emit('messages_receive', Lobbies[Users[socket.id].lobby].chatlog);
             }
         })
