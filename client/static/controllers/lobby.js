@@ -207,8 +207,14 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.menu_create_send = function(event) {
         switch (event.keyCode) {
             case 13:
-                $scope.createLobby();
-                $scope.menu_create_active = 0;
+                if (!$scope.lobby_name) {
+                    $scope.showNotification('Must Enter Lobby Name', 'bad');
+                    $('#menu_create_send').fadeOut(300).fadeIn(300).fadeOut(300).fadeIn(300);
+                }
+                else {
+                    $scope.createLobby();
+                    $scope.menu_create_active = 0;
+                }
                 break;
             case 27:
                 $scope.menu_create_active = 0;
@@ -218,8 +224,14 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.menu_join_send = function(event) {
         switch (event.keyCode) {
             case 13:
-                $scope.joinLobby();
-                $scope.menu_join_active = 0;
+                if (!$scope.join_lobby) {
+                    $scope.showNotification('Must Enter Lobby Name', 'bad');
+                    $('#menu_join_send').fadeOut(300).fadeIn(300).fadeOut(300).fadeIn(300);
+                }
+                else {
+                    $scope.joinLobby();
+                    $scope.menu_join_active = 0;
+                }
                 break;
             case 27:
                 $scope.menu_join_active = 0;
@@ -288,6 +300,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 else {
                     context.drawImage(img, 0, 0, img.width*scale, img.height*scale);
                     $scope.showNotification('Image Loaded');
+                    updateMinimap();
                 }
             }
         }
@@ -630,7 +643,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $scope.messages    = data.lobby_data.chatlog;
             $scope.screenshots = data.lobby_data.screenshots;
             editor.setValue(data.lobby_data.textCode);
-            var msg = 'Joined lobby: ' + data.lobby_data.id;
+            var msg = 'Joined Lobby: ' + data.lobby_data.id;
             $scope.showNotification(msg, 'good');
             // Showing sidebar savestate menu
             $('#menu_canv_options').fadeIn(600);
