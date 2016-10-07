@@ -694,6 +694,9 @@ app.controller('LobbyController', function($scope, $location, socket) {
             }
             else {
                 $scope.chat_name = $scope.enter_chat_name;
+                if ($scope.chat_name.length > 20) {
+                    $scope.chat_name = $scope.chat_name.substring(0, 20) + "...";
+                }
                 socket.emit('user_send', {name: $scope.chat_name});
                 $scope.enter_chat_name = '';
                 setTimeout(function () {
@@ -709,6 +712,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.chat_send_message = function() {
         if ($scope.chat_message) {
             var count   = $scope.messages.length-1,
+                time    = moment().format('k:mm'),
                 name    = $scope.chat_name;
             while (count >=0) {
                 if ($scope.messages[count].name == $scope.chat_name) {
@@ -718,7 +722,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 else if ($scope.messages[count].name == '') { count--; }
                 else { break; }
             }
-            socket.emit('message_send', {name: name, message: $scope.chat_message});
+            socket.emit('message_send', {name: name, message: $scope.chat_message, time: time});
             $scope.chat_message = '';
         }
     }

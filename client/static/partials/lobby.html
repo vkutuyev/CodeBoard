@@ -97,9 +97,10 @@
                 <div ng-show="chat_name">
                     <div class="row">
                         <div class="col-sm-12 chat_message_show" style="background: white">
-                            <div class="row" ng-repeat="message in messages">
-                                <div class="chatName" ng-bind="message.name"></div>
-                                <div class="col-sm-12 chatMsg" ng-bind="message.message"></div>
+                            <div class="row" ng-repeat="message in messages track by $index">
+                                <div class="chatName" ng-show='message.name'><span ng-bind="message.name"></span></div>
+                                <div class="chatTime"><span ng-show="showMsgNum===$index">{{message.time}}</span></div>
+                                <div class="chatMsg" ng-bind="message.message" ng-mouseenter="showMsgNum=$index" ng-mouseleave="showMsgNum=false"></div>
                             </div>
                         </div>
                     </div>

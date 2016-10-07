@@ -80,7 +80,7 @@ module.exports = function(io) {
         })
         socket.on('message_send', function(data) {
             if (Users[socket.id].name) {
-                var formatted = {name: data.name, message: data.message};
+                var formatted = {name: data.name, message: data.message, time: data.time};
             }
             if (Users[socket.id].lobby) {
                 Lobbies[Users[socket.id].lobby].chatlog.push(formatted);
