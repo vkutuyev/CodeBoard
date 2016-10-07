@@ -702,6 +702,14 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 setTimeout(function () {
                     $('.chat_input_textarea').focus();
                     $('.chat_message_show').scrollTop($('.chat_message_show')[0].scrollHeight);
+                    if ($scope.messages) {
+                        var userLength = $('.chatNameSpan').length;
+                        for (var i = 0; i < userLength; i++) {
+                            if ($('.chatNameSpan')[i].innerHTML == $scope.chat_name) {
+                                $($('.chatName')[i]).css('background', 'rgb(169, 196, 224)');
+                            }
+                        }
+                    }
                 }, 0);
             }
         }
@@ -736,6 +744,12 @@ app.controller('LobbyController', function($scope, $location, socket) {
             if (scrTop + height == scrHeight) {
                 $('.chat_message_show').stop().animate({ scrollTop: scrHeight }, 800);
             }
+            var userLength = $('.chatNameSpan').length;
+            for (var i = 0; i < userLength; i++) {
+                if ($('.chatNameSpan')[i].innerHTML == $scope.chat_name) {
+                    $($('.chatName')[i]).css('background', '#aac5e1');
+                }
+            }//here
         }, 0);
     })
     socket.on('users_receive', function(data) {
