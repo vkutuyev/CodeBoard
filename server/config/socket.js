@@ -74,21 +74,19 @@ module.exports = function(io) {
                 Users[socket.id].name = data.name;
                 console.log(Users[socket.id]);
                 if (Users[socket.id].lobby) {
-                    io.to(Users[socket.id].lobby).emit('users_receive', {users: Lobbies[Users[socket.id].lobby].users});
+                    io.to(Users[socket.id].lobby).emit('users_receive', {users: Lobbies[Users[socket.id].lobby].users, name: data.name});
                 }
             }
         })
         socket.on('message_send', function(data) {
-            console.log(data);
             if (Users[socket.id].name) {
-                var formatted = {name: Users[socket.id].name, message: data.message};
+                var formatted = {name: data.name, message: data.message};
             }
             if (Users[socket.id].lobby) {
                 Lobbies[Users[socket.id].lobby].chatlog.push(formatted);
                 console.log(Lobbies[Users[socket.id].lobby].chatlog);
                 console.log('-----------------');
-                io.to(Users[socket.id].lobby).emit('users_receive', {users: Lobbies[Users[socket.id].lobby].users})
-                io.to(Users[socket.id].lobby).emit('messages_receive', {messages: Lobbies[Users[socket.id].lobby].chatlog});
+                io.to(Users[socket.id].lobby).emit('messages_receive', Lobbies[Users[socket.id].lobby].chatlog);
             }
         })
 

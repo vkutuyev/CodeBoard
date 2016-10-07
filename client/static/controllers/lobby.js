@@ -681,28 +681,59 @@ app.controller('LobbyController', function($scope, $location, socket) {
     ///             Chat System            ///
     //////////////////////////////////////////
     $scope.enterChat = function() {
-        $scope.chat_name = $scope.enter_chat_name;
-        var name = $scope.chat_name;
-        socket.emit('user_send', {name: name});
-        $scope.enter_chat_name = '';
-        setTimeout(function () {
-            $('.chat_input_textarea').focus();
-        }, 0);
+        if ($scope.enter_chat_name) {
+            var nameCheck = true;
+            for (var user in $scope.users) {
+                if ($scope.users[user].name == $scope.enter_chat_name) {
+                    nameCheck = false;
+                    break;
+                }
+            }
+            if (!nameCheck) {
+                $scope.showNotification('Name Taken, Please Choose Another', 'bad');
+            }
+            else {
+                $scope.chat_name = $scope.enter_chat_name;
+                socket.emit('user_send', {name: $scope.chat_name});
+                $scope.enter_chat_name = '';
+                setTimeout(function () {
+                    $('.chat_input_textarea').focus();
+                }, 0);
+            }
+        }
+        else {
+            $scope.showNotification('Must Enter Name', 'bad');
+        }
     }
     $scope.chat_send_message = function() {
-        var message = $scope.chat_message;
-        socket.emit('message_send', {message: message});
-        $scope.chat_message = '';
+        if ($scope.chat_message) {
+            var message = $scope.chat_message,
+            count   = $scope.messages.length-1,
+            name    = $scope.chat_name;
+            while (count >=0) {
+                if ($scope.messages[count].name == $scope.chat_name) {
+                    name = '';
+                    break;
+                }
+                else if ($scope.messages[count].name == '') { count--; }
+                else { break; }
+            }
+            socket.emit('message_send', {name: name, message: message});
+            $scope.chat_message = '';
+        }
     }
-    socket.on('messages_receive', function(data) {
+    socket.on('messages_receive', function(messages) {
         //Data must be an array of messages
-        $scope.messages = data.messages;
+        $scope.messages = messages;
         $('.chat_message_show').scrollTop($('.chat_message_show')[0].scrollHeight);
     })
     socket.on('users_receive', function(data) {
         //Data must be an array of users
         $scope.users = data.users;
         $('.chat_message_show').height(Math.abs(parseInt($('#menuLine').offset().top)-parseInt($('.chat_input').offset().top))-(3*parseInt($('#menuLine').css('margin-bottom'))));
+        if (data.name != $scope.chat_name) {
+            $scope.showNotification(data.name + ' Has Joined Chat');
+        }
     })
 
 

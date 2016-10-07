@@ -2,6 +2,9 @@
     width: 100%;
     vertical-align: top;
 }
+    .chat_enter_name input:focus {
+        outline: none;
+    }
 div.chat_enter_name input.chat_enter_name_input {
     padding: 1em 0;
     padding-left: 1em;
@@ -35,6 +38,9 @@ div.chat_enter_name input.chat_enter_name_input {
     border-radius: 5px;
     padding: 0.5em;
 }
+    .chat_input textarea:focus {
+        outline: none;
+    }
 .chat_message_show {
     overflow-y: scroll;
     padding: 1em 2em 2em;
