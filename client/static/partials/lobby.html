@@ -95,9 +95,6 @@
                             <div class="col-sm-12">
                                 <input class="chat_enter_name_input" type="text" placeholder="Enter a name. Press 'Enter' when done." ng-model="enter_chat_name">
                             </div>
-                            <!-- <div class="col-sm-4">
-                                <input type="submit" class="btn btn-lrg" ng-click="enterChat()">
-                            </div> -->
                         </div>
                     </form>
                 </div>
@@ -113,7 +110,6 @@
                     <div class="row chat_send_row" >
                         <form class="chat_send_form" ng-submit="chat_send_message()">
                             <div class="chat_input col-sm-12" style="position: absolute;"><textarea class="chat_input_textarea" ng-model="chat_message" style="resize: none" placeholder="Enter to send, Shift+Enter for new line."></textarea></div>
-                            <!-- <div class="chat_send col-sm-3"><input class="btn btn-primary btn-sm" type="submit" value="Send"></div> -->
                         </form>
                     </div>
                 </div>
@@ -121,12 +117,7 @@
             <div ng-show="!currentLobby">Please go into online mode to use chat.</div>
         </div>
         <div ng-show="menu_tab==2">
-            <div id="editor">/*
-                  &lt;/>
-              Code Editor
-          Mode &lt;JavaScript>
-*/
-</div><!-- Editor defaults -->
+            <div id="editor"></div><!-- Editor defaults -->
         </div>
     </div> <!-- End of sidebar -->
 

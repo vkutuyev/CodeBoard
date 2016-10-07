@@ -582,6 +582,15 @@ app.controller('LobbyController', function($scope, $location, socket) {
             e.preventDefault();
             $scope.fileCheck(e.dataTransfer.files[0]);
         }
+
+        // Code Editor Message
+        var editMsg = "/*"
+                    + "\n\t\t\t\t" +" "+" "+ "&lt;/>"
+                    + "\n\t\t\t"   +" "+" "+ "Code Editor"
+                    + "\n\t\t"     +" "+" "+ "Mode &lt;JavaScript>"
+                    + "\n*/\n";
+        $('#editor').html(editMsg);
+
     })
 
     //////////////////////////////////////////
