@@ -622,6 +622,11 @@ app.controller('LobbyController', function($scope, $location, socket) {
                     + "\n*/\n";
         $('#editor').html(editMsg);
 
+        // Help message pop-up
+        var msg = '<i class="fa fa-arrow-up" aria-hidden="true"></i>\nClick Me';
+        $('#helpMsgPop').html(msg);
+        $('#helpMsgPop').delay(1000).fadeIn(800).delay(3000).fadeOut(800);
+
     })
 
     //////////////////////////////////////////
@@ -1224,7 +1229,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     })
 
     $(document).on('keyup', function(e) {
-        // Keyboard shortcuts
+        // Keyboard shortcuts for Canvas
         if (!$scope.typeClicked && !$scope.menuOpen && !e.shiftKey) {
             switch (e.key) {
                 case 'b': $scope.changeInput('brush'); break;
@@ -1235,6 +1240,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 case 'w': $scope.changeInput('rectH'); break;
                 case 'a': $scope.changeInput('circF'); break;
                 case 's': $scope.changeInput('circH'); break;
+                case 'f': $scope.toggleColor($scope.showColor); break;
             }
         }
         if (e.keyCode == 16) {      // Shift
