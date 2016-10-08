@@ -257,3 +257,6 @@
                 color: white;
                 background: rgb(168, 168, 168);
             }
+            #fileSubBtn:focus {
+                outline: none;
+            }

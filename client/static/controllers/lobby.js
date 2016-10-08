@@ -30,6 +30,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     $scope.movingView   = false;
     $scope.minimapOpen  = true;
     $scope.showHelp     = false;
+    $scope.showPop      = false;
     // Screenshots
     $scope.screenshots  = {};
     // Shapes
@@ -555,6 +556,32 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
         $scope.showHelp = !$scope.showHelp;
     }
+    $scope.togglePop = function(name, func, args) {
+        if (!args) { args = ''; }
+        var text = {
+            'clear' : "Clear canvas for lobby?\nUnsaved changes will be lost.",
+            'load'  : "Overwrite canvas with image?\nUnsaved changes will be lost.",
+            'screen': "Overwrite canvas with screenshot?\nUnsaved changes will be lost."
+        }
+        $scope.showPop = !$scope.showPop;
+        $('#popText').text(text[name]);
+        if ($scope.showPop) {
+            $('#popBack').fadeTo(400, 0.5);
+            $('#popMain').fadeIn(400);
+            var callback = function() {
+                func(args);
+                $('#popConfBtn').unbind();
+                $('#popBack').fadeOut(400);
+                $('#popMain').fadeOut(400);
+                $scope.showPop = false;
+            };
+            $('#popConfBtn').bind('click', callback);
+        }
+        else {
+            $('#popBack').fadeOut(400);
+            $('#popMain').fadeOut(400);
+        }
+    }
 
 
     //////////////////////////////////////////
@@ -1072,6 +1099,11 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $('#tmp_canvas').css('cursor', '-moz-grab');
         }
         if (e.keyCode == 13 && !e.shiftKey) {  // Enter
+            // Pop-up
+            if ($scope.showPop) {
+                e.preventDefault();
+                $('#popConfBtn').trigger('click');
+            }
             // Typing
             if ($scope.typeClicked) {
                 var scrLeft = document.getElementById('lobbyDiv').scrollLeft;
@@ -1104,46 +1136,57 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 $scope.typeClicked = false;
             }
         }
-        if (e.keyCode == 27 && !e.shiftKey && !$scope.menuOpen) {  // Escape
-            if ($scope.showHelp) {
-                $scope.toggleHelp();
+        if (e.keyCode == 27 && !e.shiftKey) {  // Escape
+            if (!$scope.menuOpen) {         // Side menu closed
+                if ($scope.showPop) {
+                    $scope.togglePop();
+                }
+                else if ($scope.showHelp) {
+                    $scope.toggleHelp();
+                }
+                else if ($scope.showLoad) {
+                    $scope.toggleLoad(true);
+                }
+                else if ($scope.showColor) {
+                    $('#pickerDiv').fadeOut(300);
+                    $scope.showColor = false;
+                }
+                else {
+                    // Drawing reset
+                    $('#tmp_canvas').css('cursor', 'cell');
+                    $scope.strokeStyle = '#ffffff';
+                    $scope.fillStyle   = '#ffffff';
+                    $scope.lineWidth   = 3;
+                    $scope.shape.type  = null;
+                    // Typing reset
+                    $scope.typing      = false;
+                    $scope.typeClicked = false;
+                    $('#textInput').blur();
+                    $('#codeInput').blur();
+                    $('#textDiv').attr('hidden', true);
+                    $('#codeDiv').attr('hidden', true);
+                    $scope.changeInput('brush');
+                    // Toolbar values/focus reset
+                    $('#clearBtn').blur();
+                    $('#color').blur();
+                    $('#color').val('#ffffff');
+                    $('#color').css('background', '#ffffff');
+                    $('#toolColorBox').css('background', '#ffffff');
+                    $('#toolSizeBoxValue').blur();
+                    $('#toolSizeSlideValue').blur();
+                    $('#toolSizeBoxValue').val(3);
+                    $('#toolSizeSlideValue').val(3);
+                    $('#textSizeBoxValue').blur();
+                    $('#textSizeSlideValue').blur();
+                    $('#textSizeBoxValue').val(12);
+                    $('#textSizeSlideValue').val(12);
+                }
+
             }
-            else if ($scope.showLoad) {
-                $scope.toggleLoad(true);
-            }
-            else if ($scope.showColor) {
-                $('#pickerDiv').fadeOut(300);
-                $scope.showColor = false;
-            }
-            else {
-                // Drawing reset
-                $('#tmp_canvas').css('cursor', 'cell');
-                $scope.strokeStyle = '#ffffff';
-                $scope.fillStyle   = '#ffffff';
-                $scope.lineWidth   = 3;
-                $scope.shape.type  = null;
-                // Typing reset
-                $scope.typing      = false;
-                $scope.typeClicked = false;
-                $('#textInput').blur();
-                $('#codeInput').blur();
-                $('#textDiv').attr('hidden', true);
-                $('#codeDiv').attr('hidden', true);
-                $scope.changeInput('brush');
-                // Toolbar values/focus reset
-                $('#clearBtn').blur();
-                $('#color').blur();
-                $('#color').val('#ffffff');
-                $('#color').css('background', '#ffffff');
-                $('#toolColorBox').css('background', '#ffffff');
-                $('#toolSizeBoxValue').blur();
-                $('#toolSizeSlideValue').blur();
-                $('#toolSizeBoxValue').val(3);
-                $('#toolSizeSlideValue').val(3);
-                $('#textSizeBoxValue').blur();
-                $('#textSizeSlideValue').blur();
-                $('#textSizeBoxValue').val(12);
-                $('#textSizeSlideValue').val(12);
+            else {  // Side menu open
+                if ($scope.showPop) {
+                    $scope.togglePop();
+                }
             }
         }   // End of Escape
         if (e.shiftKey && e.keyCode == 27) {    // Shift + Esc
@@ -1376,6 +1419,10 @@ app.controller('LobbyController', function($scope, $location, socket) {
         if (!$scope.showLoad) {
             $('#loadBtn').css({ background: 'white', color: 'black' });
         }
+    })
+    // Cancelling pop-up on outside click
+    $('#popBack').on('click', function(e) {
+        $scope.togglePop();
     })
 
 })

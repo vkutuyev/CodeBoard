@@ -13,9 +13,15 @@
 
     <!-- Tutorial pop-ups -->
     <div id="scrollPop">Shift/right-click, then drag to pan canvas <i class="fa fa-arrows-alt" aria-hidden="true"></i></div>
-
     <!-- Notifications -->
     <div id=notifDiv><span id=notifSpan><span></div>
+    <!-- Pop-up divs -->
+    <div id=popBack hidden></div>
+    <div id=popMain hidden>
+        <span id="popText"></span>
+        <button id="popConfBtn" class=popBtn>Confirm</button>
+        <button id="popCancBtn" class=popBtn ng-click=togglePop()>Cancel</button>
+    </div>
 
     <!--- Coding/text areas --->
     <div id="textDiv" hidden=true>
@@ -67,7 +73,7 @@
                     <li class=shotName><input class=shotNameInput type="text" placeholder='No Canvas' value={{shot.name}} title={{ind}} /></li>
                     <li class=shotTime>{{ shot.time || '00/00 00:00'}}</li>
                     <li class=shotSave ng-click=saveScreenshot(ind)><i class="fa fa-floppy-o" aria-hidden="true"></i></li>
-                    <li class=shotLoad ng-click=loadScreenshot(ind)><i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i></li>
+                    <li class=shotLoad ng-click="togglePop('screen', loadScreenshot, ind)"><i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i></li>
                 </ul>
                 <hr>
             </div>
@@ -183,7 +189,7 @@
             <span>Canvas</span>
         </div>
         <div class=toolBotDiv>
-            <button id=clearBtn class=toolBotBtn ng-click=clearCanvas()>Clear</button>
+            <button id=clearBtn class=toolBotBtn ng-click="togglePop('clear', clearCanvas)" >Clear</button>
         </div>
         <div class=toolBotDiv>
             <button id=saveBtn class='toolBotBtn tooltip-left' ng-click=saveCanvas() data-tooltip='Save canvas as .png file'>Save</button>
@@ -208,7 +214,7 @@
                         <span id=fileSize></span>
                     </div>
                 </div>
-                <button id=fileSubBtn ng-click=loadCanvas(filePicked)>Load</button>
+                <button id=fileSubBtn ng-click="togglePop('load', loadCanvas, filePicked)">Load</button>
             </div>
         </div>
         <div id="helpDiv" class="tooltip-left" data-tooltip='Show Keyboard Shortcuts' ng-click=toggleHelp() >
