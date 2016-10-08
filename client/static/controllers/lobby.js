@@ -753,7 +753,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
                 if ($('.chatNameSpan')[i].innerHTML == $scope.chat_name) {
                     $($('.chatName')[i]).css('background', '#aac5e1');
                 }
-            }//here
+            }
         }, 0);
     })
     socket.on('users_receive', function(data) {
