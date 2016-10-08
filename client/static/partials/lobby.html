@@ -192,8 +192,8 @@
             <button id=loadBtn class='toolBotBtn tooltip-left' ng-click=toggleLoad(showLoad) data-tooltip='Load canvas from image file'>Load</button>
         </div>
         <div id=fileInput hidden>
-            <button id=fileLabel>Select Image</button>
-            <input id=canvFile type="file" />
+            <label for=canvFile id=fileLabel>Select Image</label>
+            <input name=canvFile id=canvFile type="file" />
             <span>OR</span>
             <div id=fileDropBack></div>
             <h4 id=fileDrop>Drop Image Here</h4>

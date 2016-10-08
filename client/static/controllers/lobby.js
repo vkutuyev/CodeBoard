@@ -413,12 +413,16 @@ app.controller('LobbyController', function($scope, $location, socket) {
         $scope.showLoad = !load;
         if (load) {
             $('#fileInput').fadeOut(300);
-            setTimeout(function() {
-                $scope.loadReset();
-            }, 400);
+            $scope.loadReset();
+            $('#loadBtn').css({
+                background: 'white', color: 'black', border: '1px solid rgb(168, 168, 168)', boxShadow: 'none'
+            });
         }
         else {
-            $('#fileInput').fadeIn(500);
+            $('#fileInput').fadeIn(300);
+            $('#loadBtn').css({
+                background: 'rgb(5, 187, 160)', color: 'black', border: '1px solid black', boxShadow: '0px 0px 2px black'
+            });
         }
     }
     $scope.fileSelect = function(e) {
@@ -1361,6 +1365,17 @@ app.controller('LobbyController', function($scope, $location, socket) {
     })
     $('#canvFile').on('mouseout', function(e) {
         $('#fileLabel').css({ color: 'black', background: 'white'});
+    })
+    // Load button custom hover Handling
+    $('#loadBtn').on('mouseover', function(e) {
+        if (!$scope.showLoad) {
+            $('#loadBtn').css({ background: 'rgb(198, 198, 198)', color: 'white' });
+        }
+    })
+    $('#loadBtn').on('mouseout', function(e) {
+        if (!$scope.showLoad) {
+            $('#loadBtn').css({ background: 'white', color: 'black' });
+        }
     })
 
 })
