@@ -6,6 +6,7 @@ function Lobby (id) {
     this.users       = {};
     this.chatlog     = [];
     this.textCode    = '';
+    this.modeCode    = 'javascript';
     this.savestate   = '';
     this.screenshots = {
         0: { name: '', img: '', time: '' },
@@ -136,6 +137,11 @@ module.exports = function(io) {
         socket.on('code_edit', function(data) {
             Lobbies[Users[socket.id].lobby].textCode = data.code;
             io.to(Users[socket.id].lobby).emit('code_edit', { code: data.code, id: data.id })
+        })
+        socket.on('code_edit_mode_switching', function(data) {
+            Lobbies[Users[socket.id].lobby].modeCode = data.mode;
+            console.log(Lobbies[Users[socket.id].lobby].modeCode);
+            io.to(Users[socket.id].lobby).emit('code_edit_mode_switch', {mode: data.mode});
         })
     })
 }

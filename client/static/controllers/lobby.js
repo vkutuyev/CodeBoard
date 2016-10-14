@@ -1,3 +1,11 @@
+Array.prototype.returnThisMode = function(mode) {
+    for (var i = 0; i < this.length; i++) {
+        if (this[i].toLowerCase() == mode) {
+            return i;
+        }
+    }
+    return false;
+}
 app.controller('LobbyController', function($scope, $location, socket) {
     //////////////////////////////////////////
     ///           Scope Variables          ///
@@ -615,11 +623,11 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
 
         // Code Editor Message
-        var editMsg = "/*"
-                    + "\n\t\t\t\t" +" "+" "+ "&lt;/>"
-                    + "\n\t\t\t"   +" "+" "+ "Code Editor"
-                    + "\n\t\t"     +" "+" "+ "Mode &lt;JavaScript>"
-                    + "\n*/\n";
+        var editMsg = "";
+                    // + "/*";
+                    // + "\n\t\t\t\t" +" "+" "+ "&lt;/>"
+                    // + "\n\t\t\t"   +" "+" "+ "Code Editor"
+                    // + "\n*/\n";
         $('#editor').html(editMsg);
 
         // Help message pop-up
@@ -632,7 +640,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     //////////////////////////////////////////
     ///            Code Editor             ///
     //////////////////////////////////////////
-    $scope.modes = ['JavaScript', 'SQL', 'Python']
+    $scope.modes = ['JavaScript', 'PHP', 'SQL', 'Python']
     $scope.code_edit_mode = $scope.modes[0];
     var editor;
     setTimeout(function () {
@@ -649,15 +657,26 @@ app.controller('LobbyController', function($scope, $location, socket) {
         }
     })
     $scope.change_code_edit_mode = function() {
-        console.log($scope.code_edit_mode);
         var mode = $scope.code_edit_mode.toLowerCase();
         editor.getSession().setMode('ace/mode/'+mode);
+
+        if ($scope.currentLobby) {
+            socket.emit('code_edit_mode_switching', {mode: mode});
+        }
     }
     socket.on('code_edit', function(data) {
         if (socket.currentId() != data.id) {
             editor.setValue(data.code);
         }
     });
+    socket.on('code_edit_mode_switch', function(data) {
+        if (socket.currentId() != data.id) {
+            console.log($scope.modes[$scope.modes.returnThisMode(data.mode)]);
+            $scope.code_edit_mode = $scope.modes[$scope.modes.returnThisMode(data.mode)];
+            var mode = $scope.code_edit_mode.toLowerCase();
+            editor.getSession().setMode('ace/mode/'+mode);
+        }
+    })
 
 
     //////////////////////////////////////////
@@ -696,6 +715,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
             $scope.messages    = data.lobby_data.chatlog;
             $scope.screenshots = data.lobby_data.screenshots;
             editor.setValue(data.lobby_data.textCode);
+            $scope.code_edit_mode = $scope.modes[$scope.modes.returnThisMode(data.lobby_data.modeCode)];
+            editor.getSession().setMode('ace/mode/'+ data.lobby_data.modeCode);
             var msg = 'Joined Lobby: ' + data.lobby_data.id;
             $scope.showNotification(msg, 'good');
             // Showing sidebar savestate menu
