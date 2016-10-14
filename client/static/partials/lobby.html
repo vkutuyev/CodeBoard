@@ -121,6 +121,9 @@
             <div ng-show="!currentLobby">Please go into online mode to use chat.</div>
         </div>
         <div ng-show="menu_tab==2">
+            <select ng-model="code_edit_mode" style="margin-top: -10px; margin-bottom: 20px; width: 100%;" class="col-md-12" ng-change="change_code_edit_mode()">
+                <option ng-repeat="mode in modes">{{mode}}</option>
+            </select>
             <div id="editor"></div><!-- Editor defaults -->
         </div>
     </div> <!-- End of sidebar -->

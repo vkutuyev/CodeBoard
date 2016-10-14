@@ -632,6 +632,8 @@ app.controller('LobbyController', function($scope, $location, socket) {
     //////////////////////////////////////////
     ///            Code Editor             ///
     //////////////////////////////////////////
+    $scope.modes = ['JavaScript', 'SQL', 'Python']
+    $scope.code_edit_mode = $scope.modes[0];
     var editor;
     setTimeout(function () {
         editor = ace.edit('editor');
@@ -646,11 +648,17 @@ app.controller('LobbyController', function($scope, $location, socket) {
             socket.emit('code_edit', { id: socket.currentId(), code: editor.getValue()});
         }
     })
+    $scope.change_code_edit_mode = function() {
+        console.log($scope.code_edit_mode);
+        var mode = $scope.code_edit_mode.toLowerCase();
+        editor.getSession().setMode('ace/mode/'+mode);
+    }
     socket.on('code_edit', function(data) {
         if (socket.currentId() != data.id) {
             editor.setValue(data.code);
         }
     });
+
 
     //////////////////////////////////////////
     ///            Lobby System            ///
