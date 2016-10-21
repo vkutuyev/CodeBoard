@@ -565,6 +565,13 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         $scope.showHelp = !$scope.showHelp;
     }
     $scope.togglePop = function(name, func, args) {
+        console.log('==================');
+        console.log(name);
+        console.log(args);
+        if (name == 'screen') {
+            console.log($scope.screenshots[args].name);
+        }
+        console.log('==================');
         if (!args) { args = ''; }
         var text = {
             'clear' : "Clear canvas for lobby?\nUnsaved changes will be lost.",
@@ -574,6 +581,14 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         $scope.showPop = !$scope.showPop;
         $('#popText').text(text[name]);
         if ($scope.showPop) {
+            console.log('in showpop');
+            // Prevent screenshot loading popup if no screenshot is saved
+            if (name == 'screen') {
+                if (!$scope.screenshots[args].name) {
+                    $scope.showPop = !$scope.showPop;
+                    return;
+                }
+            }
             $('#popBack').fadeTo(400, 0.5);
             $('#popMain').fadeIn(400);
             var callback = function() {
@@ -721,9 +736,6 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
             editor.getSession().setMode('ace/mode/'+ data.lobby_data.modeCode);
             var msg = 'Joined Lobby: ' + data.lobby_data.id;
             $scope.showNotification(msg, 'good');
-            $('#leaveBtnDiv').fadeIn(600);
-            // Showing sidebar savestate menu
-            $('#menu_canv_options').fadeIn(600);
             setTimeout(function(){
                 $scope.toggleScreenshots();
             }, 100);
@@ -750,12 +762,11 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         socket.emit('leave_lobby', {path: $scope.currentLobby});
         $scope.currentLobby = '';
         $scope.chat_name    = '';
+        $scope.screenshots  = [];
         $http.post('/session/setLobby', {lobby: ''});
-        $('#leaveBtnDiv').fadeOut(600);
-        $('#menu_canv_options').fadeOut(600);
         $scope.showNotification('Offline Mode');
     }
-//qwe
+    
     //////////////////////////////////////////
     ///             Chat System            ///
     //////////////////////////////////////////
@@ -1046,6 +1057,8 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
             context.drawImage(img, 0, 0, img.width*data.scale, img.height*data.scale);
             $scope.showNotification('Image Loaded');
             updateMinimap();
+            var boardState = canvas.toDataURL();
+            socket.emit('savestate', boardState);
         }
     })
     socket.on('screenshot', function(screenshots) {

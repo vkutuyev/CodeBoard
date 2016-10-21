@@ -79,6 +79,9 @@
 .screenLabel {
     text-align: center;
 }
+#menu_canv_options h6 {
+    text-align: center;
+}
 .screenDiv {
     width: 100%;
     height: 42px;

@@ -63,7 +63,6 @@ module.exports = function(io) {
                 socket.leave(data.path);
                 if (Lobbies[Users[socket.id].lobby]) {
                     var name = Lobbies[Users[socket.id].lobby].users[socket.id].name;
-                    console.log('name ', name);
                     //Check to see that person has lobby or not
                     delete Lobbies[Users[socket.id].lobby].users[socket.id];
                     io.to(Users[socket.id].lobby).emit('users_receive', {users: Lobbies[Users[socket.id].lobby].users, name: name, left: true});
