@@ -3,8 +3,12 @@
 //////////////////////////////////////////////////////////
 var bodyParser      = require("body-parser");
 var express         = require("express");
+var session         = require("express-session");
 var path            = require("path");
 var app             = express();
+
+//session
+app.use(session({ secret: "codeboard", resave: false, saveUninitialized: false }));
 
 //Body Parser && Static Folder
 app.use(bodyParser.json());
