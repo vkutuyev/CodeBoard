@@ -58,6 +58,19 @@ module.exports = function(io) {
             Lobbies[data.path].savestate = data.canvas;
         })
 
+        socket.on('leave_lobby', function(data) {
+            if (Users[socket.id]) {
+                socket.leave(data.path);
+                if (Lobbies[Users[socket.id].lobby]) {
+                    var name = Lobbies[Users[socket.id].lobby].users[socket.id].name;
+                    console.log('name ', name);
+                    //Check to see that person has lobby or not
+                    delete Lobbies[Users[socket.id].lobby].users[socket.id];
+                    io.to(Users[socket.id].lobby).emit('users_receive', {users: Lobbies[Users[socket.id].lobby].users, name: name, left: true});
+                }
+            }
+        })
+
         socket.on('disconnect', function() {
             if (Users[socket.id]) {
                 if (Lobbies[Users[socket.id].lobby]) {

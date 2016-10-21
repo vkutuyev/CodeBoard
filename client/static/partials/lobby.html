@@ -55,19 +55,24 @@
             <hr>
             <div class="row">
                 <div class="col-md-12">
-                    <button ng-hide="menu_create_active==1" class="menu_buttons tooltip-top" ng-click="menu_active(1)" data-tooltip='Create new online lobby with current canvas'>Create a Lobby</button>
+                    <button ng-hide="menu_create_active==1" class="menu_buttons tooltip-top" ng-click="menu_active(1)" data-tooltip='Create new online lobby with current canvas'>Create Lobby</button>
                     <input id="menu_create_send" type="text" ng-show="menu_create_active==1" class="menu_inputs" ng-keydown="menu_create_send($event)" ng-model="lobby_name" placeholder="Lobby: (Enter: Go, Shift+Esc: Cancel)">
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <button ng-hide="menu_join_active==1" class="menu_buttons tooltip-bottom" ng-click="menu_active(2)" data-tooltip='Join a pre-existing lobby and overwrite your current canvas'>Join a Lobby</button>
+                    <button ng-hide="menu_join_active==1" class="menu_buttons tooltip-bottom" ng-click="menu_active(2)" data-tooltip='Join pre-existing lobby and overwrite current canvas'>Join Lobby</button>
                     <input id="menu_join_send" type="text" ng-show="menu_join_active==1" class="menu_inputs" ng-keydown="menu_join_send($event)" ng-model="join_lobby" placeholder="Lobby: (Enter: Go, Shift+Esc: Cancel)">
                 </div>
             </div>
+            <div id=leaveBtnDiv class="row" hidden>
+                <div class="col-md-12">
+                    <button id=leaveBtn class="menu_buttons tooltip-bottom" ng-click="leaveLobby()" data-tooltip='Disconnect from current lobby and keep current canvas'>Leave Lobby</button>
+                </div>
+            </div>
+            <hr>
 
             <div id=menu_canv_options hidden>
-                <hr>
                 <h4 class=screenLabel>Saved Canvases</h4>
                 <ul ng-repeat="(ind, shot) in screenshots" class=screenDiv>
                     <li class=shotFirst><i id={{ind}} class="fa fa-picture-o" aria-hidden="true"/></li>

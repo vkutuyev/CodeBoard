@@ -721,6 +721,7 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
             editor.getSession().setMode('ace/mode/'+ data.lobby_data.modeCode);
             var msg = 'Joined Lobby: ' + data.lobby_data.id;
             $scope.showNotification(msg, 'good');
+            $('#leaveBtnDiv').fadeIn(600);
             // Showing sidebar savestate menu
             $('#menu_canv_options').fadeIn(600);
             setTimeout(function(){
@@ -744,7 +745,17 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         $scope.join_lobby = '';
         socket.emit('join_lobby', {path: path});
     }
-
+    $scope.leaveLobby = function() {
+        $('#leaveBtn').blur();
+        socket.emit('leave_lobby', {path: $scope.currentLobby});
+        $scope.currentLobby = '';
+        $scope.chat_name    = '';
+        $http.post('/session/setLobby', {lobby: ''});
+        $('#leaveBtnDiv').fadeOut(600);
+        $('#menu_canv_options').fadeOut(600);
+        $scope.showNotification('Offline Mode');
+    }
+//qwe
     //////////////////////////////////////////
     ///             Chat System            ///
     //////////////////////////////////////////
@@ -824,8 +835,12 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         //Data must be an array of users
         $scope.users = data.users;
         $('.chat_message_show').height(Math.abs(parseInt($('#menuLine').offset().top)-parseInt($('.chat_input').offset().top))-(3*parseInt($('#menuLine').css('margin-bottom'))));
-        if (data.name != $scope.chat_name) {
+        if (!data.left && (data.name != $scope.chat_name)) {
             $scope.showNotification(data.name + ' Has Joined Chat');
+        }
+        else if (data.left) {
+            var name = data.name == "No name" ? "Anonymous User" : "User " + data.name;
+            $scope.showNotification(name + ' Has Left Chat');
         }
     })
 
