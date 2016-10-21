@@ -6,7 +6,7 @@ Array.prototype.returnThisMode = function(mode) {
     }
     return false;
 }
-app.controller('LobbyController', function($scope, $location, socket) {
+app.controller('LobbyController', function($http, $scope, $location, socket) {
     //////////////////////////////////////////
     ///           Scope Variables          ///
     //////////////////////////////////////////
@@ -683,10 +683,11 @@ app.controller('LobbyController', function($scope, $location, socket) {
     ///            Lobby System            ///
     //////////////////////////////////////////
     //Checks the lobby
-    if ($location.url() != '/') {
-        var path = $location.url().split('/')[1];
-        socket.emit('join_lobby', {path: path});
-    }
+    $http.get('/session/getLobby').success(function(data) {
+        if (data.lobby) {
+            socket.emit('join_lobby', {path: data.lobby});
+        }
+    });
     socket.on('create_lobby_status', function(data) {
         if (data.success) {
             context.fillRect(0, 0, canvas.width, canvas.height);
@@ -697,6 +698,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
     })
     socket.on('join_lobby_status', function(data) {
         if (data.success) {
+            $http.post('/session/setLobby', {lobby: data.lobby_data.id});
             $('.shotNameInput').val('');
             $scope.join_lobby = '';
             $scope.currentLobby = data.lobby_data.id;
@@ -727,6 +729,7 @@ app.controller('LobbyController', function($scope, $location, socket) {
         } else {
             var msg = 'Lobby not found: ' + data.lobby_data;
             $scope.showNotification(msg, 'bad');
+            $http.post('/session/setLobby', {lobby: ''});
         }
     })
     $scope.createLobby = function() {
