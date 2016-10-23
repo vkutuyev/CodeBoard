@@ -2,7 +2,7 @@
     position: absolute;
     right: 0;
     top: 0;
-    height: 500px;
+    height: 560px;
     width: 83px;
     z-index: 50;
     background: white;
@@ -55,7 +55,7 @@
                 .toolBtn:hover {
                     box-shadow: 0px 0px 2px black;
                 }
-                .toolBtn i {
+                .toolBtn i, span {
                     line-height: 30px;
                     vertical-align: middle;
                 }

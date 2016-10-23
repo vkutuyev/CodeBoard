@@ -108,6 +108,40 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
                 distY               = scrTop,
                 shapeContext        = con;
             shapeContext.lineWidth  = lineWidth;
+            if (type == 'line' || type == 'arrow') {
+                var lineX = width + distX;
+                var lineY = height + distY;
+                // Line
+                shapeContext.beginPath();
+                shapeContext.moveTo(startX + distX, startY + distY);
+                shapeContext.lineTo(lineX, lineY);
+                shapeContext.strokeStyle = strCol;
+                shapeContext.lineWidth   = lineWidth;
+                shapeContext.lineCap     = 'round';
+                shapeContext.lineJoin    = 'round';
+                if (type == 'arrow') {
+                    // Arrowhead dimensions
+                    var lineAngle     = Math.atan2(height - startY, width - startX);
+                    var arrHeadLen    = lineWidth * 10;
+                    var arrHeadTopAng = lineAngle + Math.PI + .3;
+                    var arrHeadBotAng = lineAngle + Math.PI - .3;
+                    var topx = (lineX) + Math.cos(arrHeadTopAng) * arrHeadLen;
+                    var botx = (lineX) + Math.cos(arrHeadBotAng) * arrHeadLen;
+                    var topy = (lineY) + Math.sin(arrHeadTopAng) * arrHeadLen;
+                    var boty = (lineY) + Math.sin(arrHeadBotAng) * arrHeadLen;
+                    // Drawing the arrowhead
+                    shapeContext.moveTo(topx, topy);
+                    shapeContext.lineTo(lineX, lineY);
+                    shapeContext.lineTo(botx, boty);
+                    var cpx = (topx + lineX + botx) / 3;
+                    var cpy = (topy + lineY + boty) / 3;
+                    shapeContext.quadraticCurveTo(cpx, cpy, topx, topy);
+                    shapeContext.fillStyle = filCol;
+                    shapeContext.fill();
+                }
+                shapeContext.stroke();
+                shapeContext.closePath();
+            }
             if (type == 'rectF') {
                 shapeContext.fillStyle = filCol;
                 shapeContext.fillRect(startX + distX, startY + distY, width, height);
@@ -375,10 +409,12 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
             else {
                 var ind;
                 switch (input) {
-                    case 'rectF': ind = 4; break;
-                    case 'rectH': ind = 5; break;
-                    case 'circF': ind = 6; break;
-                    case 'circH': ind = 7; break;
+                    case 'line' : ind = 4; break;
+                    case 'arrow': ind = 5; break;
+                    case 'rectF': ind = 6; break;
+                    case 'rectH': ind = 7; break;
+                    case 'circF': ind = 8; break;
+                    case 'circH': ind = 9; break;
                 }
                 $($('.toolBtn')[ind]).css('opacity', 0);
                 $($('.toolBtn')[ind]).animate({ opacity: 1}, 500);
@@ -565,13 +601,6 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         $scope.showHelp = !$scope.showHelp;
     }
     $scope.togglePop = function(name, func, args) {
-        console.log('==================');
-        console.log(name);
-        console.log(args);
-        if (name == 'screen') {
-            console.log($scope.screenshots[args].name);
-        }
-        console.log('==================');
         if (!args) { args = ''; }
         var text = {
             'clear' : "Clear canvas for lobby?\nUnsaved changes will be lost.",
@@ -581,7 +610,6 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         $scope.showPop = !$scope.showPop;
         $('#popText').text(text[name]);
         if ($scope.showPop) {
-            console.log('in showpop');
             // Prevent screenshot loading popup if no screenshot is saved
             if (name == 'screen') {
                 if (!$scope.screenshots[args].name) {
@@ -663,6 +691,7 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         editor.setTheme('ace/theme/sqlserver');
         editor.getSession().setMode('ace/mode/javascript');
         editor.getSession().setUseWrapMode(false);
+        editor.getSession().setUseWorker(false);
         editor.$blockScrolling = Infinity;
     }, 0);
     $('#editor').on('keyup', function(e) {
@@ -766,7 +795,7 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         $http.post('/session/setLobby', {lobby: ''});
         $scope.showNotification('Offline Mode');
     }
-    
+
     //////////////////////////////////////////
     ///             Chat System            ///
     //////////////////////////////////////////
@@ -975,9 +1004,15 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         e.preventDefault();
         // Drawing shape
         if ($scope.shape.drawing && !mouse.dragging) {
-            var coords          = mouseCoords(e);
-            $scope.shape.width  = coords.x - $scope.shape.startX;
-            $scope.shape.height = coords.y - $scope.shape.startY;
+            var coords = mouseCoords(e);
+            if ($scope.shape.type == 'line' || $scope.shape.type == 'arrow') {
+                $scope.shape.width  = coords.x;
+                $scope.shape.height = coords.y;
+            }
+            else {
+                $scope.shape.width  = coords.x - $scope.shape.startX;
+                $scope.shape.height = coords.y - $scope.shape.startY;
+            }
             tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
             drawShape(tmp_ctx, $scope.shape.type, $scope.strokeStyle, $scope.fillStyle, $scope.lineWidth, $scope.shape.startX, $scope.shape.startY, $scope.shape.width, $scope.shape.height, 0, 0);
         }
@@ -1296,10 +1331,12 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
                 case 'e': $scope.changeInput('eraser');break;
                 case 't': $scope.changeInput('text');  break;
                 case 'c': $scope.changeInput('code');  break;
-                case 'q': $scope.changeInput('rectF'); break;
-                case 'w': $scope.changeInput('rectH'); break;
-                case 'a': $scope.changeInput('circF'); break;
-                case 's': $scope.changeInput('circH'); break;
+                case 'q': $scope.changeInput('line');  break;
+                case 'w': $scope.changeInput('arrow'); break;
+                case 'a': $scope.changeInput('rectF'); break;
+                case 's': $scope.changeInput('rectH'); break;
+                case 'z': $scope.changeInput('circF'); break;
+                case 'x': $scope.changeInput('circH'); break;
                 case 'f': $scope.toggleColor($scope.showColor); break;
             }
         }
