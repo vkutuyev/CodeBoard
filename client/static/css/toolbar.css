@@ -70,13 +70,27 @@
         width: 80px;
         margin-top: 5px;
     }
+        #toolColorRow {
+            display: flex;
+            flex-flow: row;
+        }
         #toolColorBox {
+            align-self: center;
             height: 40px;
             width: 50%;
-            margin-left: 25%;
+            margin-left: 10%;
             background: white;
             border: 1px solid black;
         }
+        #toolColorDropper {
+            align-self: center;
+            width: 25px;
+            height: 25px;
+            margin-left: 2px;
+        }
+            #toolColorDropper i {
+                line-height: 25px;
+            }
         #color {
             font-family: 'Source Code Pro', monospace;
             width: 80%;

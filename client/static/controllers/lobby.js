@@ -33,6 +33,7 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
     // Random UI
     $scope.scrollMsg    = true;
     $scope.showColor    = false;
+    $scope.colorDrop    = false;
     $scope.showLoad     = false;
     $scope.filePicked   = null;
     $scope.movingView   = false;
@@ -395,6 +396,7 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
                 $scope.shape.type  = null;
                 $scope.typing      = false;
                 $scope.typeClicked = false;
+                $scope.colorDrop   = false;
             }
             else if (input == 'eraser') {
                 $($('.toolBtn')[1]).css('opacity', 0);
@@ -404,7 +406,19 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
                 $scope.shape.type  = null;
                 $scope.typing      = false;
                 $scope.typeClicked = false;
+                $scope.colorDrop   = false;
                 $scope.strokeStyle = '#000000';
+            }
+            //qwe
+            else if (input == 'drop') {
+                $($('.toolBtn')[10]).css('opacity', 0);
+                $($('.toolBtn')[10]).animate({ opacity: 1}, 500);
+                $($('.toolBtn')[10]).addClass('activeBtn');
+                $('#tmp_canvas').css({'cursor':"url('../img/dropper-small.png'), auto"});
+                $scope.colorDrop   = true;
+                $scope.shape.type  = null;
+                $scope.typing      = false;
+                $scope.typeClicked = false;
             }
             else {
                 var ind;
@@ -423,6 +437,7 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
                 $scope.shape.type  = input;
                 $scope.typing      = false;
                 $scope.typeClicked = false;
+                $scope.colorDrop   = false;
             }
         }
         // Typing
@@ -431,6 +446,7 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
             $('#textSize').attr('hidden', false);
             $scope.typing     = true;
             $scope.shape.type = null;
+            $scope.colorDrop  = false;
             $('#tmp_canvas').css('cursor', 'text');
             if (input == 'text') {
                 $($('.toolBtn')[2]).css('opacity', 0);
@@ -943,7 +959,7 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         $('#textSizeBoxValue').blur();
         $('#textSizeSlideValue').blur();
         // Drawing or dragging
-        if (!e.shiftKey && e.button == 0) {
+        if (!e.shiftKey && e.button == 0 && !$scope.colorDrop) {
             mouse.click  = true;
         }
         else if (e.shiftKey || e.button == 2) {
@@ -964,6 +980,10 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         // Grab current mouse pos
         mouse.pos = mouseCoords(e);
         context.moveTo(mouse.pos.x, mouse.pos.y);
+        // Color dropper
+        if ($scope.colorDrop) {
+            // sample color qwe
+        }
         // Drawing shape
         if ($scope.shape.type && mouse.click) {
             $scope.shape.drawing = true;
@@ -1001,6 +1021,10 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
     }
     tmp_canvas.onmousemove = function(e) {
         e.preventDefault();
+        // Color dropper
+        if ($scope.colorDrop) {
+            // sample color qwe
+        }
         // Drawing shape
         if ($scope.shape.drawing && !mouse.dragging) {
             var coords = mouseCoords(e);
@@ -1151,9 +1175,9 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         // Clearing temp canvas
         tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
         // Resetting variables
-        $scope.clicked  = false;
-        mouse.click     = false;
-        mouse.dragging  = false;
+        $scope.clicked   = false;
+        mouse.click      = false;
+        mouse.dragging   = false;
         pts = [];
     })
 
@@ -1257,6 +1281,7 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
                     $scope.fillStyle   = '#ffffff';
                     $scope.lineWidth   = 3;
                     $scope.shape.type  = null;
+                    $scope.colorDrop   = false;
                     // Typing reset
                     $scope.typing      = false;
                     $scope.typeClicked = false;
@@ -1336,6 +1361,7 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
                 case 's': $scope.changeInput('rectH'); break;
                 case 'z': $scope.changeInput('circF'); break;
                 case 'x': $scope.changeInput('circH'); break;
+                case 'g': $scope.changeInput('drop');  break;
                 case 'f': $scope.toggleColor($scope.showColor); break;
             }
         }

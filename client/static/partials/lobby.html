@@ -189,7 +189,12 @@
         </div>
         <hr id=toolSep>
         <div id="toolColor">
-            <div id="toolColorBox" ng-click=toggleColor(showColor)></div>
+            <div id="toolColorRow">
+                <div id="toolColorBox" ng-click=toggleColor(showColor)></div>
+                <div id="toolColorDropper" class="toolBtn" ng-click=changeInput('drop')>
+                    <i class="fa fa-eyedropper" aria-hidden="true"></i>
+                </div>
+            </div>
             <input type="text" id=color ng-model=strokeStyle />
             <div id="pickerDiv" hidden>
                 <div id="colorPicker"></div>
@@ -263,7 +268,8 @@
             <li><strong>X</strong> &nbsp;&nbsp;-&nbsp;&nbsp; Circle (hollow)</li>
         </ul>
         <ul>
-            <li><strong>F</strong> &nbsp;&nbsp;-&nbsp;&nbsp; Opens color picker.</li>
+            <li><strong>F</strong> &nbsp;&nbsp;-&nbsp;&nbsp; Color Picker</li>
+            <li><strong>G</strong> &nbsp;&nbsp;-&nbsp;&nbsp; Color Eyedropper</li>
         </ul>
     </div>
     <div id="escapeHelpDiv" class=helpDiv hidden>
