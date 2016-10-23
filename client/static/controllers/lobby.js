@@ -715,7 +715,6 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
     });
     socket.on('code_edit_mode_switch', function(data) {
         if (socket.currentId() != data.id) {
-            console.log($scope.modes[$scope.modes.returnThisMode(data.mode)]);
             $scope.code_edit_mode = $scope.modes[$scope.modes.returnThisMode(data.mode)];
             var mode = $scope.code_edit_mode.toLowerCase();
             editor.getSession().setMode('ace/mode/'+mode);

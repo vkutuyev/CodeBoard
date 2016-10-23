@@ -55,7 +55,7 @@
                 .toolBtn:hover {
                     box-shadow: 0px 0px 2px black;
                 }
-                .toolBtn i, span {
+                .toolBtn i, .toolBtn span {
                     line-height: 30px;
                     vertical-align: middle;
                 }
