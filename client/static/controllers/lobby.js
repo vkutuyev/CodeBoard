@@ -409,7 +409,6 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
                 $scope.colorDrop   = false;
                 $scope.strokeStyle = '#000000';
             }
-            //qwe
             else if (input == 'drop') {
                 $($('.toolBtn')[10]).css('opacity', 0);
                 $($('.toolBtn')[10]).animate({ opacity: 1}, 500);
@@ -648,6 +647,27 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
             $('#popBack').fadeOut(400);
             $('#popMain').fadeOut(400);
         }
+    }
+    $scope.sampleColor = function(coords) {
+        var distX = document.getElementById('lobbyDiv').scrollLeft;
+        var distY = document.getElementById('lobbyDiv').scrollTop;
+        var x = coords.x + distX;
+        var y = coords.y + distY;
+        var rgb = context.getImageData(x, y, 1, 1).data;
+        var r = rgb[0].toString(16);
+        var g = rgb[1].toString(16);
+        var b = rgb[2].toString(16);
+        r = r.length == 1 ? "0"+r : r;
+        g = g.length == 1 ? "0"+g : g;
+        b = b.length == 1 ? "0"+b : b;
+        var hex = '#'+r+g+b;
+        var picker = $.farbtastic('#colorPicker');
+        $scope.fillStyle   = hex;
+        $scope.strokeStyle = hex;
+        $('#color').val(hex);
+        $('#color').css('background', hex);
+        $('#toolColorBox').css('background', hex);
+        picker.setColor(hex);
     }
 
 
@@ -959,7 +979,7 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         $('#textSizeBoxValue').blur();
         $('#textSizeSlideValue').blur();
         // Drawing or dragging
-        if (!e.shiftKey && e.button == 0 && !$scope.colorDrop) {
+        if (!e.shiftKey && e.button == 0) {
             mouse.click  = true;
         }
         else if (e.shiftKey || e.button == 2) {
@@ -969,8 +989,10 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         }
         // Connected
         if ($scope.currentLobby) {
-            if ($scope.shape.type || $scope.typing) { boundRect = tmp_canvas.getBoundingClientRect(); }
-            else                   { boundRect = canvas.getBoundingClientRect(); }
+            if ($scope.shape.type || $scope.typing || $scope.colorDrop) {
+                boundRect = tmp_canvas.getBoundingClientRect();
+            }
+            else { boundRect = canvas.getBoundingClientRect(); }
         }
         // Offline
         else {
@@ -981,17 +1003,17 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         mouse.pos = mouseCoords(e);
         context.moveTo(mouse.pos.x, mouse.pos.y);
         // Color dropper
-        if ($scope.colorDrop) {
-            // sample color qwe
+        if ($scope.colorDrop && mouse.click) {
+            $scope.sampleColor(mouse.pos);
         }
         // Drawing shape
-        if ($scope.shape.type && mouse.click) {
+        if ($scope.shape.type && mouse.click && !$scope.colorDrop) {
             $scope.shape.drawing = true;
             $scope.shape.startX  = mouse.pos.x;
             $scope.shape.startY  = mouse.pos.y;
         }
         // Typing
-        if ($scope.typing && mouse.click) {
+        if ($scope.typing && mouse.click && !$scope.colorDrop) {
             $scope.typeClicked = true;
             mouse.typeX = mouse.pos.x;
             mouse.typeY = mouse.pos.y;
@@ -1022,11 +1044,12 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
     tmp_canvas.onmousemove = function(e) {
         e.preventDefault();
         // Color dropper
-        if ($scope.colorDrop) {
-            // sample color qwe
+        if ($scope.colorDrop && mouse.click) {
+            var coords = mouseCoords(e);
+            $scope.sampleColor(coords);
         }
         // Drawing shape
-        if ($scope.shape.drawing && !mouse.dragging) {
+        if ($scope.shape.drawing && !mouse.dragging && !$scope.colorDrop) {
             var coords = mouseCoords(e);
             if ($scope.shape.type == 'line' || $scope.shape.type == 'arrow') {
                 $scope.shape.width  = coords.x;
@@ -1041,7 +1064,7 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         }
         else {
             // Drawing
-            if (mouse.click && !mouse.dragging && !$scope.typing) {
+            if (mouse.click && !mouse.dragging && !$scope.typing && !$scope.colorDrop) {
                 mouse.pos = mouseCoords(e);
                 pts.push(mouse.pos);
                 // Offline
@@ -1139,6 +1162,9 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
             if (e.button == 2) {
                 if  ($scope.shape.type) { $('#tmp_canvas').css('cursor', 'crosshair'); }
                 else if ($scope.typing) { $('#tmp_canvas').css('cursor', 'text'); }
+                else if ($scope.colorDrop) {
+                    $('#tmp_canvas').css({'cursor':"url('../img/dropper-small.png'), auto"});
+                }
                 else                    { $('#tmp_canvas').css('cursor', 'cell'); }
             }
             else {
@@ -1376,6 +1402,9 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
             }
             else if ($scope.typing) {
                 $('#tmp_canvas').css('cursor', 'text');
+            }
+            else if ($scope.colorDrop) {
+                $('#tmp_canvas').css({'cursor':"url('../img/dropper-small.png'), auto"});
             }
             else {
                 $('#tmp_canvas').css('cursor', 'cell');
