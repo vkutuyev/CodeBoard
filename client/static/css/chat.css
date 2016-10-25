@@ -74,6 +74,73 @@ div.chat_enter_name input.chat_enter_name_input {
         margin: 0 auto;
         line-height: 54px;
     }
+#chat_file_div {
+    position: absolute;
+    bottom: 80px;
+    right: 15px;
+    width: 5px;
+    height: 5px;
+    border: 1px solid rgb(176, 176, 176);
+    border-radius: 5px;
+    padding: 10px;
+}
+    #chat_file_head {
+        margin-top: 0;
+        text-align: center;
+        text-decoration: underline;
+    }
+    .chat_file span {
+        margin: 0 0 0 10px;
+        display: block;
+        text-align: center;
+    }
+    .chat_file input {
+        display: none;
+    }
+    .chat_file label {
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+        margin: 5% 10% 0px 10%;
+        height: 35px;
+        line-height: 35px;
+        border: 1px solid rgb(176, 176, 176);
+        border-radius: 5px;
+        width: 80%;
+    }
+        .chat_file label:hover {
+            color: white;
+            background: rgb(198, 198, 198);
+        }
+#chat_file_info {
+
+}
+    #chat_file_info table {
+        width: 100%;
+        text-align: center;
+    }
+        .chat_file_table_head_name {
+            width: 75%;
+            text-align: center;
+        }
+        .chat_file_table_head_size {
+            width: 25%;
+            text-align: center;
+        }
+    #chat_file_info button {
+        color: black;
+        background: white;
+        border: 1px solid rgb(176, 176, 176);
+        border-radius: 5px;
+        width: 35%;
+        margin-top: 25px;
+        margin-left: 10%;
+        outline: none;
+    }
+        #chat_file_info button:hover {
+            color: white;
+            background: rgb(198, 198, 198);
+        }
 .chat_message_show {
     overflow-y: scroll;
     padding: 1em 2em 2em;

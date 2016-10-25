@@ -124,13 +124,36 @@
                                 <ul>
                                     <li><textarea class="chat_input_textarea" ng-model="chat_message" style="resize: none"></textarea></li>
                                     <li style="margin-left: -4px;">
-                                        <div class="chat_file_select" ng-click="fileSelect()">
+                                        <div class="chat_file_select" ng-click="toggleChatFile()">
                                             <i class="fa fa-plus" aria-hidden="true"></i>
                                         </div>
                                     </li>
                                 </ul>
                             </div>
                         </form>
+                    </div>
+                    <div id="chat_file_div" hidden>
+                        <h4 id="chat_file_head">Share File</h4>
+                        <div class="chat_file">
+                            <span>50MB Size Limit</span>
+                            <span>File Deleted If Lobby Empties</span>
+                            <label id="chat_file_label" for="chat_file_input" ng-hide="chatFile">Select File</label>
+                            <input id="chat_file_input" type="file" name="chat_file_input">
+                        </div>
+                        <div id="chat_file_info">
+                            <table>
+                                <thead>
+                                    <th class="chat_file_table_head_name">Name</th>
+                                    <th class="chat_file_table_head_size">Size</th>
+                                </thead>
+                                <tbody>
+                                    <td><span class="chat_file_name"></span></td>
+                                    <td><span class="chat_file_size"></span></td>
+                                </tbody>
+                            </table>
+                            <button ng-click="chatFileUpload()">Upload</button>
+                            <button ng-click="chatFileReset()">Cancel</button>
+                        </div>
                     </div>
                 </div>
             </div>

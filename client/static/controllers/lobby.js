@@ -40,6 +40,9 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
     $scope.minimapOpen  = true;
     $scope.showHelp     = false;
     $scope.showPop      = false;
+    // File Sharing
+    $scope.showChatFile = false;
+    $scope.lobbyFile    = null; //qwe
     // Screenshots
     $scope.screenshots  = {};
     // Shapes
@@ -684,13 +687,15 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
             $('#toolColorBox').css('background', color);
         });
 
-        // File check/drop
+        // Chat file check
+        var chatFile = document.getElementById('chat_file_input');
+        chatFile.addEventListener('change', $scope.chatFileSelect, false);
+        // Canvas file check/drop
         var fileDrop = document.getElementById('fileDrop'),
             canvFile = document.getElementById('canvFile');
         canvFile.addEventListener('change', $scope.fileSelect, false);
         fileDrop.addEventListener('dragover', fileDragOver, false);
         fileDrop.addEventListener('drop', fileDropHandler, false);
-
         function fileDragOver(e) {
             e.stopPropagation();
             e.preventDefault();
@@ -798,6 +803,8 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
             editor.setValue(data.lobby_data.textCode);
             $scope.code_edit_mode = $scope.modes[$scope.modes.returnThisMode(data.lobby_data.modeCode)];
             editor.getSession().setMode('ace/mode/'+ data.lobby_data.modeCode);
+            $scope.showChatFile = true;
+            $scope.toggleChatFile();
             var msg = 'Joined Lobby: ' + data.lobby_data.id;
             $scope.showNotification(msg, 'good');
             setTimeout(function(){
@@ -888,10 +895,89 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
             $scope.chat_message = '';
         }
     }
-    $scope.fileSelect = function() {
-        // qwe
-        // Toggle chat file selector
-        console.log('selected');
+    $scope.toggleChatFile = function() {
+        $scope.showChatFile = !$scope.showChatFile;
+        if ($scope.showChatFile) {
+            // Show
+            $('#chat_file_div').css('width', '5').css('height', '5');
+            $('#chat_file_head').css('display', 'none');
+            $('#chat_file_info').css('display', 'none');
+            $('.chat_file').css('display', 'none');
+            $('#chat_file_div').fadeIn(5).animate({width: '300', height: '150'}, 400);;
+            setTimeout(function () {
+                $('#chat_file_head').css('display', 'block');
+                $('.chat_file').css('display', 'block');
+            }, 450);
+        }
+        else {
+            // Hide and reset file input
+            $('#chat_file_div').fadeOut(200);
+            setTimeout(function () {
+                $scope.chatFile = null;
+            }, 300);
+            var input = $("#chat_file_input");
+            input.replaceWith( input = input.clone( true ) );
+            input = document.getElementById('chat_file_input');
+            input.addEventListener('change', $scope.chatFileSelect, false);
+        }
+    }
+    $scope.chatFileSelect = function() {
+        var file = document.getElementById('chat_file_input').files[0];
+        if (file) {
+            if (file.size < 50000000) {
+                // Format size for display
+                var size = '' + file.size;
+                var formSize = '';
+                if (size.length > 6) {
+                    formSize  = size.substring(0, size.length-6) + '.';
+                    formSize += size.substring(size.length-6, size.length-5) + ' MB';
+                }
+                else if (size.length > 3) {
+                    formSize = size.substring(0, size.length-3) + 'kb';
+                }
+                else {
+                    formSize = size + 'b';
+                }
+                // Format name for display
+                var name = file.name;
+                var formName = '';
+                if (name.length > 25) {
+                    formName = name.substring(0, 15) + '...';
+                    formName += name.substring(name.length-7);
+                }
+                else { formName = name; }
+                // Display file
+                $scope.chatFile = file.name;
+                $('.chat_file_name').text(formName);
+                $('.chat_file_size').text(formSize);
+                $('.chat_file').fadeOut(400);
+                $('#chat_file_info').delay(400).fadeIn(200);
+            }
+            else {
+                // File too big
+                $scope.showNotification('File must be smaller than 50MB in size', 'bad');
+                var input = $("#chat_file_input");
+                input.replaceWith( input = input.clone( true ) );
+                input = document.getElementById('chat_file_input');
+                input.addEventListener('change', $scope.chatFileSelect, false);
+            }
+        }
+    }
+    $scope.chatFileReset = function() {
+        // Reset File
+        $scope.chatFile = null;
+        var input = $("#chat_file_input");
+        input.replaceWith( input = input.clone( true ) );
+        input = document.getElementById('chat_file_input');
+        input.addEventListener('change', $scope.chatFileSelect, false);
+        // Reset window
+        $('#chat_file_info').fadeOut(400);
+        $('.chat_file').delay(400).fadeIn(200);
+    }
+    //qwe
+    $scope.chatFileUpload = function() {
+        var file = document.getElementById('chat_file_input').files[0];
+        console.log('upload file: ', file);
     }
 
     socket.on('messages_receive', function(messages) {
