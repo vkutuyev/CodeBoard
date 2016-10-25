@@ -102,7 +102,8 @@
                     <form ng-submit="enterChat()">
                         <div class="row">
                             <div class="col-sm-12">
-                                <input class="chat_enter_name_input" type="text" placeholder="Enter a name. Press 'Enter' when done." ng-model="enter_chat_name">
+                                <label for="enter_chat_name">Name</label>
+                                <input class="chat_enter_name_input" type="text" name="enter_chat_name" placeholder="Hit Enter To Confirm" ng-model="enter_chat_name">
                             </div>
                         </div>
                     </form>
@@ -119,7 +120,16 @@
                     </div>
                     <div class="row chat_send_row" >
                         <form class="chat_send_form" ng-submit="chat_send_message()">
-                            <div class="chat_input col-sm-12" style="position: absolute;"><textarea class="chat_input_textarea" ng-model="chat_message" style="resize: none" placeholder="Enter to send, Shift+Enter for new line."></textarea></div>
+                            <div class="chat_input col-sm-12">
+                                <ul>
+                                    <li><textarea class="chat_input_textarea" ng-model="chat_message" style="resize: none"></textarea></li>
+                                    <li style="margin-left: -4px;">
+                                        <div class="chat_file_select" ng-click="fileSelect()">
+                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
                         </form>
                     </div>
                 </div>

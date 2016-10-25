@@ -33,15 +33,46 @@ div.chat_enter_name input.chat_enter_name_input {
 }
 .chat_input {
     position: absolute;
-    bottom: 2em;
+    bottom: 15px;
 }
 .chat_input textarea {
     border-color: rgb(176, 176, 176);
-    border-radius: 5px;
+    /*border-radius: 5px;*/
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
     padding: 0.5em;
+    width: calc(100% - 40px) !important;
 }
     .chat_input textarea:focus {
         outline: none;
+    }
+.chat_input ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+    .chat_input ul li {
+        display: inline;
+    }
+.chat_file_select {
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    width: 40px;
+    border: 1px solid rgb(176, 176, 176);
+    border-left-width: 0px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    cursor: pointer;
+}
+    .chat_file_select:hover {
+        color: white;
+        background: rgb(198, 198, 198);
+    }
+    .chat_file_select i {
+        vertical-align: middle;
+        margin: 0 auto;
+        line-height: 54px;
     }
 .chat_message_show {
     overflow-y: scroll;

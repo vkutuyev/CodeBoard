@@ -888,6 +888,12 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
             $scope.chat_message = '';
         }
     }
+    $scope.fileSelect = function() {
+        // qwe
+        // Toggle chat file selector
+        console.log('selected');
+    }
+
     socket.on('messages_receive', function(messages) {
         var scrHeight = $('.chat_message_show')[0].scrollHeight,
             scrTop    = $('.chat_message_show')[0].scrollTop,
