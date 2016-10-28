@@ -1,3 +1,5 @@
+// Original file names for downloading {lobby: filename}
+var files   = require('../models/Files.js');
 var Users   = {},
     Lobbies = {};
 
@@ -12,7 +14,8 @@ function Lobby (id) {
         0: { name: '', img: '', time: '' },
         1: { name: '', img: '', time: '' },
         2: { name: '', img: '', time: '' }
-    };
+    },
+    this.sharedFile  = null;
 }
 
 ////////////////////////////////////////////////////////////
@@ -67,6 +70,12 @@ module.exports = function(io) {
                     delete Lobbies[Users[socket.id].lobby].users[socket.id];
                     io.to(Users[socket.id].lobby).emit('users_receive', {users: Lobbies[Users[socket.id].lobby].users, name: name, left: true});
                 }
+                // Check to see if lobby is now empty
+                var lobbyName = data.path;
+                var users = Object.getOwnPropertyNames(Lobbies[lobbyName].users);
+                if (users.length == 0) {
+                    files.delete(lobbyName);
+                }
             }
         })
 
@@ -74,9 +83,18 @@ module.exports = function(io) {
             if (Users[socket.id]) {
                 if (Lobbies[Users[socket.id].lobby]) {
                     //Check to see that person has lobby or not
-                    delete Lobbies[Users[socket.id].lobby].users[socket.id]
+                    var lobbyName = Users[socket.id].lobby;
+                    delete Lobbies[Users[socket.id].lobby].users[socket.id];
                 }
                 delete Users[socket.id];
+            }
+            if (lobbyName) {
+                // Check to see if lobby is now empty
+                var users = Object.getOwnPropertyNames(Lobbies[lobbyName].users);
+                if (users.length == 0) {
+                    Lobbies[lobbyName].sharedFile = null;
+                    files.delete(lobbyName);
+                }
             }
         })
         //////////////////////////////////////////
@@ -85,7 +103,6 @@ module.exports = function(io) {
         socket.on('user_send', function(data) {
             if (Users[socket.id]) {
                 Users[socket.id].name = data.name;
-                console.log(Users[socket.id]);
                 if (Users[socket.id].lobby) {
                     io.to(Users[socket.id].lobby).emit('users_receive', {users: Lobbies[Users[socket.id].lobby].users, name: data.name});
                 }
@@ -97,8 +114,6 @@ module.exports = function(io) {
             }
             if (Users[socket.id].lobby) {
                 Lobbies[Users[socket.id].lobby].chatlog.push(formatted);
-                // console.log(Lobbies[Users[socket.id].lobby].chatlog);
-                // console.log('-----------------');
                 io.to(Users[socket.id].lobby).emit('messages_receive', Lobbies[Users[socket.id].lobby].chatlog);
             }
         })
@@ -148,12 +163,18 @@ module.exports = function(io) {
         //////////////////////////////////////////
         socket.on('code_edit', function(data) {
             Lobbies[Users[socket.id].lobby].textCode = data.code;
-            io.to(Users[socket.id].lobby).emit('code_edit', { code: data.code, id: data.id })
+            io.to(Users[socket.id].lobby).emit('code_edit', { code: data.code, id: data.id });
         })
         socket.on('code_edit_mode_switching', function(data) {
             Lobbies[Users[socket.id].lobby].modeCode = data.mode;
-            console.log(Lobbies[Users[socket.id].lobby].modeCode);
             io.to(Users[socket.id].lobby).emit('code_edit_mode_switch', {mode: data.mode});
+        })
+        //////////////////////////////////////////
+        ///           File Sharing             ///
+        //////////////////////////////////////////
+        socket.on('file_uploaded', function(file) {
+            Lobbies[Users[socket.id].lobby].sharedFile = file;
+            io.to(Users[socket.id].lobby).emit('file_shared', { file: file });
         })
     })
 }

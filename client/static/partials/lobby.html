@@ -155,6 +155,23 @@
                             <button ng-click="chatFileReset()">Cancel</button>
                         </div>
                     </div>
+                    <div class="shared_file_info" ng-show="sharedFile"> <!-- Shared file display div -->
+                        <div class="shared_file_header">
+                            {{sharedFile.user}} Uploaded
+                        </div>
+                        <table>
+                            <thead>
+                                <th class="shared_file_table_head_name">Name</th>
+                                <th class="shared_file_table_head_size">Size</th>
+                            </thead>
+                            <tbody>
+                                <td>{{sharedFile.name}}</td>
+                                <td>{{sharedFile.size}}</td>
+                            </tbody>
+                        </table>
+                        <button ng-click="chatFileDownload()">Download</button>
+                        <button ng-click="sharedFile=null">Dismiss</button>
+                    </div>
                 </div>
             </div>
             <div ng-show="!currentLobby">Please go into online mode to use chat.</div>

@@ -1,20 +1,24 @@
-// Multer file uploads
-var multer = require("multer");
+// Original file names for downloading {lobby: filename}
+var files = require('../models/Files.js');
+
+// Multer settings
+var fs      = require('fs');
+var multer  = require("multer");
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './server/uploads/')
+        cb(null, './server/files/temp')
     },
     filename: function (req, file, cb) {
-        cb(null, req.body.username)
+        cb(null, file.originalname)
     }
 });
 
 var upload = multer({
     storage: storage,
     limits: {
-        // fileSize: 5000000
+        fileSize: 50000000
     }
-}).single('thumbnail');
+}).single('chatFile');
 
 
 module.exports = (function() {
@@ -22,16 +26,19 @@ module.exports = (function() {
 
         upload: function(req, res) {
             upload(req, res, function(err) {
+                console.log('=========req.file=========');
+                console.log(req.file);
+                console.log('=========req.body=========');
+                console.log(req.body);
                 if (err) {
-                    console.log(err);
-                    res.json(err);
+                    console.log('Error Uploading: ', err);
+                    res.json({upload: false, error: err});
                 }
                 else {
-                    console.log('=========req.file=========');
-                    console.log(req.file);
-                    console.log('=========req.body=========');
-                    console.log(req.body);
-                    res.send("OK");
+                    files.save(req.body.lobbyName, req.file.originalname);
+                    files.print();
+                    fs.rename('./server/files/temp/'+req.file.originalname, './server/files/uploads/'+req.body.lobbyName);
+                    res.json({upload: true});
                 }
             })
         }

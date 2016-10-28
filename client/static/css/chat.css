@@ -141,6 +141,45 @@ div.chat_enter_name input.chat_enter_name_input {
             color: white;
             background: rgb(198, 198, 198);
         }
+.shared_file_info {
+    width: 100%;
+    display: block;
+    border: 1px solid rgb(176, 176, 176);
+    border-radius: 5px;
+    margin-top: 15px;
+}
+    .shared_file_header {
+        text-align: center;
+        font-size: 18px;
+        background: rgb(198, 198, 198);
+        color: white;
+        border-bottom: 1px solid rgb(176, 176, 176);
+        margin-bottom: 5px;
+    }
+    .shared_file_info table {
+        margin: 0 5px;
+    }
+    .shared_file_info table th {
+        font-size: 16px;
+    }
+    .shared_file_info table td {
+        font-size: 14px;
+    }
+    .shared_file_info button {
+        color: black;
+        background: white;
+        border: 1px solid rgb(176, 176, 176);
+        border-radius: 5px;
+        width: 35%;
+        margin-top: 25px;
+        margin-left: 10%;
+        outline: none;
+    }
+        .shared_file_info button:hover {
+            color: white;
+            background: rgb(198, 198, 198);
+        }
+
 .chat_message_show {
     overflow-y: scroll;
     padding: 1em 2em 2em;

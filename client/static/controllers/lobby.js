@@ -42,7 +42,8 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
     $scope.showPop      = false;
     // File Sharing
     $scope.showChatFile = false;
-    $scope.lobbyFile    = null; //qwe
+    $scope.chatFile     = null; //qwe
+    $scope.sharedFile   = null;
     // Screenshots
     $scope.screenshots  = {};
     // Shapes
@@ -708,10 +709,6 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
 
         // Code Editor Message
         var editMsg = "";
-                    // + "/*";
-                    // + "\n\t\t\t\t" +" "+" "+ "&lt;/>"
-                    // + "\n\t\t\t"   +" "+" "+ "Code Editor"
-                    // + "\n*/\n";
         $('#editor').html(editMsg);
 
         // Help message pop-up
@@ -805,6 +802,9 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
             editor.getSession().setMode('ace/mode/'+ data.lobby_data.modeCode);
             $scope.showChatFile = true;
             $scope.toggleChatFile();
+            //qwe
+            $scope.sharedFile = data.lobby_data.sharedFile;
+            $('.chat_message_show:last-child').append($('.shared_file_info'));
             var msg = 'Joined Lobby: ' + data.lobby_data.id;
             $scope.showNotification(msg, 'good');
             setTimeout(function(){
@@ -947,7 +947,12 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
                 }
                 else { formName = name; }
                 // Display file
-                $scope.chatFile = file.name;
+                $scope.chatFile = {
+                    name:     file.name,
+                    formName: formName,
+                    size:     formSize,
+                    user:     $scope.chat_name.substring(0,15)
+                }
                 $('.chat_file_name').text(formName);
                 $('.chat_file_size').text(formSize);
                 $('.chat_file').fadeOut(400);
@@ -974,12 +979,67 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         $('#chat_file_info').fadeOut(400);
         $('.chat_file').delay(400).fadeIn(200);
     }
-    //qwe
     $scope.chatFileUpload = function() {
-        var file = document.getElementById('chat_file_input').files[0];
-        console.log('upload file: ', file);
+        // Generate form to send file
+        var fileForm     = document.createElement('FORM');
+        fileForm.id      = 'chatFileForm';
+        fileForm.name    = 'chatFileForm';
+        fileForm.method  = 'POST';
+        fileForm.action  = '/files/upload';
+        fileForm.enctype = "multipart/form-data";
+        // Attach a copy of file input to form
+        var fileInput   = $('#chat_file_input').clone()[0];
+        fileInput.name  = 'chatFile';
+        fileInput.files = document.getElementById('chat_file_input').files;
+        fileForm.appendChild(fileInput);
+        // Attach lobby name to form
+        var lobbyInput   = document.createElement('INPUT');
+        lobbyInput.type  = 'text';
+        lobbyInput.name  = 'lobbyName';
+        lobbyInput.value = $scope.currentLobby;
+        fileForm.appendChild(lobbyInput);
+        // Attach form to body, submit, delete form
+        document.body.appendChild(fileForm);
+        var formData = new FormData(fileForm);
+        jQuery.ajax({
+            url: '/files/upload',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            success: function(data){
+                if (data.upload) {
+                    $scope.showNotification('File Uploaded');
+                    socket.emit('file_uploaded', $scope.chatFile);
+                    $scope.chatFileReset();
+                    $scope.toggleChatFile();
+                }
+                else {
+                    $scope.showNotification('Error Uploading File:', data.error);
+                }
+            }
+        });
+        document.body.removeChild(fileForm);
+    }
+//qwe
+    $scope.chatFileDownload = function() {
+        var link    = document.createElement('a');
+        link.href   = '/files/download/'+$scope.currentLobby;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 
+    socket.on('file_shared', function(file) {
+        console.log('=========file=========');
+        console.log(file);
+        console.log('=========file=========');
+        $scope.sharedFile = file.file;
+        $('.chat_message_show:last-child').append($('.shared_file_info'));
+        $('.shared_file_info').fadeIn(300);
+    })
     socket.on('messages_receive', function(messages) {
         var scrHeight = $('.chat_message_show')[0].scrollHeight,
             scrTop    = $('.chat_message_show')[0].scrollTop,
