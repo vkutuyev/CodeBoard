@@ -42,7 +42,7 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
     $scope.showPop      = false;
     // File Sharing
     $scope.showChatFile = false;
-    $scope.chatFile     = null; //qwe
+    $scope.chatFile     = null;
     $scope.sharedFile   = null;
     // Screenshots
     $scope.screenshots  = {};
@@ -803,7 +803,6 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
             editor.getSession().setMode('ace/mode/'+ data.lobby_data.modeCode);
             $scope.showChatFile = true;
             $scope.toggleChatFile();
-            //qwe
             $scope.sharedFile = data.lobby_data.sharedFile;
             $('.chat_message_show:last-child').append($('.shared_file_info'));
             var msg = 'Joined Lobby: ' + data.lobby_data.id;
@@ -1023,7 +1022,6 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         });
         document.body.removeChild(fileForm);
     }
-//qwe
     $scope.chatFileDownload = function() {
         var link    = document.createElement('a');
         link.href   = '/files/download/'+$scope.currentLobby;
@@ -1034,9 +1032,6 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
     }
 
     socket.on('file_shared', function(file) {
-        console.log('=========file=========');
-        console.log(file);
-        console.log('=========file=========');
         $scope.sharedFile = file.file;
         $('.chat_message_show:last-child').append($('.shared_file_info'));
         $('.shared_file_info').fadeIn(400);

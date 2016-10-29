@@ -11,7 +11,7 @@ var app             = express();
 app.use(session({ secret: "codeboard", resave: false, saveUninitialized: false }));
 
 //Body Parser && Static Folder
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '51MB'}));
 app.use(express.static(__dirname + "/client/static"));
 
 //Routes
