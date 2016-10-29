@@ -87,7 +87,7 @@
         </div>
         <div ng-show="menu_tab==1">
             <div class="row">
-                <h4 class="col-sm-9">Chat</h4>
+                <h4 class="col-sm-9">Chat<span ng-show="chat_name">: {{chat_name}}</span></h4>
                 <h4 ng-if="chat_name" class="col-sm-3 chat_people">
                     <span class="chat_people_text">
                         <div class="row" style='margin-bottom: 5px; text-decoration: underline; color: black;'>Users</div>
@@ -116,6 +116,7 @@
                                 <div class="chatTime"><span ng-show="showMsgNum===$index">{{message.time}}</span></div>
                                 <div class="chatMsg" ng-bind="message.message" ng-mouseenter="showMsgNum=$index" ng-mouseleave="showMsgNum=false"></div>
                             </div>
+                            <hr ng-show="sharedFile">
                         </div>
                     </div>
                     <div class="row chat_send_row" >

@@ -74,6 +74,7 @@ module.exports = function(io) {
                 var lobbyName = data.path;
                 var users = Object.getOwnPropertyNames(Lobbies[lobbyName].users);
                 if (users.length == 0) {
+                    Lobbies[lobbyName].sharedFile = null;
                     files.delete(lobbyName);
                 }
             }

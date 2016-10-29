@@ -731,6 +731,7 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         editor.getSession().setUseWrapMode(false);
         editor.getSession().setUseWorker(false);
         editor.$blockScrolling = Infinity;
+        editor.setShowPrintMargin(false);
     }, 0);
     $('#editor').on('keyup', function(e) {
         editor.resize();
@@ -1038,7 +1039,7 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         console.log('=========file=========');
         $scope.sharedFile = file.file;
         $('.chat_message_show:last-child').append($('.shared_file_info'));
-        $('.shared_file_info').fadeIn(300);
+        $('.shared_file_info').fadeIn(400);
     })
     socket.on('messages_receive', function(messages) {
         var scrHeight = $('.chat_message_show')[0].scrollHeight,

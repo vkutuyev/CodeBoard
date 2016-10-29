@@ -64,6 +64,7 @@ div.chat_enter_name input.chat_enter_name_input {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     cursor: pointer;
+    background: white;
 }
     .chat_file_select:hover {
         color: white;
@@ -83,6 +84,7 @@ div.chat_enter_name input.chat_enter_name_input {
     border: 1px solid rgb(176, 176, 176);
     border-radius: 5px;
     padding: 10px;
+    background: white;
 }
     #chat_file_head {
         margin-top: 0;
@@ -112,9 +114,6 @@ div.chat_enter_name input.chat_enter_name_input {
             color: white;
             background: rgb(198, 198, 198);
         }
-#chat_file_info {
-
-}
     #chat_file_info table {
         width: 100%;
         text-align: center;
@@ -142,11 +141,13 @@ div.chat_enter_name input.chat_enter_name_input {
             background: rgb(198, 198, 198);
         }
 .shared_file_info {
-    width: 100%;
+    width: calc(100% + 28px);
     display: block;
     border: 1px solid rgb(176, 176, 176);
     border-radius: 5px;
     margin-top: 15px;
+    margin-left: -15px;
+    padding-bottom: 5px;
 }
     .shared_file_header {
         text-align: center;
@@ -157,13 +158,18 @@ div.chat_enter_name input.chat_enter_name_input {
         margin-bottom: 5px;
     }
     .shared_file_info table {
-        margin: 0 5px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .shared_file_table_head_name {
     }
     .shared_file_info table th {
         font-size: 16px;
+        text-align: center;
     }
     .shared_file_info table td {
         font-size: 14px;
+        padding: 3px;
     }
     .shared_file_info button {
         color: black;
@@ -171,7 +177,7 @@ div.chat_enter_name input.chat_enter_name_input {
         border: 1px solid rgb(176, 176, 176);
         border-radius: 5px;
         width: 35%;
-        margin-top: 25px;
+        margin-top: 10px;
         margin-left: 10%;
         outline: none;
     }
