@@ -1003,7 +1003,6 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         var formData = new FormData(fileForm);
         $('#chat_file_info button').fadeOut(200);
         $('.uploadProgress').delay(200).fadeIn(200);
-        //qwe
         jQuery.ajax({
             xhr: function() {
                 var xhr = new window.XMLHttpRequest();

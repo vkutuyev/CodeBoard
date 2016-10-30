@@ -155,3 +155,14 @@
     border-radius: 3px;
     z-index: 60;
 }
+
+.creditsDiv {
+    text-align: center;
+    margin-top: calc(100vh - 530px);
+}
+    .creditsDiv h5 {
+        margin-bottom: 2px;
+    }
+    .creditsDiv a {
+        text-decoration: none;
+    }
