@@ -1001,7 +1001,23 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
         // Attach form to body, submit, delete form
         document.body.appendChild(fileForm);
         var formData = new FormData(fileForm);
+        $('#chat_file_info button').fadeOut(200);
+        $('.uploadProgress').delay(200).fadeIn(200);
+        //qwe
         jQuery.ajax({
+            xhr: function() {
+                var xhr = new window.XMLHttpRequest();
+                //Upload progress
+                xhr.upload.addEventListener("progress", function(evt) {
+                    if (evt.lengthComputable) {
+                        var perComp = evt.loaded / evt.total;
+                        var width = perComp * 100;
+                        width += '%';
+                        $('.progressBar').css('width', width);
+                    }
+                }, false);
+                return xhr;
+            },
             url: '/files/upload',
             data: formData,
             cache: false,
@@ -1014,8 +1030,13 @@ app.controller('LobbyController', function($http, $scope, $location, socket) {
                     socket.emit('file_uploaded', $scope.chatFile);
                     $scope.chatFileReset();
                     $scope.toggleChatFile();
+                    $('.uploadProgress').delay(300).fadeOut(10);
+                    $('#chat_file_info button').delay(300).fadeIn(10);
+                    $('.progressBar').css('width', 0);
                 }
                 else {
+                    $('.uploadProgress').fadeOut(200);
+                    $('#chat_file_info button').stop().delay(200).fadeIn(400);
                     $scope.showNotification('Error Uploading File:', data.error);
                 }
             }

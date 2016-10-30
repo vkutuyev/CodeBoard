@@ -154,6 +154,10 @@
                             </table>
                             <button ng-click="chatFileUpload()">Upload</button>
                             <button ng-click="chatFileReset()">Cancel</button>
+                            <div class="uploadProgress" hidden>
+                                <h5>Uploading</h5>
+                                <div class="progressBar"></div>
+                            </div>
                         </div>
                     </div>
                     <div class="shared_file_info" ng-show="sharedFile"> <!-- Shared file display div -->
